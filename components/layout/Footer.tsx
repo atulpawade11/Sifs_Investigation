@@ -76,9 +76,10 @@ export default function Footer() {
             <ul className="space-y-3 text-sm text-gray-400">
               <li><Link href="/about" className="hover:text-white transition-colors">› About SIFS</Link></li>
               <li><Link href="/services" className="hover:text-white transition-colors">› Services</Link></li>
-              <li><Link href="/experts" className="hover:text-white transition-colors">› Our Experts</Link></li>
+              <li><Link href="/team" className="hover:text-white transition-colors">› Our Experts</Link></li>
+              <li><Link href="/" className="hover:text-white transition-colors">› Our Clients</Link></li>
+              <li><Link href="/career" className="hover:text-white transition-colors">› Career</Link></li>
               <li><Link href="/blog" className="hover:text-white transition-colors">› Blog</Link></li>
-              <li><Link href="/contact" className="hover:text-white transition-colors">› Contact Us</Link></li>
             </ul>
           </div>
 

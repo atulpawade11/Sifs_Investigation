@@ -14,11 +14,14 @@ export default function PrivacyPolicyPage() {
     async function loadContent() {
       try {
         setLoading(true);
-        // Using the slug likely used by your backend
-        const res = await getPageBySlug("privacy-policy");
+        // We use "page" as the second argument because your URL is .../front/page/privacy-policy
+        const res = await getPageBySlug("privacy-policy", "page");
         
-        if (res.success && res.data?.page) {
-          setPageData(res.data.page);
+        if (res.success && res.data) {
+          // --- DYNAMIC DATA SELECTION ---
+          // This looks for 'be' (Privacy/Career style) or 'page' (Terms style)
+          const actualData = res.data.be || res.data.page || res.data;
+          setPageData(actualData);
         } else {
           setError(true);
         }
@@ -47,7 +50,7 @@ export default function PrivacyPolicyPage() {
             {loading && (
               <div className="flex flex-col items-center justify-center py-20">
                 <Loader2 className="animate-spin text-[#0B10A4]" size={40} />
-                <p className="mt-4 text-gray-500 font-medium">Loading privacy statement...</p>
+                <p className="mt-4 text-gray-500 font-medium">Loading content...</p>
               </div>
             )}
 
@@ -55,14 +58,20 @@ export default function PrivacyPolicyPage() {
               <div className="flex flex-col items-center justify-center py-20 text-center">
                 <AlertCircle className="text-red-500 mb-4" size={48} />
                 <h2 className="text-xl font-bold text-gray-900">Content Unavailable</h2>
-                <p className="text-gray-500 mt-2">We couldn't reach the server. Showing default view.</p>
+                <p className="text-gray-500 mt-2">The API returned successfully, but no content was found.</p>
               </div>
             )}
 
             {!loading && !error && pageData && (
               <div 
-                className="api-content prose prose-slate max-w-none"
-                dangerouslySetInnerHTML={{ __html: pageData.body }} 
+                className="api-content prose prose-slate max-w-none text-gray-700"
+                /** * FIELD FALLBACK:
+                 * Privacy Policy API uses 'description'
+                 * Terms and Conditions API uses 'body'
+                 */
+                dangerouslySetInnerHTML={{ 
+                  __html: pageData.description || pageData.body || "" 
+                }} 
               />
             )}
           </div>

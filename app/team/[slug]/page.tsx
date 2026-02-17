@@ -1,167 +1,89 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { ChevronLeft, Loader2, Linkedin, Facebook, Twitter, Instagram } from "lucide-react";
-import { API_BASE_URL } from "@/lib/config";
+import React, { useEffect, useState, use } from "react";
+import { useRouter } from "next/navigation"; // Import the router
+import PageBanner from "@/components/common/PageBanner";
+import { getTeamMembers, getTeamMemberById } from "@/services/teamService";
+import { Facebook, Twitter, Instagram, Linkedin, Loader2, AlertCircle, ArrowLeft } from "lucide-react";
 
-export default function TeamDetails({ params }: { params: Promise<{ slug: string }> }) {
-  // Unwrap the slug from the dynamic route params
-  const { slug } = use(params);
-  
+export default function TeamDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const router = useRouter(); // Initialize router
+  const resolvedParams = use(params);
+  const idFromUrl = resolvedParams.slug;
+
   const [member, setMember] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (!slug) return;
-
-    const fetchDetail = async () => {
-      setLoading(true);
+    async function loadData() {
       try {
-        const res = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/team/${slug}`);
-        const result = await res.json();
-        
-        // Mapping based on your provided JSON structure
-        if (result.success && result.data?.member) {
-          setMember(result.data.member);
+        setLoading(true);
+        const res = await getTeamMemberById(idFromUrl);
+
+        if (res && !res.fallback && res.data?.member) {
+          setMember(res.data.member);
+        } else {
+          const listRes = await getTeamMembers();
+          const found = listRes.data?.members?.find((m: any) => m.id.toString() === idFromUrl.toString());
+          if (found) {
+            setMember(found);
+          } else {
+            setError(true);
+          }
         }
       } catch (err) {
-        console.error("Fetch error:", err);
+        setError(true);
       } finally {
         setLoading(false);
       }
-    };
+    }
+    loadData();
+  }, [idFromUrl]);
 
-    fetchDetail();
-  }, [slug]);
-
-  // Loading State
-  if (loading) return (
-    <div className="flex h-screen items-center justify-center">
-      <Loader2 className="animate-spin text-[#05083D]" size={40} />
-    </div>
-  );
-
-  // Error State
-  if (!member) return (
-    <div className="flex h-screen flex-col items-center justify-center gap-4">
-      <p className="text-gray-500 font-bold">Expert Profile Not Found</p>
-      <Link href="/about" className="text-blue-600 underline">Return to About</Link>
-    </div>
-  );
+  if (loading) return <div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin text-blue-900" size={40} /></div>;
+  if (error || !member) return <div className="h-screen flex flex-col items-center justify-center"><AlertCircle className="text-red-500 mb-2" /><p>Expert Not Found (ID: {idFromUrl})</p></div>;
 
   return (
-    <main className="bg-white min-h-screen">
-      {/* NAVIGATION */}
-      <nav className="border-b border-gray-100 py-6">
-        <div className="mx-auto max-w-7xl px-4">
-          <Link href="/about" className="inline-flex items-center gap-2 text-gray-400 hover:text-[#05083D] font-bold text-sm transition-colors">
-            <ChevronLeft size={18} /> Back to About
-          </Link>
-        </div>
-      </nav>
+    <main className="bg-white min-h-screen pb-20">
+      <PageBanner title={member.name} subtitle={member.rank} bgImage="/about/about-banner.png" />
+      
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* --- BACK BUTTON --- */}
+        <button 
+          onClick={() => router.back()} 
+          className="flex items-center gap-2 text-gray-600 hover:text-blue-900 transition-colors mb-6 group"
+        >
+          <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+          <span className="font-medium">Back to Team</span>
+        </button>
 
-      <section className="mx-auto max-w-7xl px-4 py-12 md:py-20">
-        <div className="flex flex-col md:flex-row gap-12 lg:gap-20">
-          
-          {/* LEFT SIDE: Sidebar (30% approx) */}
-          <aside className="w-full md:w-[32%]">
-            <div className="sticky top-10">
-              {/* Image Guard: Prevents "" src error */}
-              <div className="relative aspect-[4/5] w-full rounded-[24px] overflow-hidden bg-[#FFD707] mb-6 shadow-lg">
-                {member.image ? (
-                  <Image 
-                    src={member.image} 
-                    alt={member.name || "Team Member"} 
-                    fill 
-                    className="object-cover" 
-                    unoptimized 
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center bg-slate-100 text-slate-400">
-                    No Image Available
-                  </div>
-                )}
-              </div>
-              
-              <div className="bg-[#05083D] text-white rounded-[24px] p-8 shadow-xl">
-                <h2 className="text-2xl font-bold mb-1 leading-tight">{member.name}</h2>
-                <p className="text-[#FFD707] font-semibold text-xs uppercase tracking-widest mb-6">
-                  {member.rank}
-                </p>
-
-                {member.education && (
-                  <div className="mb-8">
-                    <h5 className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">Education</h5>
-                    <p className="text-sm text-white/90 leading-relaxed font-medium">
-                      {member.education}
-                    </p>
-                  </div>
-                )}
-                
-                {/* SOCIAL LINKS */}
-                <div className="flex gap-3">
-                  {member.facebook && (
-                    <Link href={member.facebook} target="_blank" className="p-2 bg-white/10 rounded-lg hover:bg-[#FFD707] hover:text-[#05083D] transition-all">
-                      <Facebook size={18} />
-                    </Link>
-                  )}
-                  {member.linkedin && (
-                    <Link href={member.linkedin} target="_blank" className="p-2 bg-white/10 rounded-lg hover:bg-[#FFD707] hover:text-[#05083D] transition-all">
-                      <Linkedin size={18} />
-                    </Link>
-                  )}
-                  {member.twitter && (
-                    <Link href={member.twitter} target="_blank" className="p-2 bg-white/10 rounded-lg hover:bg-[#FFD707] hover:text-[#05083D] transition-all">
-                      <Twitter size={18} />
-                    </Link>
-                  )}
-                  {member.instagram && (
-                    <Link href={member.instagram} target="_blank" className="p-2 bg-white/10 rounded-lg hover:bg-[#FFD707] hover:text-[#05083D] transition-all">
-                      <Instagram size={18} />
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </div>
-          </aside>
-
-          {/* RIGHT SIDE: Content (70% approx) */}
-          <div className="w-full md:w-[68%]">
-            <h1 className="text-5xl font-black text-[#05083D] mb-4 tracking-tight">
-              {member.name}
-            </h1>
-            <p className="text-blue-600 font-bold uppercase tracking-[0.3em] text-sm mb-12">
-              {member.rank}
-            </p>
-            
-            <div className="prose prose-slate max-w-none prose-lg">
-              {/* Biography rendering with custom styling */}
-              <div 
-                className="text-slate-700 leading-relaxed text-justify biography-render"
-                dangerouslySetInnerHTML={{ __html: member.about }} 
-              />
+        <div className="bg-white rounded-3xl overflow-hidden flex flex-col lg:flex-row border border-gray-100 shadow-xl">
+          <div className="lg:w-1/3 bg-gray-50 p-8 text-center border-r border-gray-100">
+            <img 
+              src={`http://forensicinstitute.in/uploads/Investigation-Services-Admin-Member/${member.image}`} 
+              alt={member.name}
+              className="w-64 h-64 object-cover rounded-2xl shadow-lg border-4 border-white mx-auto mb-6 bg-white"
+            />
+            <h2 className="text-2xl font-bold">{member.name}</h2>
+            <p className="text-blue-900 font-bold text-xs uppercase mt-2">{member.rank}</p>
+            <p className="text-gray-500 text-sm mt-2">{member.education}</p>
+            <div className="flex justify-center gap-4 mt-6">
+               {member.facebook && <a href={member.facebook} target="_blank" className="text-gray-400 hover:text-blue-600"><Facebook size={20}/></a>}
+               {member.linkedin && <a href={member.linkedin} target="_blank" className="text-gray-400 hover:text-blue-700"><Linkedin size={20}/></a>}
+               {member.instagram && <a href={member.instagram} target="_blank" className="text-gray-400 hover:text-pink-600"><Instagram size={20}/></a>}
             </div>
           </div>
 
+          <div className="lg:w-2/3 p-8 lg:p-16">
+            <h3 className="text-xl font-bold mb-6 border-b pb-2">Professional Biography</h3>
+            <div 
+              className="prose prose-slate max-w-none text-gray-700 text-justify"
+              dangerouslySetInnerHTML={{ __html: member.about }} 
+            />
+          </div>
         </div>
-      </section>
-
-      {/* GLOBAL CSS: Ensures API content is visible and well-spaced */}
-      <style jsx global>{`
-        .biography-render p {
-          margin-bottom: 1.5rem;
-          color: #334155 !important;
-        }
-        .biography-render b, .biography-render strong {
-          color: #05083D !important;
-          font-weight: 800;
-        }
-        .biography-render div {
-          text-align: justify;
-        }
-      `}</style>
+      </div>
     </main>
   );
 }

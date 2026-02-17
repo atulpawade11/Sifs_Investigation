@@ -13,8 +13,6 @@ export default function TermsAndConditionsPage() {
   useEffect(() => {
     async function load() {
       try {
-        // If the browser link worked with 'terms-and-conditions', keep this.
-        // If the browser link worked with 'terms-conditions', change this.
         const res = await getPageBySlug("terms-and-conditions"); 
         if (res.success) setPageData(res.data.page);
       } catch (err) {

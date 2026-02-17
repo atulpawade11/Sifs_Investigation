@@ -42,7 +42,6 @@ const Team = () => {
           });
 
           if (result.data.members) {
-            // Updated logic to take exactly 5 members
             setMembers(result.data.members.slice(0, 5));
           }
         }
@@ -73,7 +72,7 @@ const Team = () => {
             </h2>
           </div>
           <Link 
-            href="/teams"
+            href="/team"
             className="bg-gradient-to-r from-[#0B10A4] to-[#04063E]
                         text-white px-8 py-3 rounded-full font-bold
                         flex items-center gap-4
