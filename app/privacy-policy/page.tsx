@@ -14,12 +14,9 @@ export default function PrivacyPolicyPage() {
     async function loadContent() {
       try {
         setLoading(true);
-        // We use "page" as the second argument because your URL is .../front/page/privacy-policy
-        const res = await getPageBySlug("privacy-policy", "page");
+        const res = await getPageBySlug("privacy-policy");
         
         if (res.success && res.data) {
-          // --- DYNAMIC DATA SELECTION ---
-          // This looks for 'be' (Privacy/Career style) or 'page' (Terms style)
           const actualData = res.data.be || res.data.page || res.data;
           setPageData(actualData);
         } else {
@@ -65,10 +62,6 @@ export default function PrivacyPolicyPage() {
             {!loading && !error && pageData && (
               <div 
                 className="api-content prose prose-slate max-w-none text-gray-700"
-                /** * FIELD FALLBACK:
-                 * Privacy Policy API uses 'description'
-                 * Terms and Conditions API uses 'body'
-                 */
                 dangerouslySetInnerHTML={{ 
                   __html: pageData.description || pageData.body || "" 
                 }} 
