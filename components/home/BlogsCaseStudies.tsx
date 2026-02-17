@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { API_BASE_URL } from '@/lib/config';
+import { Skeleton } from '@/components/shared/Skeleton';
 
 interface Blog {
   id: number;
@@ -57,7 +58,7 @@ const BlogsCaseStudies = () => {
 
         if (result.success && result.data) {
           const bs = result.data.bs;
-          
+
           setContent({
             title: bs.blog_section_title?.replace(/[.]+$/, "") || "Forensic Insights",
             subtitle: bs.blog_section_subtitle?.replace(/[.]+$/, "") || "Blogs and Case Studies"
@@ -77,7 +78,45 @@ const BlogsCaseStudies = () => {
     fetchBlogData();
   }, []);
 
-  if (loading || blogs.length === 0) return null;
+  if (loading) {
+    return (
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-4 md:px-10">
+          <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-4">
+            <div className="space-y-4">
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-10 w-64" />
+            </div>
+            <Skeleton className="h-12 w-32 rounded-full" />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-7 space-y-6">
+              <Skeleton className="h-[450px] w-full rounded-[32px]" />
+              <div className="space-y-4">
+                <Skeleton className="h-8 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+            </div>
+            <div className="lg:col-span-5 space-y-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex gap-5">
+                  <Skeleton className="w-44 h-32 rounded-2xl flex-shrink-0" />
+                  <div className="space-y-3 flex-1">
+                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-6 w-32 rounded-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (blogs.length === 0) return null;
 
   const featuredBlog = blogs[0];
   const sideBlogs = blogs.slice(1, 4);
@@ -85,7 +124,7 @@ const BlogsCaseStudies = () => {
   return (
     <section className="py-24 bg-white">
       <div className="container mx-auto px-4 md:px-10">
-        
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-4">
           <div>
@@ -108,7 +147,7 @@ const BlogsCaseStudies = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
+
           {/* LEFT SIDE: Featured Large Blog */}
           <Link href={`/blog/${featuredBlog.slug}`} className="lg:col-span-7 group cursor-pointer">
             <div className="border border-[#D8D8D8]/60 rounded-[32px] p-2 h-full shadow-sm hover:shadow-md transition-shadow flex flex-col">
@@ -147,17 +186,17 @@ const BlogsCaseStudies = () => {
           {/* RIGHT SIDE: List of Small Blogs */}
           <div className="lg:col-span-5 flex flex-col gap-6">
             {sideBlogs.map((blog) => (
-              <Link 
+              <Link
                 key={blog.id}
                 href={`/blog/${blog.slug}`}
                 className="flex flex-col sm:flex-row gap-5 p-2 border border-[#D8D8D8]/60 rounded-2xl hover:shadow-md transition-shadow group cursor-pointer"
               >
                 {/* Small Thumbnail */}
                 <div className="relative w-full sm:w-44 h-32 flex-shrink-0 rounded-xl overflow-hidden">
-                  <Image 
-                    src={blog.home_image} 
+                  <Image
+                    src={blog.home_image}
                     alt={blog.title}
-                    fill 
+                    fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
@@ -170,12 +209,12 @@ const BlogsCaseStudies = () => {
                   <p className="text-[#525252] text-xs line-clamp-2 mb-3">
                     {blog.meta_description}
                   </p>
-                  
+
                   <div className="bg-white self-start rounded-full px-3 py-1 flex items-center gap-2 border border-[#D9D9D9]">
                     <span className="text-[9px] font-medium text-black">By {blog.author}</span>
                     <div className="w-1 h-1 bg-black rounded-full"></div>
                     <span className="text-[9px] font-medium text-black">
-                        {formatDate(blog.publish_date)}
+                      {formatDate(blog.publish_date)}
                     </span>
                   </div>
                 </div>

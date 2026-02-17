@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { API_BASE_URL } from '@/lib/config';
+import { Skeleton } from '@/components/shared/Skeleton';
 
 interface ServiceCategory {
   id: number;
@@ -57,7 +58,7 @@ const ForensicServices = () => {
   const getImageUrl = (path: string | undefined) => {
     if (!path) return "/doc-exam.png";
     if (path.startsWith('http')) return path;
-    
+
     // Most service icons are stored in the uploads folder
     const baseUrl = API_BASE_URL.replace(/\/api\/?$/, '').replace(/\/$/, '');
     return `${baseUrl}/uploads/Investigation-Services-Admin-ServiceCategory/${path}`;
@@ -66,18 +67,34 @@ const ForensicServices = () => {
   if (loading) {
     return (
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 md:px-10 flex justify-center items-center h-[300px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#04063E]"></div>
+        <div className="container mx-auto px-4 md:px-10">
+          <div className="mb-12 space-y-4">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-10 w-64" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-white rounded-[32px] p-6 space-y-6 shadow-sm border border-slate-100">
+                <Skeleton className="h-14 w-14 rounded-full" />
+                <div className="space-y-3">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+                <Skeleton className="h-40 w-full rounded-2xl" />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     );
   }
 
   return (
-    <section 
+    <section
       className="relative py-20 min-h-screen flex flex-col justify-center bg-cover bg-center bg-no-repeat"
-      style={{ 
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/forensic-bg.png')` 
+      style={{
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/forensic-bg.png')`
       }}
     >
       <div className="container mx-auto px-4 md:px-10 relative z-10">
@@ -94,20 +111,20 @@ const ForensicServices = () => {
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((service) => (
-            <div 
-              key={service.id} 
+            <div
+              key={service.id}
               className="bg-white rounded-[32px] p-6 shadow-xl shadow-slate-200/50 flex flex-col h-full hover:-translate-y-2 transition-transform duration-300 group"
             >
               {/* Icon Circle */}
               <div className="w-14 h-14 bg-[#04063E] rounded-full flex items-center justify-center mb-6 shadow-lg relative overflow-hidden transition-colors group-hover:bg-[#0B10A4]">
                 <div className="relative w-7 h-7">
-                    <Image 
-                        src={getImageUrl(service.image)}
-                        alt={service.name}
-                        fill
-                        className="object-contain brightness-0 invert" 
-                        unoptimized
-                    />
+                  <Image
+                    src={getImageUrl(service.image)}
+                    alt={service.name}
+                    fill
+                    className="object-contain brightness-0 invert"
+                    unoptimized
+                  />
                 </div>
               </div>
 

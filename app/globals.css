@@ -7,6 +7,11 @@
   /* While we are here, let's add your brand colors to the theme too */
   --color-sifs-orange: #F68A07;
   --color-sifs-blue: #1A365D;
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
 }
 
 @layer base {

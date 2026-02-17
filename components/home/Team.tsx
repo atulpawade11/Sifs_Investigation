@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Facebook, Twitter, Linkedin, Instagram, ArrowRight } from 'lucide-react';
 import { API_BASE_URL } from '@/lib/config';
+import { Skeleton } from '@/components/shared/Skeleton';
 
 interface TeamMember {
   id: number;
@@ -35,7 +36,7 @@ const Team = () => {
 
         if (result.success && result.data) {
           const bs = result.data.bs;
-          
+
           setContent({
             title: bs.team_section_title || "Team Members",
             subtitle: bs.team_section_subtitle || "Meet Forensic Experts"
@@ -55,12 +56,44 @@ const Team = () => {
     fetchTeamData();
   }, []);
 
-  if (loading || members.length === 0) return null;
+  if (loading) {
+    return (
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 md:px-10">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div className="space-y-4">
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-10 w-64" />
+            </div>
+            <Skeleton className="h-12 w-48 rounded-full" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex flex-col space-y-4">
+                <Skeleton className="w-full aspect-square rounded-[32px]" />
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
+                <div className="flex gap-2">
+                  {[1, 2, 3].map((j) => (
+                    <Skeleton key={j} className="w-8 h-8 rounded-full" />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (members.length === 0) return null;
 
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4 md:px-10">
-        
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div>
@@ -71,7 +104,7 @@ const Team = () => {
               {content.subtitle}
             </h2>
           </div>
-          <Link 
+          <Link
             href="/team"
             className="bg-gradient-to-r from-[#0B10A4] to-[#04063E]
                         text-white px-8 py-3 rounded-full font-bold
@@ -79,7 +112,7 @@ const Team = () => {
                         hover:from-[#1217c0] hover:to-[#0a0f6b]
                         transition-all group"
           >
-            View All Teams 
+            View All Teams
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -88,7 +121,7 @@ const Team = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
           {members.map((member) => (
             <div key={member.id} className="flex flex-col">
-              
+
               {/* Image Container */}
               <div className="relative w-full aspect-square rounded-[32px] overflow-hidden mb-6 group">
                 <Image
