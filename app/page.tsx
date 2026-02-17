@@ -7,7 +7,7 @@ import ShowcaseStats from "../components/home/ShowcaseStats";
 import Team from "../components/home/Team";
 import Testimonials from "../components/home/Testimonials";
 import BlogsCaseStudies from "../components/home/BlogsCaseStudies";
-import DownloadsSlider from "../components/home/DownloadsSlider";
+import DownloadsSlider from "../components/common/DownloadsSlider";
 
 
 export default function HomePage() {

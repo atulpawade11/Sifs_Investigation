@@ -1,99 +1,94 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
 
-const testimonials = [
-  {
-    text: `It has been a pleasure to utilize the investigative services provided by SIFS India. I highly recommend my colleagues consider them for unbiased reports.`,
-    org: "Nigeria Police",
-    location: "Nigeria",
-    logo: "/client-testimonial1.png",
-    quote: "/quote.png",
-  },
-  {
-    text: `With the support of SIFS India, we were able to accomplish our targets on time and within budget, showcasing their efficiency and cost-effectiveness.`,
-    org: "Narcotics Control Bureau",
-    location: "New Delhi",
-    logo: "/client-testimonial2.png",
-    quote: "/quote.png",
-  },
-  {
-    text: `I am grateful for the honest and reliable service from SIFS India, which utilizes well-equipped techniques and maintains a positive approach throughout.`,
-    org: "ICICI Lombard",
-    location: "Mumbai",
-    logo: "/client-testimonial3.png",
-    quote: "/quote.png",
-  },
-];
+import React, { useEffect, useState } from 'react';
+import { getTestimonials } from '@/services/testimonialService';
 
 export default function Testimonials() {
+  const [data, setData] = useState<any>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await getTestimonials();
+        if (res) setData(res);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  // Safe data extraction
+  const testimonialList = data?.data?.data || [];
+  const testimonialTitle = data?.data?.bs?.testimonial_title || "Success Stories";
+  const testimonialSubtitle = data?.data?.bs?.testimonial_subtitle || "Hear What Our Clients Say";
+  
+  const visibleItems = isExpanded ? testimonialList : testimonialList.slice(0, 4);
+
+  if (loading) return <div style={{padding: '100px', textAlign: 'center'}}>Loading...</div>;
+  if (testimonialList.length === 0) return null;
+
   return (
     <section className="relative overflow-hidden bg-[#F3F1F2] py-24">
       <div className="mx-auto max-w-7xl px-4">
-        {/* ---------- TITLE (BACKGROUND LAYER) ---------- */}
+        
+        {/* ---------- TITLE ---------- */}
         <div className="relative z-0 max-w-xl">
           <p className="text-sm font-medium text-[#04063E]">
-            Success Stories
+            {testimonialTitle}
           </p>
           <h2 className="mt-2 text-[42px] font-bold leading-tight text-gray-900">
-            “Clients <br />
-            Testimonials”
+            {testimonialSubtitle}
           </h2>
         </div>
 
         {/* ---------- VIEW ALL BUTTON ---------- */}
         <div className="absolute right-10 top-24 hidden md:block">
-          <Link
-            href="#"
-            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E]
-            text-white px-8 py-3 rounded-full font-bold
-            flex items-center gap-4
-            hover:from-[#1217c0] hover:to-[#0a0f6b]
-            transition-all group"
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-8 py-3 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none"
           >
-            View All →
-          </Link>
+            {isExpanded ? "Show Less ↑" : "View All →"}
+          </button>
         </div>
 
-        {/* ---------- CARDS (OVERLAY LAYER) ---------- */}
-        <div className="relative z-10 mt-[-60px] ml-auto w-[135%]">
-          <div className="flex gap-6">
-            {testimonials.map((item, index) => (
+        {/* ---------- CARDS ---------- */}
+        <div className={`relative z-10 mt-[-50px] transition-all duration-500 ${isExpanded ? 'w-[135%] ml-auto' : 'ml-auto w-[135%]'}`}>
+          <div className={`flex gap-6 ${isExpanded ? 'flex-wrap ' : 'overflow-x-auto no-scrollbar pb-4'}`}>
+            {visibleItems.map((item: any, index: number) => (
               <div
-                key={index}
-                className="min-w-[360px] rounded-2xl border border-[#D8D8D8]
-                           bg-[#F3F1F2]/30 p-8 backdrop-blur-xs mt-8"
+                key={item?.id || index}
+                className="min-w-[360px] max-w-[360px] rounded-2xl border border-[#D8D8D8] bg-[#F3F1F2]/30 p-8 backdrop-blur-sm mt-8 flex flex-col justify-between"
               >
-                {/* Quote */}
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#1C274C] text-xl text-white p-3">
-                    <Image
-                      src={item.quote}
-                      alt={item.org}
-                      width={28}
-                      height={28}
-                    />
+                <div>
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#1C274C] text-xl text-white">
+                    <span style={{ fontFamily: 'serif', fontSize: '24px' }}>“</span>
+                  </div>
+                  <p className="mb-8 text-[18px] leading-relaxed text-black">
+                    {item?.comment}
+                  </p>
                 </div>
 
-                {/* Text */}
-                <p className="mb-8 text-[18px] leading-relaxed text-black">
-                  {item.text}
-                </p>
-
-                {/* Footer */}
                 <div className="flex items-center gap-4">
-                  <div className="flex h-15 w-15 items-center justify-center rounded-full bg-[#DADCD2]">
-                    <Image
-                      src={item.logo}
-                      alt={item.org}
-                      width={36}
-                      height={36}
-                    />
+                  <div className="flex h-15 w-15 items-center justify-center rounded-full bg-[#DADCD2] overflow-hidden border border-gray-200">
+                    {item?.image && (
+                      <img
+                        src={item.image}
+                        alt=""
+                        className="h-full w-full object-contain p-2"
+                      />
+                    )}
                   </div>
                   <div>
-                    <p className="text-[18px] font-bold text-black">
-                      {item.org}
+                    <p className="text-[18px] font-bold text-black leading-tight">
+                      {item?.name}
                     </p>
                     <p className="text-[14px] text-black">
-                      {item.location}
+                      {item?.rank}
                     </p>
                   </div>
                 </div>
@@ -102,21 +97,21 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* Mobile View All */}
-
-        <div className="mt-10 md:hidden">
-          <Link
-            href="#"
-            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E]
-                        text-white px-8 py-3 rounded-full font-bold
-                        flex items-center gap-4
-                        hover:from-[#1217c0] hover:to-[#0a0f6b]
-                        transition-all group"
+        {/* Mobile Button */}
+        <div className="mt-10 md:hidden flex justify-center">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-8 py-3 rounded-full font-bold"
           >
-            View All →
-          </Link>
+             {isExpanded ? "Show Less" : "View All"}
+          </button>
         </div>
       </div>
+
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </section>
   );
 }

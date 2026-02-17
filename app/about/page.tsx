@@ -1,3 +1,6 @@
+"use client";
+import React, { useEffect, useState } from 'react';
+import { API_BASE_URL } from '@/lib/config';
 import PageBanner from "../../components/common/PageBanner";
 import AboutIntroSection from "../../components/about/AboutIntroSection";
 import AboutMissionTabs from "../../components/about/AboutMissionTabs";
@@ -7,23 +10,30 @@ import OurAlliance from "../../components/about/OurAlliance";
 import DownloadsSlider from "../../components/common/DownloadsSlider";
 
 export default function AboutPage() {
+    const [bannerData, setBannerData] = useState({ sub: "", bg: "" });
+
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`)
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    setBannerData({
+                        sub: result.data.bs.about_seo_title,
+                        bg: result.data.bs.breadcrumb
+                    });
+                }
+            });
+    }, []);
+
     return (
         <>
             <PageBanner
                 title="About SIFS India"
-                subtitle="Leading forensic science laboratory in India"
-                bgImage="/about/about-banner.png"
+                subtitle={bannerData.sub || "Leading forensic science laboratory in India"}
+                bgImage={bannerData.bg || "/about/about-banner.png"}
             />
 
-            <AboutIntroSection
-                title="Established in 2006, SIFS India emerged as a pioneer in the field of forensics."
-                imageSrc="/about/about-us.png"
-                paragraphs={[
-                    "It is a leading forensic science laboratory in India that is registered with the Government of India and certified with ISO 9001:2015 and 10002:2014.",
-                    "Despite the initial hurdles, SIFS India, guided by a positive and dedicated approach to clients and adherence to Indian law and order, successfully carved a niche in the field of forensics.",
-                    "The journey reflects the continuous efforts of Dr. Ranjeet Singh (CEO and founder), showcasing the company’s commitment to delivering qualitative forensic expert services across several domains.",
-                ]}
-            />
+            <AboutIntroSection/>
             
             <AboutMissionTabs />
             <TeamMembers />

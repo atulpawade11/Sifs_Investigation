@@ -1,30 +1,54 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PageBanner from "../../../components/common/PageBanner";
-import { videoGallery } from "../../../data/gallery";
-import { Play, X, ChevronUp, ArrowRight } from "lucide-react";
+import { Play, X, ChevronUp, ArrowRight, Loader2 } from "lucide-react";
 
-// 1. Define the Interface to match your videoGallery data structure
 interface VideoItem {
+  id: number;
   title: string;
-  thumbnail: string;
-  videoUrl: string;
-  description?: string; 
+  video_url: string;
+  video_id: string;
+  gallery_image: string;
 }
 
 export default function VideoGalleryPage() {
+  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const initialCount = 6; 
   const [displayCount, setDisplayCount] = useState(initialCount);
-
-  // 2. Assign the type to the state: It can be a VideoItem or null
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
 
-  const hasMore = displayCount < videoGallery.length;
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BACKEND_URL}/InvestigationServices/Website/front/video-gallery`);
+        const result = await response.json();
+        if (result.success) {
+          setVideos(result.data.videos);
+        }
+      } catch (error) {
+        console.error("Error fetching video gallery:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchVideos();
+  }, []);
+
+  const hasMore = displayCount < videos.length;
   const canShowLess = displayCount > initialCount;
 
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="animate-spin text-[#04063E]" size={48} />
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white">
+    <div className="bg-white min-h-screen">
       <PageBanner
         title="Video Gallery"
         subtitle="SIFS India"
@@ -35,15 +59,15 @@ export default function VideoGalleryPage() {
         <section className="mx-auto max-w-7xl px-4">
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {videoGallery.slice(0, displayCount).map((item, index) => (
+            {videos.slice(0, displayCount).map((item) => (
               <div 
-                key={index} 
+                key={item.id} 
                 className="flex flex-col group cursor-pointer" 
                 onClick={() => setSelectedVideo(item)}
               >
                 <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-black">
                   <img 
-                    src={item.thumbnail} 
+                    src={item.gallery_image.replace("http://", "https://")} 
                     alt={item.title} 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100"
                   />
@@ -56,14 +80,9 @@ export default function VideoGalleryPage() {
                 </div>
 
                 <div className="mt-4 px-1 text-center">
-                  <h3 className="font-bold text-gray-900 text-base md:text-lg line-clamp-1 group-hover:text-[#0B4F8A] transition-colors">
+                  <h3 className="font-bold text-gray-900 text-base md:text-lg line-clamp-2 group-hover:text-[#0B4F8A] transition-colors">
                     {item.title}
                   </h3>
-                  {item.description && (
-                    <p className="text-sm text-gray-500 line-clamp-2 mt-1">
-                      {item.description}
-                    </p>
-                  )}
                 </div>
               </div>
             ))}
@@ -100,16 +119,15 @@ export default function VideoGalleryPage() {
             className="w-full max-w-5xl aspect-video relative bg-black rounded-xl overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* The -top-10 might cut off on some screens, consider putting it inside the container top-4 right-4 */}
             <button 
               onClick={() => setSelectedVideo(null)}
-              className="absolute -top-10 right-0 text-white flex items-center gap-2 hover:text-[#F68A07] transition-colors"
+              className="absolute top-4 right-4 z-50 text-white bg-black/50 p-2 rounded-full hover:bg-[#F68A07] transition-all"
             >
-              Close <X size={24} />
+              <X size={24} />
             </button>
 
             <iframe
-              src={`${selectedVideo.videoUrl}?autoplay=1`}
+              src={`https://www.youtube.com/embed/${selectedVideo.video_id}?autoplay=1&rel=0`}
               title={selectedVideo.title}
               className="w-full h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

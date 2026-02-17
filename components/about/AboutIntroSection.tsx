@@ -1,75 +1,68 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Zap } from "lucide-react";
+import { API_BASE_URL } from "@/lib/config";
 
-interface AboutIntroSectionProps {
-  badgeText?: string;
-  title: string;
-  paragraphs: string[];
-  imageSrc: string;
-}
+const AboutIntroSection = () => {
+  const [data, setData] = useState<any>(null);
 
-const AboutIntroSection: React.FC<AboutIntroSectionProps> = ({
-  badgeText = "About Us",
-  title,
-  paragraphs,
-  imageSrc,
-}) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`);
+        const result = await response.json();
+        if (result.success) setData(result.data.bs);
+      } catch (err) {
+        console.error("Error:", err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const getCleanIntro = (html: string) => {
+    if (!html) return "";
+    // Splits the text at the first mention of "Mission" and only keeps the first part (The Journey)
+    const parts = html.split(/Mission/i);
+    return parts[0]; 
+  };
+
   return (
     <section className="bg-white py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid items-center gap-12 md:grid-cols-2">
-          
-          {/* LEFT CONTENT */}
           <div>
-            {/* Badge */}
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#04063E] ps-1 pe-3 py-1 text-[18px] font-bold text-black">
-                <span className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#0B10A4]">
-                    <Image
-                        src="/about/zap.png"
-                        alt="Badge Icon"
-                        width={28}
-                        height={28}
-                        className="object-cover"
-                    />
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0B10A4]">
+                    <Image src="/about/zap.png" alt="Icon" width={20} height={20} />
                 </span>
+                {data?.about_seo_keyword || "About Us"}
+            </div>
 
-                {badgeText}
-                </div>
-
-
-            {/* Heading */}
-            <h2 className="text-[35px] font-semibold leading-snug text-black md:text-4xl">
-              {title}
+            <h2 className="text-[32px] font-bold leading-tight text-black md:text-4xl mb-6">
+              {data?.intro_section_text || "Leading Forensic Excellence Since 2006"}
             </h2>
 
-            {/* Paragraphs */}
-            <div className="mt-4 space-y-4">
-              {paragraphs.map((text, index) => (
-                <p
-                  key={index}
-                  className="text-[14px] leading-relaxed font-regular text-[#777777]"
-                >
-                  {text}
-                </p>
-              ))}
-            </div>
+            <div
+              className="text-[14px] leading-relaxed text-[#777777] 
+                         [&_p]:mb-4 
+                         [&_ul]:grid [&_ul]:grid-cols-1 md:[&_ul]:grid-cols-2 [&_ul]:gap-2 [&_ul]:mt-6
+                         [&_li]:flex [&_li]:items-center [&_li]:before:content-['›'] [&_li]:before:mr-2 [&_li]:before:text-[#0B10A4] [&_li]:before:font-bold"
+              dangerouslySetInnerHTML={{ __html: getCleanIntro(data?.about_us) }}
+            />
           </div>
 
-          {/* RIGHT IMAGE */}
           <div className="relative">
-            <div className="relative h-[360px] w-full overflow-hidden rounded-l-[140px] md:h-[420px]">
+            <div className="relative h-[400px] w-full overflow-hidden rounded-l-[100px] md:h-[500px]">
               <Image
-                src={imageSrc}
-                alt="About SIFS India"
+                src={data?.about_feature_image ? `https://forensicinstitute.in/uploads/Investigation-Services-Admin-BasicSettings/${data.about_feature_image}` : "/about/about-us.png"}
+                alt="SIFS India"
                 fill
-                priority
                 className="object-cover"
+                unoptimized
               />
             </div>
           </div>
-
         </div>
       </div>
     </section>

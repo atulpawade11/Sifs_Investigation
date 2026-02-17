@@ -1,35 +1,57 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PageBanner from "../../../components/common/PageBanner";
-import { galleryImages } from "../../../data/gallery";
-import { ArrowRight, X, ChevronUp } from "lucide-react";
+import { ArrowRight, X, ChevronUp, Loader2 } from "lucide-react";
 
-// 1. Define the Type for your Gallery Item
 interface GalleryItem {
+  id: number;
   title: string;
-  description: string;
-  image: string;
+  detail: string; 
+  gallery_image: string; 
 }
 
 export default function ImageGalleryPage() {
+  const [images, setImages] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const initialCount = 4;
   const [displayCount, setDisplayCount] = useState(initialCount);
-  
-  // 2. Update the useState hook to accept the GalleryItem type or null
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
 
-  const hasMore = displayCount < galleryImages.length;
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BACKEND_URL}/InvestigationServices/Website/front/gallery`);
+        const result = await response.json();
+        if (result.success) {
+          setImages(result.data.galleries);
+        }
+      } catch (error) {
+        console.error("Error fetching gallery:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGallery();
+  }, []);
+
+  const hasMore = displayCount < images.length;
   const canShowLess = displayCount > initialCount;
 
-  const handleLoadMore = () => {
-    setDisplayCount(prev => prev + 4);
-  };
+  const handleLoadMore = () => setDisplayCount(prev => prev + 4);
 
   const handleShowLess = () => {
     setDisplayCount(initialCount);
     window.scrollTo({ top: 400, behavior: 'smooth' }); 
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="animate-spin text-[#04063E]" size={48} />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -42,13 +64,12 @@ export default function ImageGalleryPage() {
       <div className="relative bg-[#FFFFFF] py-12">
         <section className="mx-auto max-w-7xl px-4">
           
-          {/* Image Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {galleryImages.slice(0, displayCount).map((item, index) => (
-              <div key={index} className="relative group overflow-hidden">
-                <div className="aspect-[16/9] overflow-hidden">
+            {images.slice(0, displayCount).map((item) => (
+              <div key={item.id} className="relative group overflow-hidden">
+                <div className="aspect-[16/9] overflow-hidden rounded-xl">
                   <img 
-                    src={item.image} 
+                    src={item.gallery_image.replace("http://", "https://")} 
                     alt={item.title} 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
@@ -56,8 +77,8 @@ export default function ImageGalleryPage() {
                 
                 <div className="absolute bottom-4 left-4 right-50 bg-white p-1 rounded-lg shadow-xl z-20">
                   <div className="border border-[#a9a9a9] p-2 rounded-lg">
-                    <h3 className="font-bold text-gray-900 text-sm md:text-base mb-1">{item.title}</h3>
-                    <p className="text-xs text-gray-500 line-clamp-2">{item.description}</p>
+                    <h3 className="font-bold text-gray-900 text-sm md:text-base mb-1 truncate">{item.title}</h3>
+                    <p className="text-xs text-gray-500 line-clamp-2">{item.detail}</p>
                     
                     <div 
                       onClick={() => setSelectedItem(item)}
@@ -71,7 +92,6 @@ export default function ImageGalleryPage() {
             ))}
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-center gap-4 mt-12">
             {hasMore ? (
               <button 
@@ -99,7 +119,7 @@ export default function ImageGalleryPage() {
           onClick={() => setSelectedItem(null)}
         >
           <div 
-            className="bg-white rounded-2xl overflow-hidden max-w-3xl w-full relative shadow-2xl"
+            className="bg-white rounded-2xl overflow-hidden max-w-3xl w-full relative shadow-2xl animate-in fade-in zoom-in duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             <button 
@@ -112,7 +132,7 @@ export default function ImageGalleryPage() {
             <div className="flex flex-col">
               <div className="w-full aspect-video">
                 <img 
-                  src={selectedItem.image} 
+                  src={selectedItem.gallery_image} 
                   alt={selectedItem.title} 
                   className="w-full h-full object-cover"
                 />
@@ -122,8 +142,8 @@ export default function ImageGalleryPage() {
                   {selectedItem.title}
                 </h2>
                 <div className="h-1 w-20 bg-[#F68A07] mb-4"></div>
-                <p className="text-gray-600 leading-relaxed">
-                  {selectedItem.description}
+                <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                  {selectedItem.detail}
                 </p>
               </div>
             </div>

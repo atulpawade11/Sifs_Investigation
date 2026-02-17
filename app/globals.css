@@ -219,3 +219,118 @@ button{cursor:pointer;}
     display: none;
   }
 }
+
+/* Fix for API-injected Contact Details */
+.api-content-styles {
+  font-family: inherit !important;
+}
+
+.api-content-styles * {
+  /* This clears the weird grey colors from the backend */
+  color: #374151 !important; 
+  font-family: inherit !important;
+}
+
+.api-content-styles span.fas, 
+.api-content-styles span.fa, 
+.api-content-styles span.far {
+  /* This colors the icons to your brand blue */
+  color: #0C2783 !important;
+  width: 20px;
+  margin-right: 10px;
+}
+
+.api-content-styles ul {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.api-content-styles li {
+  list-style: none !important;
+  margin-bottom: 12px !important;
+}
+
+
+.html-content h4 {
+  font-weight: 700;
+  color: #04063E;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.html-content p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.html-content b {
+  color: #04063E;
+}
+
+/* Fix for the sample images in the API */
+.html-content img {
+  display: inline-block;
+  margin: 10px;
+  border-radius: 8px;
+}
+
+.html-render-zone h4 {
+  font-weight: 800;
+  color: #04063E;
+  margin: 1.5rem 0 0.5rem 0;
+  font-size: 1.2rem;
+}
+.html-render-zone p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+.html-render-zone b, .html-render-zone strong {
+  color: #04063E;
+  font-weight: 700;
+}
+.html-render-zone ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.html-render-zone a {
+  color: #0B10A4;
+  text-decoration: underline;
+}
+/* Sample Images Grid Fix */
+.html-render-zone img {
+  border-radius: 0.5rem;
+  margin: 10px auto;
+  display: inline-block;
+  border: 1px solid #eee;
+}
+
+.api-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.api-content p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+  color: #374151;
+}
+
+.api-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.api-content li {
+  margin-bottom: 0.5rem;
+}
+
+.api-content b, .api-content strong {
+  font-weight: 700;
+  color: #000;
+}

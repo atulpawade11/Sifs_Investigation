@@ -1,89 +1,125 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
-
-// Import Swiper styles
+import { getDownloads } from '@/services/downloadService';
 import 'swiper/css';
 
-const row1 = [
-  "Application", "Case Submission Form", "Service Request Letter", 
-  "Laboratory Profile", "Court Judgement", "Court Summons", "Forensic Manual",
-  "Application", "Case Submission Form", "Service Request Letter",
-];
-
-const row2 = [
-  "Certificates", "Achievements", "Institution Glimpse", 
-  "Case Submission Procedure", "Court Summons", "Case Tracking", "Expert Directory",
-  "Certificates", "Achievements", "Institution Glimpse",
-];
-
 const DownloadsSlider = () => {
+  const [data, setData] = useState({
+    items: [] as any[],
+    title: "Downloads",
+    subtitle: "Access Forensic Resources"
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadDownloads = async () => {
+      try {
+        setLoading(true);
+        const result = await getDownloads();
+        
+        if (result?.success) {
+          const cleanItems = (result.data.downloads || []).filter(
+            (item: any) => item && item.title && item.title.trim() !== ""
+          );
+
+          setData({
+            items: cleanItems,
+            title: result.data.bs?.download_section_title || result.data.title || "Downloads",
+            subtitle: result.data.bs?.download_section_subtitle || result.data.subtitle || "Access Forensic Resources"
+          });
+        }
+      } catch (err) {
+        console.error('Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadDownloads();
+  }, []);
+
+  const totalCount = data.items.length;
+  
+  // NEW THRESHOLD: Only slide if we have at least 12 items.
+  // With 9 items, Layout 1 (Centered) will look much better.
+  const isSlider = totalCount >= 12;
+
+  if (loading) return <div className="py-20 text-center opacity-50">Loading...</div>;
+  if (totalCount === 0) return null;
+
   return (
     <section className="py-20 bg-white overflow-hidden">
-      {/* Title Section */}
       <div className="container mx-auto px-4 text-center mb-12">
-        <p className="text-[#04063E] font-bold italic text-sm mb-2">Access Forensic Resources</p>
-        <h2 className="text-4xl md:text-5xl font-bold text-slate-900">Downloads</h2>
+        <p className="text-[#04063E] font-bold italic text-sm mb-2 uppercase tracking-widest">
+          {data.subtitle}
+        </p>
+        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
+          {data.title}
+        </h2>
       </div>
 
-      {/* Main Slider Container with Fading Mask */}
-      <div className="relative w-full max-w-[1600px] mx-auto space-y-6 px-4"
-           style={{
-             maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-             WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
-           }}>
-        
-        {/* Row 1: Moving Left */}
-        <Swiper
-          modules={[Autoplay]}
-          spaceBetween={20}
-          slidesPerView="auto"
-          loop={true}
-          speed={5000}
-          autoplay={{
-            delay: 0,
-            disableOnInteraction: false,
-          }}
-          className="swiper-free-mode"
-        >
-          {row1.map((item, index) => (
-            <SwiperSlide key={index} style={{ width: 'auto' }}>
-              <div className="px-8 py-3 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm hover:border-[#04063E] transition-colors cursor-pointer whitespace-nowrap">
-                {item}
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+      <div className="w-full px-4">
+        {!isSlider ? (
+          /* LAYOUT 1: CENTERED GRID (Best for 1-11 items) */
+          <div className="flex flex-wrap justify-center gap-4 max-w-6xl mx-auto">
+            {data.items.map((item) => (
+              <a 
+                key={item.id}
+                href={item.download_pdf} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm hover:border-[#04063E] hover:shadow-md transition-all whitespace-nowrap"
+              >
+                {item.title}
+              </a>
+            ))}
+          </div>
+        ) : (
+          /* LAYOUT 2: MARQUEE SLIDER (Best for 12+ items) */
+          <div className="relative space-y-6">
+            <Swiper
+              modules={[Autoplay]}
+              spaceBetween={20}
+              slidesPerView="auto"
+              loop={true}
+              speed={8000}
+              autoplay={{ delay: 0, disableOnInteraction: false }}
+              className="swiper-free-mode"
+            >
+              {data.items.slice(0, Math.ceil(totalCount / 2)).map((item) => (
+                <SwiperSlide key={`r1-${item.id}`} style={{ width: 'auto' }}>
+                  <a href={item.download_pdf} target="_blank" className="flex items-center px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm whitespace-nowrap">
+                    {item.title}
+                  </a>
+                </SwiperSlide>
+              ))}
+            </Swiper>
 
-        {/* Row 2: Moving Right (Reverse) */}
-        <Swiper
-          modules={[Autoplay]}
-          spaceBetween={20}
-          slidesPerView="auto"
-          loop={true}
-          speed={5000}
-          autoplay={{
-            delay: 0,
-            disableOnInteraction: false,
-            reverseDirection: true, // This makes it move the other way
-          }}
-          className="swiper-free-mode"
-        >
-          {row2.map((item, index) => (
-            <SwiperSlide key={index} style={{ width: 'auto' }}>
-              <div className="px-8 py-3 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm hover:border-[#FF8C00] transition-colors cursor-pointer whitespace-nowrap">
-                {item}
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+            <Swiper
+              modules={[Autoplay]}
+              spaceBetween={20}
+              slidesPerView="auto"
+              loop={true}
+              speed={8000}
+              autoplay={{ delay: 0, disableOnInteraction: false, reverseDirection: true }}
+              className="swiper-free-mode"
+            >
+              {data.items.slice(Math.ceil(totalCount / 2)).map((item) => (
+                <SwiperSlide key={`r2-${item.id}`} style={{ width: 'auto' }}>
+                  <a href={item.download_pdf} target="_blank" className="flex items-center px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm whitespace-nowrap">
+                    {item.title}
+                  </a>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        )}
       </div>
 
-      {/* Add this to your global CSS or a <style> tag to make the transition smooth */}
       <style jsx global>{`
-        .swiper-wrapper {
+        .swiper-free-mode .swiper-wrapper {
           transition-timing-function: linear !important;
         }
       `}</style>

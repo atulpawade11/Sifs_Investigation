@@ -9,8 +9,13 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
+        protocol: 'https',
+        hostname: 'forensicinstitute.in', 
+        pathname: '/**',
+      },
+      {
         protocol: 'http',
-        hostname: 'sifs.manageprojects.in',
+        hostname: 'forensicinstitute.in', 
         pathname: '/**',
       },
     ],
