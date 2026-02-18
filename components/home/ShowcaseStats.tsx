@@ -6,6 +6,7 @@ import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import { ClipboardCheck, Users, Briefcase, GraduationCap } from 'lucide-react';
 import { API_BASE_URL } from '@/lib/config';
+import { Skeleton } from '@/components/shared/Skeleton';
 
 // Counter animation component
 const Counter = ({ end, duration }: { end: number; duration: number }) => {
@@ -70,7 +71,7 @@ const ShowcaseStats = () => {
           const images = result.data.portfolios
             ?.filter((p: any) => p.featured_image)
             .map((p: any) => p.featured_image) || [];
-          
+
           setLogoSlides(images);
         }
       } catch (err) {
@@ -83,12 +84,36 @@ const ShowcaseStats = () => {
     fetchAllData();
   }, []);
 
-  if (loading) return null;
+  if (loading) {
+    return (
+      <section className="bg-white pt-10 md:pt-20">
+        <div className="bg-[#000040] rounded-t-[40px] md:rounded-t-[100px] relative pt-1 pb-16 md:pb-20 w-full overflow-hidden">
+          <div className="relative z-10 text-center px-4">
+            <div className="mt-12 md:mt-24 mb-10 md:mb-14 flex flex-col items-center space-y-4">
+              <Skeleton className="h-4 w-32 bg-white/20" />
+              <Skeleton className="h-12 w-full max-w-2xl bg-white/20" />
+            </div>
+            <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-y-12">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex flex-col items-center space-y-4 px-10">
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="w-10 h-10 rounded-md bg-white/20" />
+                    <Skeleton className="h-10 w-24 bg-white/20" />
+                  </div>
+                  <Skeleton className="h-4 w-32 bg-white/20" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="bg-white pt-10 md:pt-20">
       <div className="bg-[#000040] rounded-t-[40px] md:rounded-t-[100px] relative pt-1 pb-16 md:pb-20 w-full overflow-hidden">
-        
+
         {/* Decorative Curve */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full md:w-[80%] lg:w-[75%] hidden md:block">
           <svg viewBox="0 0 1000 100" preserveAspectRatio="none" className="w-full h-[150px] lg:h-[330px] fill-white">
@@ -125,10 +150,10 @@ const ShowcaseStats = () => {
                 {logoSlides.map((imgUrl, index) => (
                   <SwiperSlide key={index}>
                     <div className="bg-[#0A0A5A] rounded-xl md:rounded-2xl p-3 md:p-6 h-16 md:h-28 flex items-center justify-center border border-white/10 shadow-xl">
-                      <img 
-                        src={imgUrl} 
-                        alt="Client Logo" 
-                        className="max-h-full max-w-full object-contain opacity-80" 
+                      <img
+                        src={imgUrl}
+                        alt="Client Logo"
+                        className="max-h-full max-w-full object-contain opacity-80"
                       />
                     </div>
                   </SwiperSlide>
@@ -146,8 +171,8 @@ const ShowcaseStats = () => {
             {stats.slice(0, 4).map((stat, i) => {
               const { val, suffix } = formatStatValue(stat.quantity);
               return (
-                <div 
-                  key={stat.id || i} 
+                <div
+                  key={stat.id || i}
                   className={`flex flex-col items-center lg:items-start text-white px-4 md:px-10 
                     ${i % 2 === 0 ? 'border-r border-white/10' : 'lg:border-r lg:border-white/10'} 
                     ${i === 2 ? 'lg:border-r' : ''} 

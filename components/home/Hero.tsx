@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, MoveDown } from 'lucide-react';
+import { Skeleton } from '@/components/shared/Skeleton';
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -144,8 +145,32 @@ const Hero = () => {
     return (
       <section className="relative w-full bg-white overflow-hidden">
         <div className="container mx-auto px-4 md:px-10 py-12 md:py-20">
-          <div className="flex justify-center items-center h-[400px]">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#04063E]"></div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <Skeleton className="hidden md:block w-10 h-32 rounded-full" />
+                <div className="space-y-6 w-full">
+                  <Skeleton className="h-16 md:h-24 w-full" />
+                  <Skeleton className="h-6 w-3/4" />
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col items-start w-full lg:pl-10 space-y-8">
+              <div className="flex items-center gap-4">
+                <Skeleton className="w-14 h-14 rounded-full" />
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-24" />
+                  <Skeleton className="h-3 w-32" />
+                </div>
+              </div>
+              <div className="space-y-4 w-full max-w-[280px]">
+                <Skeleton className="h-12 w-full rounded-full" />
+                <Skeleton className="h-14 w-full rounded-full" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-12">
+            <Skeleton className="h-[400px] md:h-[600px] w-full rounded-2xl" />
           </div>
         </div>
       </section>

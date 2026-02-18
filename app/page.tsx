@@ -1,4 +1,5 @@
-// app/page.tsx
+import { Metadata } from 'next';
+import { API_BASE_URL } from '@/lib/config';
 import Hero from "../components/home/Hero";
 import AboutIntro from "../components/home/AboutIntro";
 import ForensicServices from "../components/home/ForensicServices";
@@ -8,6 +9,32 @@ import Team from "../components/home/Team";
 import Testimonials from "../components/home/Testimonials";
 import BlogsCaseStudies from "../components/home/BlogsCaseStudies";
 import DownloadsSlider from "../components/common/DownloadsSlider";
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`, {
+      next: { revalidate: 3600 } // Cache for 1 hour
+    });
+    const result = await response.json();
+
+    if (result.success && result.data && result.data.be) {
+      const seo = result.data.be;
+      return {
+        title: seo.home_meta_title,
+        description: seo.home_meta_description,
+        keywords: seo.home_meta_keywords,
+        openGraph: {
+          title: seo.home_meta_title,
+          description: seo.home_meta_description,
+        }
+      };
+    }
+  } catch (error) {
+    console.error("Metadata fetch error:", error);
+  }
+
+  return {};
+}
 
 
 export default function HomePage() {

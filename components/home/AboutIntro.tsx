@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ArrowRight, Play } from 'lucide-react';
+import { Skeleton } from '@/components/shared/Skeleton';
 
 // Import API base URL from config
 import { API_BASE_URL } from '@/lib/config';
@@ -72,7 +73,7 @@ const AboutIntro = () => {
   const getImageUrl = (path: string | undefined) => {
     if (!path || path.trim() === "") return "/about.png";
     if (path.startsWith('http')) return path;
-    
+
     const baseUrl = API_BASE_URL.replace(/\/api\/?$/, '').replace(/\/$/, '');
     const imgPath = path.startsWith('/') ? path : `/${path}`;
     return `${baseUrl}${imgPath}`;
@@ -83,8 +84,27 @@ const AboutIntro = () => {
     return (
       <section className="py-16 md:py-24 bg-white">
         <div className="container mx-auto px-4 md:px-10">
-          <div className="flex justify-center items-center h-[300px]">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#04063E]"></div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <Skeleton className="h-6 w-1/3" />
+                <Skeleton className="h-24 w-full" />
+              </div>
+              <div className="space-y-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <Skeleton className="w-6 h-6 rounded-md" />
+                    <Skeleton className="h-5 w-48" />
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-6 pt-4">
+                <Skeleton className="h-12 w-40 rounded-full" />
+              </div>
+            </div>
+            <div className="relative aspect-[4/3]">
+              <Skeleton className="w-full h-full rounded-[32px]" />
+            </div>
           </div>
         </div>
       </section>
@@ -98,7 +118,7 @@ const AboutIntro = () => {
   return (
     <section className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4 md:px-10">
-        
+
         {error && (
           <div className="mb-6 text-center text-xs text-red-400 opacity-50">
             Note: {error}. Using partial fallback data.
@@ -106,7 +126,7 @@ const AboutIntro = () => {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          
+
           {/* LEFT CONTENT */}
           <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-700">
             <div className="space-y-4">
@@ -189,10 +209,10 @@ const AboutIntro = () => {
                 </button>
               </div>
             </div>
-            
+
             {/* Decorative Sparkle matching your brand style */}
             <div className="absolute -bottom-6 -right-6 opacity-10 -z-10">
-               <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor" className="text-gray-900">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor" className="text-gray-900">
                 <path d="M12 .5l2.5 7.5H22l-6 4.5 2.5 7.5-6.5-5-6.5 5 2.5-7.5-6-4.5h7.5L12 .5z" />
               </svg>
             </div>

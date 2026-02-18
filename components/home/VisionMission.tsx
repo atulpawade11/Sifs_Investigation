@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { API_BASE_URL } from '@/lib/config';
+import { Skeleton } from '@/components/shared/Skeleton';
 
 interface VisionPoint {
   id: number;
@@ -32,7 +33,7 @@ const VisionMission = () => {
 
         if (result.success && result.data) {
           const bs = result.data.bs;
-          
+
           // 1. Map Global Section Content
           setContent({
             title: bs.approach_title || "Forensic Services",
@@ -44,7 +45,7 @@ const VisionMission = () => {
 
           // 2. Map Vision/Mission Points (Taking top 3)
           if (result.data.points) {
-             setPoints(result.data.points.slice(0, 3));
+            setPoints(result.data.points.slice(0, 3));
           }
         }
       } catch (err) {
@@ -64,7 +65,28 @@ const VisionMission = () => {
     { bgColor: "bg-[#04063E]", invertIcon: true, icon: "/purpose.png" }
   ];
 
-  if (loading) return null;
+  if (loading) {
+    return (
+      <section className="py-20 bg-white overflow-hidden">
+        <div className="container mx-auto px-4 md:px-10 text-center">
+          <div className="flex flex-col items-center space-y-4 mb-16">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-12 w-full max-w-2xl" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex flex-col items-center space-y-6">
+                <Skeleton className="w-20 h-20 rounded-full" />
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-12 w-full max-w-[280px]" />
+              </div>
+            ))}
+          </div>
+          <Skeleton className="w-full max-w-5xl mx-auto h-[400px] md:h-[500px] rounded-[32px] md:rounded-[250px]" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-20 bg-white overflow-hidden">
@@ -88,7 +110,7 @@ const VisionMission = () => {
               <div key={item.id} className="flex flex-col items-center text-center">
                 <div className={`w-20 h-20 ${style.bgColor} rounded-full flex items-center justify-center mb-6 shadow-lg shadow-orange-100 relative`}>
                   <div className="relative w-8 h-8">
-                    <Image 
+                    <Image
                       src={style.icon} // Using local icons as fallback since API uses font-awesome strings
                       alt={cleanTitle}
                       fill
@@ -96,9 +118,9 @@ const VisionMission = () => {
                     />
                   </div>
                 </div>
-                
+
                 <h3 className="text-xl font-bold text-[#04063E] mb-3">
-                    {cleanTitle}
+                  {cleanTitle}
                 </h3>
                 <p className="text-gray-500 text-sm leading-relaxed max-w-[280px]">
                   {item.short_text.replace(/[,.]+$/, "")}
@@ -113,7 +135,7 @@ const VisionMission = () => {
           <div className="absolute w-full h-px bg-gray-100"></div>
           <div className="relative z-10 bg-white px-6 flex items-center gap-4">
             <span className="text-sm font-semibold text-gray-800 italic">For more information!</span>
-            <Link 
+            <Link
               href={content.btnUrl}
               className="bg-[#04063E] text-white px-8 py-3 rounded-full text-xs font-bold hover:bg-[#e07b06] transition-all flex items-center gap-2 group"
             >
@@ -125,8 +147,8 @@ const VisionMission = () => {
 
         {/* LARGE SHAPED IMAGE */}
         <div className="relative w-full max-w-5xl mx-auto h-[400px] md:h-[500px] rounded-[20px] md:rounded-[250px] overflow-hidden shadow-xl">
-          <Image 
-            src={content.image} 
+          <Image
+            src={content.image}
             alt="Forensic Science Vision"
             fill
             className="object-cover object-center"

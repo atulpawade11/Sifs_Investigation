@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getTestimonials } from '@/services/testimonialService';
+import { Skeleton } from '@/components/shared/Skeleton';
 
 export default function Testimonials() {
   const [data, setData] = useState<any>(null);
@@ -26,16 +27,46 @@ export default function Testimonials() {
   const testimonialList = data?.data?.data || [];
   const testimonialTitle = data?.data?.bs?.testimonial_title || "Success Stories";
   const testimonialSubtitle = data?.data?.bs?.testimonial_subtitle || "Hear What Our Clients Say";
-  
+
   const visibleItems = isExpanded ? testimonialList : testimonialList.slice(0, 4);
 
-  if (loading) return <div style={{padding: '100px', textAlign: 'center'}}>Loading...</div>;
+  if (loading) {
+    return (
+      <section className="relative overflow-hidden bg-[#F3F1F2] py-24">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="max-w-xl space-y-4">
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-12 w-96" />
+          </div>
+          <div className="flex gap-6 mt-12 overflow-x-hidden">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="min-w-[360px] rounded-2xl border border-[#D8D8D8] bg-white/50 p-8 space-y-6">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <div className="space-y-3">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                </div>
+                <div className="flex items-center gap-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-3 w-32" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
   if (testimonialList.length === 0) return null;
 
   return (
     <section className="relative overflow-hidden bg-[#F3F1F2] py-24">
       <div className="mx-auto max-w-7xl px-4">
-        
+
         {/* ---------- TITLE ---------- */}
         <div className="relative z-0 max-w-xl">
           <p className="text-sm font-medium text-[#04063E]">
@@ -103,7 +134,7 @@ export default function Testimonials() {
             onClick={() => setIsExpanded(!isExpanded)}
             className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-8 py-3 rounded-full font-bold"
           >
-             {isExpanded ? "Show Less" : "View All"}
+            {isExpanded ? "Show Less" : "View All"}
           </button>
         </div>
       </div>

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import { getDownloads } from '@/services/downloadService';
+import { Skeleton } from '@/components/shared/Skeleton';
 import 'swiper/css';
 
 const DownloadsSlider = () => {
@@ -19,7 +20,7 @@ const DownloadsSlider = () => {
       try {
         setLoading(true);
         const result = await getDownloads();
-        
+
         if (result?.success) {
           const cleanItems = (result.data.downloads || []).filter(
             (item: any) => item && item.title && item.title.trim() !== ""
@@ -41,12 +42,26 @@ const DownloadsSlider = () => {
   }, []);
 
   const totalCount = data.items.length;
-  
+
   // NEW THRESHOLD: Only slide if we have at least 12 items.
   // With 9 items, Layout 1 (Centered) will look much better.
   const isSlider = totalCount >= 12;
 
-  if (loading) return <div className="py-20 text-center opacity-50">Loading...</div>;
+  if (loading) {
+    return (
+      <section className="py-20 bg-white overflow-hidden">
+        <div className="container mx-auto px-4 text-center mb-12 flex flex-col items-center space-y-4">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-10 w-64" />
+        </div>
+        <div className="flex flex-wrap justify-center gap-4 max-w-6xl mx-auto px-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <Skeleton key={i} className="h-14 w-48 rounded-full" />
+          ))}
+        </div>
+      </section>
+    );
+  }
   if (totalCount === 0) return null;
 
   return (
@@ -65,10 +80,10 @@ const DownloadsSlider = () => {
           /* LAYOUT 1: CENTERED GRID (Best for 1-11 items) */
           <div className="flex flex-wrap justify-center gap-4 max-w-6xl mx-auto">
             {data.items.map((item) => (
-              <a 
+              <a
                 key={item.id}
-                href={item.download_pdf} 
-                target="_blank" 
+                href={item.download_pdf}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm hover:border-[#04063E] hover:shadow-md transition-all whitespace-nowrap"
               >
