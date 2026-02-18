@@ -12,24 +12,33 @@ export default function ContactPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     async function loadData() {
-      setLoading(true); // 1. Start loading
+      setLoading(true);
       try {
+        console.log("Fetching contact info...");
         const res = await getContactInfo();
-        if (res && res.success) {
-          setData(res.data);
+        if (isMounted) {
+          if (res && res.success) {
+            setData(res.data);
+          } else {
+            console.warn("API returned unsuccessful response:", res);
+            setData({ locations: [], contact_info: {} });
+          }
         }
       } catch (err) {
-        console.error("All API attempts failed:", err);
-        // 2. Provide empty data so the page components don't crash
-        setData({ locations: [], contact_info: {} }); 
+        console.error("Failed to load contact data:", err);
+        if (isMounted) {
+          setData({ locations: [], contact_info: {} });
+        }
       } finally {
-        // 3. This ALWAYS runs, even if there is an error. 
-        // This is what stops your spin loader.
-        setLoading(false); 
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
     loadData();
+    return () => { isMounted = false; };
   }, []);
 
   if (loading) {
@@ -47,9 +56,9 @@ export default function ContactPage() {
         subtitle="We are here to help you"
         bgImage="/about/about-banner.png"
       />
-      <ContactInfoSection 
-        locations={data?.locations || []} 
-        mainInfo={data?.contact_info} 
+      <ContactInfoSection
+        locations={data?.locations || []}
+        mainInfo={data?.contact_info}
       />
       <ContactFormSection />
     </>
