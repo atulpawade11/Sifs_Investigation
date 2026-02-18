@@ -77,7 +77,7 @@ export default function Footer() {
               <li><Link href="/about" className="hover:text-white transition-colors">› About SIFS</Link></li>
               <li><Link href="/services" className="hover:text-white transition-colors">› Services</Link></li>
               <li><Link href="/team" className="hover:text-white transition-colors">› Our Experts</Link></li>
-              <li><Link href="/" className="hover:text-white transition-colors">› Our Clients</Link></li>
+              <li><Link href="/clientele" className="hover:text-white transition-colors">› Our Clients</Link></li>
               <li><Link href="/career" className="hover:text-white transition-colors">› Career</Link></li>
               <li><Link href="/blog" className="hover:text-white transition-colors">› Blog</Link></li>
             </ul>
