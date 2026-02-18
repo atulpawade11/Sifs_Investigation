@@ -4,7 +4,7 @@ import PageBanner from "../../components/common/PageBanner";
 import AboutIntroSection from "../../components/about/AboutIntroSection";
 import AboutMissionTabs from "../../components/about/AboutMissionTabs";
 import TeamMembers from "../../components/about/TeamMembers";
-import ClientelePortfolio from "../../components/about/ClientelePortfolio";
+import ClientelePortfolio from "../../components/common/ClientelePortfolio";
 import OurAlliance from "../../components/about/OurAlliance";
 import DownloadsSlider from "../../components/common/DownloadsSlider";
 

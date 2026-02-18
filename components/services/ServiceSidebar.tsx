@@ -122,7 +122,7 @@ export default function ServiceSidebar({ activeCategory, activeService }: Sideba
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden sticky top-24">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ">{/* sticky top-24 */}
       {categories.map((cat) => {
         const isExpanded = openCategory === cat.slug;
         const hasSubItems = cat.items.length > 0;
