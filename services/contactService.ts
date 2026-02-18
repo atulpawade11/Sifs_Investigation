@@ -1,47 +1,93 @@
 // services/contactService.ts
 
-// Accessing the public variable from your .env file
 const backendUrl = process.env.NEXT_PUBLIC_API_BACKEND_URL;
 const BASE_PATH = "/InvestigationServices/Website/front";
+
+const fetchWithTimeout = async (url: string, options: any = {}, timeout = 10000) => {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    return response;
+  } finally {
+    clearTimeout(id);
+  }
+};
 
 /**
  * GET: Fetches contact information (Addresses, Phones, etc.)
  */
 export const getContactInfo = async () => {
-  const res = await fetch(`${backendUrl}${BASE_PATH}/contact`); 
-  if (!res.ok) throw new Error(`GET Error: ${res.status}`);
-  return res.json();
+  try {
+    const res = await fetchWithTimeout(`${backendUrl}${BASE_PATH}/contact`);
+    if (!res.ok) throw new Error(`GET Error: ${res.status}`);
+    return res.json();
+  } catch (err: any) {
+    if (err.name === 'AbortError') throw new Error('Request timed out after 10 seconds');
+    throw err;
+  }
 };
 
 /**
- * POST: Submits the contact form data
+ * POST (Send Contact): {{BaseUrl}}/InvestigationServices/Website/front/contact/send
  */
- export const submitContactForm = async (formData: any) => {
-  // We are adding '-save' to the end. This is a common pattern when 
-  // the standard '/contact' route only handles GET requests.
-  const url = `${backendUrl}${BASE_PATH}/contact-save`;
+export const sendContact = async (data: {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  "g-recaptcha-response": string;
+}) => {
+  const url = `${backendUrl}${BASE_PATH}/contact/send`;
+  try {
+    const res = await fetchWithTimeout(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(data),
+    });
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { 
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-      name: formData.name,
-      email: formData.email,
-      contact_number: formData.contact_number,
-      address: formData.address || "",
-      details: formData.details
-    }),
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    console.error("Submission failed at:", url, "Data:", data);
-    throw new Error(data.message || `POST Error: ${res.status}`);
+    const result = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(result.message || `POST Error: ${res.status}`);
+    return result;
+  } catch (err: any) {
+    if (err.name === 'AbortError') throw new Error('Request timed out after 10 seconds');
+    throw err;
   }
-  
-  return data;
+};
+
+/**
+ * POST (Submit contact form): {{BaseUrl}}/InvestigationServices/Website/front/sendmail
+ */
+export const submitContactForm = async (data: {
+  name: string;
+  email: string;
+  mobile: string;
+  address: string;
+  details: string;
+  "g-recaptcha-response": string;
+}) => {
+  const url = `${backendUrl}${BASE_PATH}/sendmail`;
+  try {
+    const res = await fetchWithTimeout(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(result.message || `POST Error: ${res.status}`);
+    return result;
+  } catch (err: any) {
+    if (err.name === 'AbortError') throw new Error('Request timed out after 10 seconds');
+    throw err;
+  }
 };
