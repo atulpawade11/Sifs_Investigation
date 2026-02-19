@@ -1,7 +1,13 @@
+"use client";
+
 import React from 'react';
 import { CheckCircle2 } from "lucide-react";
 
-const WhyChooseUs = () => {
+interface Props {
+  departmentName?: string;
+}
+
+const WhyChooseUs = ({ departmentName }: Props) => {
   const reasons = [
     { title: "Robust Experience", desc: "With the experience of several years and a team of skilled forensic experts..." },
     { title: "Extensive Service", desc: "Our forensic investigation services cover a wide range of services, with a specialization..." },
@@ -16,7 +22,10 @@ const WhyChooseUs = () => {
     <div className="max-w-7xl mx-auto px-4 py-20">
       <div className="flex flex-col lg:flex-row gap-12">
         <div className="w-full lg:w-3/5">
-          <h2 className="text-3xl font-bold text-[#04063E] mb-10">Why Choose Our Forensic Investigation Services?</h2>
+          {/* Dynamic heading based on API data */}
+          <h2 className="text-3xl font-bold text-[#04063E] mb-10">
+            Why Choose Our {departmentName || "Forensic Investigation"} Services?
+          </h2>
           <div className="space-y-6">
             {reasons.map((item, idx) => (
               <div key={idx} className="flex gap-4">
@@ -41,5 +50,4 @@ const WhyChooseUs = () => {
   );
 };
 
-// THIS LINE WAS MISSING:
 export default WhyChooseUs;

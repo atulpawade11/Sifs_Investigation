@@ -50,7 +50,7 @@ export default function ContactInfoSection({ locations, mainInfo }: { locations:
           {/* 3. REGIONAL CENTERS COLUMN (Accordion) */}
           <div className="space-y-3">
             <h3 className="font-bold text-gray-800 mb-4 px-1">Our Regional Centers</h3>
-            <div className="max-h-[500px] overflow-y-auto pr-2 custom-scrollbar space-y-2">
+            <div className="max-h-[500px] overflow-y-auto pr-2 custom-scrollbar space-y-2 address-zone">
               {locations.map((loc, idx) => (
                 <div key={loc.id} className="border border-gray-200 rounded-lg overflow-hidden">
                   <button 

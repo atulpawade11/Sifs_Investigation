@@ -1,33 +1,59 @@
 "use client";
 
-import React from 'react';
-// Assuming you save the components in a components/department folder
-import HeroSection from "../../../components/department/HeroSection";
-import CoreServices from "../../../components/department/CoreServices";
-import WhyChooseUs from "../../../components/department/WhyChooseUs";
-import ContactBanner from "../../../components/department/ContactBanner";
-import PageBanner from "../../../components/common/PageBanner";
+import React, { useEffect, useState } from 'react';
+import PageBanner from "@/components/common/PageBanner";
+import HeroSection from "@/components/department/HeroSection";
+import CoreServices from "@/components/department/CoreServices";
+import WhyChooseUs from "@/components/department/WhyChooseUs";
+import ContactBanner from "@/components/department/ContactBanner";
+import { API_BASE_URL } from '@/lib/config';
+import { Loader2 } from 'lucide-react';
 
 export default function ForensicInvestigationPage() {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchDeptData() {
+      try {
+        // Fetching specifically for the forensic-investigations slug
+        const res = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/page/forensic-investigations`);
+        const result = await res.json();
+        if (result.success) {
+          setData(result.data.page);
+        }
+      } catch (err) {
+        console.error("Error fetching investigation data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchDeptData();
+  }, []);
+
+  if (loading) return (
+    <div className="h-screen flex items-center justify-center">
+      <Loader2 className="animate-spin text-[#0B4F8A]" size={40} />
+    </div>
+  );
+
   return (
     <main className="bg-white min-h-screen">
-      {/* 1. Reuse your existing PageBanner for the top */}
       <PageBanner
-        title="Forensic Investigation"
-        subtitle="SIFS India Department"
+        title={data?.title || "Forensic Investigation"}
+        subtitle={data?.subtitle || "SIFS India Department"}
         bgImage="/about/about-banner.png"
       />
 
-      {/* 2. Hero & Intro Section (Screenshot 1) */}
-      <HeroSection />
+      {/* Passing the rich HTML 'body' to the HeroSection */}
+      <HeroSection 
+        name={data?.name}
+        content={data?.body} 
+      />
 
-      {/* 3. Core Services Blue Section (Screenshot 3) */}
+      {/* These sections can remain static or be toggled based on page status */}
       <CoreServices />
-
-      {/* 4. Why Choose Us Section (Screenshot 2 Top) */}
       <WhyChooseUs />
-
-      {/* 5. Contact CTA Banner (Screenshot 2 Bottom) */}
       <ContactBanner />
     </main>
   );
