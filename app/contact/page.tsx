@@ -1,66 +1,34 @@
-"use client";
+import { Metadata } from 'next';
+import { API_BASE_URL } from '@/lib/config';
+import ContactClient from "./ContactClient";
 
-import { useEffect, useState } from "react";
-import PageBanner from "../../components/common/PageBanner";
-import ContactInfoSection from "../../components/contact/ContactInfoSection";
-import ContactFormSection from "../../components/contact/ContactFormSection";
-import { Loader2 } from "lucide-react";
-import { getContactInfo } from "../../services/contactService";
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`, {
+      next: { revalidate: 3600 }
+    });
+    const result = await response.json();
 
-export default function ContactPage() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let isMounted = true;
-    async function loadData() {
-      setLoading(true);
-      try {
-        console.log("Fetching contact info...");
-        const res = await getContactInfo();
-        if (isMounted) {
-          if (res && res.success) {
-            setData(res.data);
-          } else {
-            console.warn("API returned unsuccessful response:", res);
-            setData({ locations: [], contact_info: {} });
-          }
+    if (result.success && result.data?.be) {
+      const seo = result.data.be;
+      return {
+        title: seo.contact_meta_title,
+        description: seo.contact_meta_description,
+        keywords: seo.contact_meta_keywords,
+        openGraph: {
+          title: seo.contact_meta_title,
+          description: seo.contact_meta_description,
+          images: ["/logo/logo.png"],
         }
-      } catch (err) {
-        console.error("Failed to load contact data:", err);
-        if (isMounted) {
-          setData({ locations: [], contact_info: {} });
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
+      };
     }
-    loadData();
-    return () => { isMounted = false; };
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-[#0C2783]" size={40} />
-      </div>
-    );
+  } catch (error) {
+    console.error("Metadata fetch error for Contact:", error);
   }
 
-  return (
-    <>
-      <PageBanner
-        title="Contact Us"
-        subtitle="We are here to help you"
-        bgImage="/about/about-banner.png"
-      />
-      <ContactInfoSection
-        locations={data?.locations || []}
-        mainInfo={data?.contact_info}
-      />
-      <ContactFormSection />
-    </>
-  );
+  return { title: "Contact Us | Forensic Agency Labs in Delhi India" };
+}
+
+export default function ContactPage() {
+  return <ContactClient />;
 }

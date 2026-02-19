@@ -1,0 +1,109 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import PageBanner from "@/components/common/PageBanner";
+import { getTeamMembers, getTeamMemberById } from "@/services/teamService";
+import { Facebook, Instagram, Linkedin, Loader2, AlertCircle, ArrowLeft } from "lucide-react";
+
+export default function TeamDetailClient({ idFromUrl }: { idFromUrl: string }) {
+  const router = useRouter();
+  const [member, setMember] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        setLoading(true);
+        const res = await getTeamMemberById(idFromUrl);
+
+        if (res && !res.fallback && res.data?.member) {
+          setMember(res.data.member);
+        } else {
+          // Fallback if specific ID fetch fails
+          const listRes = await getTeamMembers();
+          const found = listRes.data?.members?.find((m: any) => m.id.toString() === idFromUrl.toString());
+          if (found) {
+            setMember(found);
+          } else {
+            setError(true);
+          }
+        }
+      } catch (err) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [idFromUrl]);
+
+  if (loading) return (
+    <div className="h-screen flex items-center justify-center">
+      <Loader2 className="animate-spin text-[#0B10A4]" size={40} />
+    </div>
+  );
+
+  if (error || !member) return (
+    <div className="h-screen flex flex-col items-center justify-center">
+      <AlertCircle className="text-red-500 mb-2" />
+      <p>Expert Not Found (ID: {idFromUrl})</p>
+      <button onClick={() => router.push('/team')} className="mt-4 text-[#0B10A4] font-bold underline">Return to Team</button>
+    </div>
+  );
+
+  return (
+    <main className="bg-white min-h-screen pb-20">
+      <PageBanner title={member.name} subtitle={member.rank} bgImage="/about/about-banner.png" />
+      
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <button 
+          onClick={() => router.back()} 
+          className="flex items-center gap-2 text-gray-600 hover:text-[#0B10A4] transition-colors mb-6 group"
+        >
+          <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+          <span className="font-medium">Back to Team</span>
+        </button>
+
+        <div className="bg-white rounded-3xl overflow-hidden flex flex-col lg:flex-row border border-gray-100 shadow-xl">
+          {/* Sidebar */}
+          <div className="lg:w-1/3 bg-gray-50 p-8 text-center border-r border-gray-100">
+            <div className="relative w-64 h-64 mx-auto mb-6">
+              <img 
+                src={`https://forensicinstitute.in/uploads/Investigation-Services-Admin-Member/${member.image}`} 
+                alt={member.name}
+                className="w-full h-full object-cover rounded-2xl shadow-lg border-4 border-white bg-white"
+              />
+            </div>
+            <h2 className="text-2xl font-bold text-[#04063E]">{member.name}</h2>
+            <p className="text-[#0B10A4] font-bold text-xs uppercase mt-2 tracking-widest">{member.rank}</p>
+            <p className="text-gray-500 text-sm mt-4 font-medium">{member.education}</p>
+            
+            <div className="flex justify-center gap-4 mt-8">
+               {member.facebook && <a href={member.facebook} target="_blank" className="p-2 rounded-full bg-white shadow-sm text-gray-400 hover:text-blue-600 hover:shadow-md transition-all"><Facebook size={18}/></a>}
+               {member.linkedin && <a href={member.linkedin} target="_blank" className="p-2 rounded-full bg-white shadow-sm text-gray-400 hover:text-blue-700 hover:shadow-md transition-all"><Linkedin size={18}/></a>}
+               {member.instagram && <a href={member.instagram} target="_blank" className="p-2 rounded-full bg-white shadow-sm text-gray-400 hover:text-pink-600 hover:shadow-md transition-all"><Instagram size={18}/></a>}
+            </div>
+          </div>
+
+          {/* Biography Content */}
+          <div className="lg:w-2/3 p-8 lg:p-16">
+            <h3 className="text-xl font-bold mb-6 text-[#04063E] flex items-center gap-2">
+              <span className="w-8 h-1 bg-[#96C11F] rounded-full"></span>
+              Professional Biography
+            </h3>
+            <div 
+              className="prose prose-slate max-w-none text-gray-700 leading-relaxed text-justify expert-bio"
+              dangerouslySetInnerHTML={{ __html: member.about }} 
+            />
+          </div>
+        </div>
+      </div>
+      <style jsx global>{`
+        .expert-bio p { margin-bottom: 1.5rem; }
+        .expert-bio strong { color: #04063E; }
+      `}</style>
+    </main>
+  );
+}

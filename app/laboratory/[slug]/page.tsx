@@ -17,7 +17,6 @@ export default function LaboratoryPage() {
     async function fetchLabData() {
       try {
         setLoading(true);
-        // Replace this with your specific Laboratory API endpoint if different
         const res = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/laboratory/${slug}`);
         const result = await res.json();
 

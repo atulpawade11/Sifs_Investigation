@@ -1,118 +1,34 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import PageBanner from "../../components/common/PageBanner";
-import { ChevronDown, ChevronUp } from "lucide-react"; 
+import { Metadata } from 'next';
 import { API_BASE_URL } from '@/lib/config';
+import FAQClient from "./FAQClient";
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/faq/`, {
+      next: { revalidate: 3600 }
+    });
+    const result = await response.json();
+
+    if (result.success && result.data?.be) {
+      const seo = result.data.be;
+      return {
+        title: seo.faq_meta_title,
+        description: seo.faq_meta_description,
+        keywords: seo.faq_meta_keywords,
+        openGraph: {
+          title: seo.faq_meta_title,
+          description: seo.faq_meta_description,
+          images: ["/logo/logo.png"],
+        }
+      };
+    }
+  } catch (error) {
+    console.error("Metadata fetch error for FAQ:", error);
+  }
+
+  return { title: "F.A.Q | SIFS India" };
+}
 
 export default function FAQPage() {
-  const [faqData, setFaqData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [showAll, setShowAll] = useState(false);
-  
-  const INITIAL_LIMIT = 5;
-
-  useEffect(() => {
-    const fetchFAQs = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/faq/`);
-        const json = await response.json();
-        
-        if (json.success) {
-          setFaqData(json.data); 
-
-          // --- Dynamic SEO Injection (Exact Career Page Logic) ---
-          if (json.data.be) {
-            const { faq_meta_title, faq_meta_description, faq_meta_keywords } = json.data.be;
-            
-            // Update Tab Title
-            document.title = faq_meta_title || "F.A.Q";
-
-            // Update or Create Description Meta Tag
-            let metaDesc = document.querySelector('meta[name="description"]');
-            if (!metaDesc) {
-              metaDesc = document.createElement('meta');
-              metaDesc.setAttribute('name', 'description');
-              document.head.appendChild(metaDesc);
-            }
-            metaDesc.setAttribute('content', faq_meta_description || "");
-
-            // Update or Create Keywords Meta Tag
-            let metaKeywords = document.querySelector('meta[name="keywords"]');
-            if (!metaKeywords) {
-              metaKeywords = document.createElement('meta');
-              metaKeywords.setAttribute('name', 'keywords');
-              document.head.appendChild(metaKeywords);
-            }
-            metaKeywords.setAttribute('content', faq_meta_keywords || "");
-          }
-        }
-      } catch (err) {
-        console.error("Fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchFAQs();
-  }, []);
-
-  const faqsArray = faqData?.faqs || [];
-  const displayedFaqs = showAll ? faqsArray : faqsArray.slice(0, INITIAL_LIMIT);
-
-  if (loading) return (
-    <div className="h-screen flex items-center justify-center bg-white">
-      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#0B10A4]"></div>
-    </div>
-  );
-
-  return (
-    <div className="bg-gray-50 min-h-screen">
-      <PageBanner
-        title={faqData?.bs?.faq_title || "Frequently Asked Questions"}
-        subtitle={faqData?.bs?.faq_subtitle || "SIFS India Support"}
-        bgImage="/about/about-banner.png"
-      />
-
-      <div className="relative z-10 -mt-12 pb-20 px-4">
-        <section className="max-w-6xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
-          <div className="p-8 md:p-16 space-y-8">
-            
-            {/* FAQ List */}
-            <div className="space-y-6">
-              {displayedFaqs.map((item: any, index: number) => (
-                <div key={index} className="group border-b border-gray-50 pb-6 last:border-0">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#0B4F8A] transition-colors">
-                    {item.question}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-                    {item.answer}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* Read More / Read Less Button */}
-            {faqsArray.length > INITIAL_LIMIT && (
-              <div className="flex justify-center pt-4">
-                <button
-                  onClick={() => setShowAll(!showAll)}
-                  className="flex items-center gap-4 bg-gradient-to-r from-[#0B10A4] to-[#04063E]
-                  text-white px-8 py-3 rounded-full font-bold
-                  hover:from-[#1217c0] hover:to-[#0a0f6b]
-                  transition-all group"
-                >
-                  {showAll ? (
-                    <>Read Less <ChevronUp size={20} /></>
-                  ) : (
-                    <>Read More <ChevronDown size={20} /></>
-                  )}
-                </button>
-              </div>
-            )}
-          </div>
-        </section>
-      </div>
-    </div>
-  );
+  return <FAQClient />;
 }

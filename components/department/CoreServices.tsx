@@ -2,7 +2,12 @@
 
 import React from 'react';
 
-const CoreServices = () => {
+// Added props to accept dynamic name from API
+interface Props {
+  departmentName?: string;
+}
+
+const CoreServices = ({ departmentName }: Props) => {
   const services = [
     {
       title: "Crime Scene Investigation",
@@ -50,17 +55,17 @@ const CoreServices = () => {
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start mb-12 gap-6">
           <h2 className="text-3xl md:text-4xl font-bold text-white lg:max-w-md leading-tight">
-            Our Core Forensic Investigation Services
+            Our Core {departmentName || "Forensic Investigation"} Services
           </h2>
           <p className="text-blue-50 text-sm md:text-base lg:max-w-2xl leading-relaxed">
             Our core forensic services, combined with our extensive experience, make us your trusted partner in solving complex cases. 
             Whether it is criminal investigations, document and fingerprint examination, cyber forensics, insurance and accounting 
             fraud analysis, accident site reconstruction, biological evidence examination, or specialized forensic support, 
-            our Forensic Investigation Department is equipped to provide unmatched services across various domains.
+            our {departmentName || "Forensic Investigation"} Department is equipped to provide unmatched services across various domains.
           </p>
         </div>
 
-        {/* Staggered Grid */}
+        {/* Staggered Grid - Layout and Colors strictly preserved */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
           {services.map((service, idx) => (
             <div 
