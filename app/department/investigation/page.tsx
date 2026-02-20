@@ -25,7 +25,6 @@ export async function generateMetadata(): Promise<Metadata> {
         title: seo.meta_title || "Forensic Investigation Services",
         description: seo.meta_description,
         keywords: seo.meta_keywords,
-        // Canonical tags help Vercel/Google identify the primary URL
         alternates: {
           canonical: `/forensic-investigation`,
         },

@@ -7,6 +7,7 @@ import QueryForm from "../../../../components/services/QueryForm";
 import ServiceDetailContent from "../../../../components/services/ServiceDetailContent";
 import FAQAccordion from "../../../../components/services/FAQAccordion";
 import { API_BASE_URL } from '@/lib/config';
+import { Skeleton } from '@/components/shared/Skeleton';
 
 interface Props {
   categorySlug: string;
@@ -58,16 +59,48 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
     if (categorySlug && serviceSlug) loadDetail();
   }, [categorySlug, serviceSlug]);
 
-  if (loading) return (
-    <div className="h-screen flex items-center justify-center bg-white">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-blue-900 border-t-transparent rounded-full animate-spin"></div>
-        <div className="text-[#04063E] font-bold tracking-widest animate-pulse">
-          OPENING FORENSIC FILE...
+  // --- SERVICE DETAIL SKELETON ---
+  const ServiceDetailSkeleton = () => (
+    <div className="bg-[#F8F9FA] min-h-screen">
+      {/* Banner Skeleton */}
+      <div className="w-full h-[300px] bg-gray-200 animate-pulse flex flex-col items-center justify-center space-y-4">
+        <Skeleton className="h-6 w-40 bg-gray-300" />
+        <Skeleton className="h-10 w-80 bg-gray-300" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 md:px-10 py-16 relative">
+        <div className="flex flex-col lg:flex-row gap-12">
+          {/* Sidebar Skeleton */}
+          <aside className="lg:w-1/3 xl:w-1/4 space-y-8">
+            <div className="space-y-4">
+              <Skeleton className="h-[400px] w-full rounded-2xl" /> {/* Sidebar box */}
+              <Skeleton className="h-[300px] w-full rounded-2xl" /> {/* Form box */}
+            </div>
+          </aside>
+
+          {/* Main Content Skeleton */}
+          <main className="lg:w-2/3 xl:w-3/4">
+            <div className="bg-white p-6 md:p-12 rounded-[2rem] shadow-xl border border-gray-100 space-y-8">
+              <Skeleton className="w-full aspect-video rounded-2xl" /> {/* Featured Image */}
+              <div className="space-y-4">
+                <Skeleton className="h-8 w-1/2" /> {/* Title placeholder */}
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+              <div className="pt-12 space-y-4">
+                <Skeleton className="h-6 w-40" />
+                <Skeleton className="h-12 w-full rounded-lg" />
+                <Skeleton className="h-12 w-full rounded-lg" />
+              </div>
+            </div>
+          </main>
         </div>
       </div>
     </div>
   );
+
+  if (loading) return <ServiceDetailSkeleton />;
 
   if (!detailData) return (
     <div className="h-screen flex flex-col items-center justify-center">
