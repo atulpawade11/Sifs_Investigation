@@ -1,60 +1,64 @@
-"use client";
+import { Metadata } from "next";
+import { API_BASE_URL } from "@/lib/config";
+import ForensicInvestigationClient from "./ForensicInvestigationClient";
 
-import React, { useEffect, useState } from 'react';
-import PageBanner from "@/components/common/PageBanner";
-import HeroSection from "@/components/department/HeroSection";
-import CoreServices from "@/components/department/CoreServices";
-import WhyChooseUs from "@/components/department/WhyChooseUs";
-import ContactBanner from "@/components/department/ContactBanner";
-import { API_BASE_URL } from '@/lib/config';
-import { Loader2 } from 'lucide-react';
+// VERCEL OPTIMIZATION:
+// This ensures the page is treated as dynamic and 
+// the metadata fetch isn't skipped during the build process.
+export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Cache for 1 hour
 
-export default function ForensicInvestigationPage() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    // Note: Always use absolute URLs for Vercel fetches
+    const res = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/page/forensic-investigations`, {
+      next: { revalidate: 3600 },
+    });
+    
+    if (!res.ok) throw new Error('API unreachable');
+    
+    const result = await res.json();
 
-  useEffect(() => {
-    async function fetchDeptData() {
-      try {
-        // Fetching specifically for the forensic-investigations slug
-        const res = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/page/forensic-investigations`);
-        const result = await res.json();
-        if (result.success) {
-          setData(result.data.page);
+    if (result.success && result.data?.page) {
+      const seo = result.data.page;
+      return {
+        title: seo.meta_title || "Forensic Investigation Services",
+        description: seo.meta_description,
+        keywords: seo.meta_keywords,
+        // Canonical tags help Vercel/Google identify the primary URL
+        alternates: {
+          canonical: `/forensic-investigation`,
+        },
+        openGraph: {
+          title: seo.meta_title,
+          description: seo.meta_description,
+          url: 'https://your-domain.com/forensic-investigation',
+          siteName: 'SIFS India',
+          images: [
+            {
+              url: "/about/about-banner.png",
+              width: 1200,
+              height: 630,
+              alt: seo.meta_title,
+            },
+          ],
+          type: 'website',
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title: seo.meta_title,
+          description: seo.meta_description,
+          images: ["/about/about-banner.png"],
         }
-      } catch (err) {
-        console.error("Error fetching investigation data:", err);
-      } finally {
-        setLoading(false);
-      }
+      };
     }
-    fetchDeptData();
-  }, []);
+  } catch (error) {
+    console.error("Vercel Metadata Fetch Error:", error);
+  }
 
-  if (loading) return (
-    <div className="h-screen flex items-center justify-center">
-      <Loader2 className="animate-spin text-[#0B4F8A]" size={40} />
-    </div>
-  );
+  return { title: "Forensic Investigation | SIFS India" };
+}
 
-  return (
-    <main className="bg-white min-h-screen">
-      <PageBanner
-        title={data?.title || "Forensic Investigation"}
-        subtitle={data?.subtitle || "SIFS India Department"}
-        bgImage="/about/about-banner.png"
-      />
-
-      {/* Passing the rich HTML 'body' to the HeroSection */}
-      <HeroSection 
-        name={data?.name}
-        content={data?.body} 
-      />
-
-      {/* These sections can remain static or be toggled based on page status */}
-      <CoreServices />
-      <WhyChooseUs />
-      <ContactBanner />
-    </main>
-  );
+export default function Page() {
+  return <ForensicInvestigationClient />;
 }
