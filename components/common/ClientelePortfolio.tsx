@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { X, ChevronDown, Loader2, MapPin } from "lucide-react";
+import { X, ChevronDown, Loader2 } from "lucide-react";
 import { API_BASE_URL } from "@/lib/config";
+import { Skeleton } from "@/components/shared/Skeleton";
 
 // --- PROFESSIONAL CATEGORY MAPPING ---
 const SECTOR_NAME_MAP: Record<string, string> = {
@@ -36,7 +37,6 @@ export default function ClientelePortfolio() {
           fetch(`${API_BASE_URL}/InvestigationServices/Website/front/portfolios`).then(res => res.json())
         ]);
 
-        // 1. Dynamic Header Logic
         if (mainRes.success && mainRes.data?.bs) {
           setHeader({
             title: mainRes.data.bs.portfolio_title || "OUR CLIENTELE",
@@ -44,13 +44,11 @@ export default function ClientelePortfolio() {
           });
         }
 
-        // 2. Portfolio & Category Logic
         if (portRes.success && portRes.data) {
           const portData = portRes.data.data || [];
           setPortfolios(portData);
           setNextPageUrl(portRes.data.next_page_url || null);
 
-          // Build professional categories from unique IDs in data
           const uniqueIds = Array.from(new Set(portData.map((p: any) => p.client_category_id)));
           const mappedCats = uniqueIds.map(id => ({
             id: String(id),
@@ -65,6 +63,38 @@ export default function ClientelePortfolio() {
     };
     initFetch();
   }, []);
+
+  // --- CLIENTELE SKELETON ---
+  const PortfolioSkeleton = () => (
+    <section className="mx-auto max-w-7xl px-4 py-20 bg-white">
+      <div className="grid gap-10 lg:grid-cols-[260px_1fr]">
+        {/* Sidebar Skeleton */}
+        <aside className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100 h-fit">
+          <div className="space-y-2">
+            {[...Array(8)].map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full rounded-lg" />
+            ))}
+          </div>
+        </aside>
+
+        {/* Grid Skeleton */}
+        <div className="relative">
+          {/* Badge Placeholder */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+             <div className="h-[250px] w-[250px] md:h-[350px] md:w-[350px] rounded-full border border-dashed border-gray-100 flex items-center justify-center">
+                <Skeleton className="h-20 w-48 rounded-md" />
+             </div>
+          </div>
+          {/* Logo Cards Skeleton */}
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 relative z-10">
+            {[...Array(12)].map((_, i) => (
+              <Skeleton key={i} className="h-[130px] w-full rounded-3xl" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 
   const handleLoadMore = async () => {
     if (!nextPageUrl || loadMoreLoading) return;
@@ -84,7 +114,7 @@ export default function ClientelePortfolio() {
     return currentCat ? String(p.client_category_id) === String(currentCat.id) : false;
   });
 
-  if (loading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-blue-900" size={40} /></div>;
+  if (loading) return <PortfolioSkeleton />;
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-20 bg-white min-h-screen">

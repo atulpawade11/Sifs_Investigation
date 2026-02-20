@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PageBanner from "@/components/common/PageBanner";
 import { getTeamMembers, getTeamMemberById } from "@/services/teamService";
-import { Facebook, Instagram, Linkedin, Loader2, AlertCircle, ArrowLeft } from "lucide-react";
+import { Facebook, Instagram, Linkedin, AlertCircle, ArrowLeft } from "lucide-react";
+import { Skeleton } from "@/components/shared/Skeleton";
 
 export default function TeamDetailClient({ idFromUrl }: { idFromUrl: string }) {
   const router = useRouter();
@@ -21,7 +22,6 @@ export default function TeamDetailClient({ idFromUrl }: { idFromUrl: string }) {
         if (res && !res.fallback && res.data?.member) {
           setMember(res.data.member);
         } else {
-          // Fallback if specific ID fetch fails
           const listRes = await getTeamMembers();
           const found = listRes.data?.members?.find((m: any) => m.id.toString() === idFromUrl.toString());
           if (found) {
@@ -39,11 +39,52 @@ export default function TeamDetailClient({ idFromUrl }: { idFromUrl: string }) {
     loadData();
   }, [idFromUrl]);
 
-  if (loading) return (
-    <div className="h-screen flex items-center justify-center">
-      <Loader2 className="animate-spin text-[#0B10A4]" size={40} />
+  // --- TEAM DETAIL SKELETON ---
+  const DetailSkeleton = () => (
+    <div className="bg-white min-h-screen">
+      <div className="w-full h-[300px] bg-gray-100 flex flex-col items-center justify-center space-y-4">
+        <Skeleton className="h-10 w-64 bg-gray-200" />
+        <Skeleton className="h-4 w-40 bg-gray-200" />
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <Skeleton className="h-6 w-32 mb-6" /> {/* Back Button placeholder */}
+        
+        <div className="bg-white rounded-3xl overflow-hidden flex flex-col lg:flex-row border border-gray-100 shadow-xl">
+          {/* Sidebar Skeleton */}
+          <div className="lg:w-1/3 bg-gray-50 p-8 text-center border-r border-gray-100 flex flex-col items-center">
+            <Skeleton className="w-64 h-64 rounded-2xl mb-6 shadow-lg" />
+            <Skeleton className="h-8 w-48 mb-2" />
+            <Skeleton className="h-4 w-32 mb-4" />
+            <Skeleton className="h-12 w-full mt-4" />
+            <div className="flex gap-4 mt-8">
+               <Skeleton className="w-10 h-10 rounded-full" />
+               <Skeleton className="w-10 h-10 rounded-full" />
+               <Skeleton className="w-10 h-10 rounded-full" />
+            </div>
+          </div>
+
+          {/* Bio Skeleton */}
+          <div className="lg:w-2/3 p-8 lg:p-16 space-y-6">
+            <Skeleton className="h-8 w-64 mb-6" />
+            <div className="space-y-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
+            <div className="space-y-4 pt-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
+
+  if (loading) return <DetailSkeleton />;
 
   if (error || !member) return (
     <div className="h-screen flex flex-col items-center justify-center">

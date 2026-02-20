@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Loader2, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { API_BASE_URL } from '@/lib/config';
+import { Skeleton } from '@/components/shared/Skeleton';
 
 interface Props {
   categorySlug: string;
@@ -23,7 +24,6 @@ export default function ServiceListingClient({ categorySlug }: Props) {
   
         if (result.success && result.data.categories) {
           const categories = result.data.categories;
-          
           const decodedSlug = decodeURIComponent(categorySlug).toLowerCase().replace(/[^a-z0-9]/g, '');
           
           const foundCat = categories.find((c: any) => {
@@ -33,17 +33,14 @@ export default function ServiceListingClient({ categorySlug }: Props) {
   
           if (foundCat) {
             setCategoryInfo(foundCat);
-            
             const sRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services?category=${foundCat.id}`);
             const sData = await sRes.json();
             
             if (sData.success && sData.data) {
               const rawList = sData.data.data || sData.data || [];
-              
               const filtered = rawList.filter((item: any) => 
                 String(item.category_id) === String(foundCat.id)
               );
-  
               setSubServices(filtered.length > 0 ? filtered : rawList);
             }
           }
@@ -57,11 +54,46 @@ export default function ServiceListingClient({ categorySlug }: Props) {
     if (categorySlug) fetchData();
   }, [categorySlug]);
 
-  if (loading) return (
-    <div className="h-screen flex items-center justify-center">
-      <Loader2 className="animate-spin text-[#04063E]" size={40} />
+  // --- SKELETON COMPONENT ---
+  const ListingSkeleton = () => (
+    <div className="bg-white min-h-screen">
+      {/* Header Skeleton */}
+      <div className="bg-gray-50 py-10 text-center border-b border-gray-100">
+        <Skeleton className="h-8 w-64 mx-auto mb-2" />
+        <Skeleton className="h-4 w-40 mx-auto" />
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 py-16">
+        {/* Intro Section Skeleton */}
+        <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-16">
+          <Skeleton className="h-12 w-64 rounded-lg" />
+          <div className="md:w-1/2 w-full">
+            <Skeleton className="h-20 w-full rounded-xl" />
+          </div>
+        </div>
+
+        {/* List Items Skeleton */}
+        <div className="space-y-16">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="border-b border-gray-100 pb-16 flex flex-col md:flex-row items-center gap-12">
+              <Skeleton className="h-16 w-20 rounded-lg hidden md:block" /> {/* Number */}
+              <div className="flex-1 space-y-4 w-full">
+                <Skeleton className="h-8 w-3/4 rounded-md" /> {/* Title */}
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+                <Skeleton className="h-4 w-32 rounded-full" /> {/* Link */}
+              </div>
+              <Skeleton className="w-full md:w-[400px] aspect-[16/9] rounded-3xl" /> {/* Image */}
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
+
+  if (loading) return <ListingSkeleton />;
 
   if (!categoryInfo) return (
     <div className="py-20 text-center text-gray-500">
