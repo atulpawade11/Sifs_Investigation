@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
-import { ChevronRight, Send } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ChevronRight, Send, Loader2 } from 'lucide-react';
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "sonner";
+import { sendContact } from '../../services/contactService';
 
 interface QueryFormProps {
   serviceTitle?: string;
@@ -10,16 +13,59 @@ interface QueryFormProps {
 export default function QueryForm({ serviceTitle }: QueryFormProps) {
   const [formData, setFormData] = useState({
     name: '',
-    mobile: '',
+    phone: '',
     email: '',
-    query: ''
+    message: ''
   });
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const onCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In the future, you can POST this to `${API_BASE_URL}/Inquiry/store`
-    console.log("Form Submitted:", { ...formData, service: serviceTitle });
-    alert("Thank you! Your query regarding " + (serviceTitle || "our services") + " has been sent.");
+
+    if (!captchaToken) {
+      toast.error("Please complete the reCAPTCHA.");
+      return;
+    }
+
+    setLoading(true);
+    const toastId = toast.loading("Sending your query...");
+
+    try {
+      const payload = {
+        ...formData,
+        subject: "Inquiry",
+        "g-recaptcha-response": captchaToken,
+      };
+
+      const res = await sendContact(payload);
+      if (res.success) {
+        toast.success(res.message || "Contact message sent successfully!", { id: toastId });
+        setFormData({
+          name: '',
+          phone: '',
+          email: '',
+          message: ''
+        });
+        setCaptchaToken(null);
+        recaptchaRef.current?.reset();
+      }
+    } catch (err: any) {
+      console.error("Caught error:", err);
+      toast.error(err.message || "Failed to send query. Please try again.", { id: toastId });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -32,67 +78,75 @@ export default function QueryForm({ serviceTitle }: QueryFormProps) {
         <Send size={18} className="text-[#044782]" />
         <h3 className="text-lg font-bold text-gray-800">Ask Your Query</h3>
       </div>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Hidden field for service title if needed for API */}
-        <input type="hidden" value={serviceTitle || ''} />
 
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="text-[10px] font-bold text-gray-400 block mb-1 uppercase">Name</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="name"
             required
             value={formData.name}
             onChange={handleChange}
-            placeholder="John Doe"
-            className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#044782] focus:border-[#044782]" 
+            placeholder="Enter your name"
+            className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#044782] focus:border-[#044782]"
           />
         </div>
 
         <div>
           <label className="text-[10px] font-bold text-gray-400 block mb-1 uppercase">Mobile</label>
-          <input 
-            type="tel" 
-            name="mobile"
+          <input
+            type="tel"
+            name="phone"
             required
-            value={formData.mobile}
+            value={formData.phone}
             onChange={handleChange}
-            placeholder="+91 00000 00000"
-            className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#044782] focus:border-[#044782]" 
+            placeholder="Enter mobile number"
+            className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#044782] focus:border-[#044782]"
           />
         </div>
 
         <div>
           <label className="text-[10px] font-bold text-gray-400 block mb-1 uppercase">E-mail</label>
-          <input 
-            type="email" 
+          <input
+            type="email"
             name="email"
             required
             value={formData.email}
             onChange={handleChange}
-            placeholder="john@example.com"
-            className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#044782] focus:border-[#044782]" 
+            placeholder="Enter email address"
+            className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#044782] focus:border-[#044782]"
           />
         </div>
 
         <div>
           <label className="text-[10px] font-bold text-gray-400 block mb-1 uppercase">Query</label>
-          <textarea 
-            name="query"
+          <textarea
+            name="message"
             required
-            value={formData.query}
+            value={formData.message}
             onChange={handleChange}
-            placeholder={serviceTitle ? `Interested in ${serviceTitle}...` : "How can we help you?"}
-            className="w-full border border-gray-200 rounded-lg p-2.5 text-sm h-28 focus:outline-none focus:ring-1 focus:ring-[#044782] focus:border-[#044782] resize-none" 
+            placeholder={serviceTitle ? `Enter your query about ${serviceTitle}...` : "Type your query here..."}
+            className="w-full border border-gray-200 rounded-lg p-2.5 text-sm h-28 focus:outline-none focus:ring-1 focus:ring-[#044782] focus:border-[#044782] resize-none"
           />
         </div>
 
-        <button 
+        <div className="flex justify-center py-2 scale-90 origin-center">
+          {mounted && (
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+              onChange={onCaptchaChange}
+            />
+          )}
+        </div>
+
+        <button
           type="submit"
-          className="w-full bg-[#044782] text-white py-3 rounded-lg text-sm font-bold flex justify-center items-center gap-2 hover:bg-[#F68A07] transition-all shadow-md active:scale-95"
+          disabled={loading || (mounted && !captchaToken)}
+          className="w-full bg-[#044782] text-white py-3 rounded-lg text-sm font-bold flex justify-center items-center gap-2 hover:bg-[#F68A07] transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Submit Query <ChevronRight size={16} />
+          {loading ? <Loader2 size={16} className="animate-spin" /> : "Submit Query"} <ChevronRight size={16} />
         </button>
       </form>
     </div>
