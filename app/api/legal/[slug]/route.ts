@@ -1,16 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  request: Request,
-  { params }: { params: { slug: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  const { slug } = params;
-
   try {
-    // Replace with the real backend URL
+    const { slug } = await params;  // Destructure after await
+
     const response = await fetch(
       `https://forensicinstitute.in/api/InvestigationServices/Website/front/${slug}`,
-      { headers: { Accept: "application/json" }, cache: "no-store" }
+      { 
+        headers: { Accept: "application/json" }, 
+        cache: "no-store" 
+      }
     );
 
     if (!response.ok) {
@@ -24,6 +26,10 @@ export async function GET(
     return NextResponse.json(data);
 
   } catch (err) {
-    return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
+    console.error("API route error:", err);
+    return NextResponse.json(
+      { success: false, message: "Server error" }, 
+      { status: 500 }
+    );
   }
 }

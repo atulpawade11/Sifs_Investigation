@@ -39,7 +39,6 @@ export default function CareerClient({ initialData }: { initialData: any }) {
 
       const url = `${API_BASE_URL}/InvestigationServices/Website/front/career/?${params.toString()}`;
 
-      // Bypass cache here as well
       const response = await fetch(url, { cache: 'no-store' });
       const json = await response.json();
 
@@ -52,7 +51,7 @@ export default function CareerClient({ initialData }: { initialData: any }) {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, category]);
+  }, [debouncedSearch, category, careerData?.jcats]);
 
   useEffect(() => {
     // Skip fetching on mount because we have initialData from the server
@@ -63,10 +62,13 @@ export default function CareerClient({ initialData }: { initialData: any }) {
     fetchCareers(true);
   }, [fetchCareers]);
 
-  const jobs = careerData?.data || [];
+  // ✅ Safely extract jobs array with multiple fallbacks
+  const jobs = Array.isArray(careerData?.data) ? careerData.data : 
+               Array.isArray(careerData?.careers) ? careerData.careers : 
+               Array.isArray(careerData) ? careerData : [];
+  
   const totalFound = jobs.length;
 
-  // Final Layout (Unchanged)
   return (
     <>
       <PageBanner 
@@ -74,6 +76,7 @@ export default function CareerClient({ initialData }: { initialData: any }) {
         subtitle={careerData?.be?.career_subtitle} 
         bgImage="/about/about-banner.png" 
       />
+      
       <section className="bg-white py-12">
         <div className="mx-auto max-w-7xl px-4 md:px-10">
           <CareerFilters 
@@ -83,14 +86,18 @@ export default function CareerClient({ initialData }: { initialData: any }) {
             setCategory={setCategory} 
             categories={["All", ...(careerData?.jcats?.map((c: any) => c.name) || [])]} 
           />
+          
           <div className="mb-6 flex items-center justify-between">
             <p className="text-[10px] font-bold text-black uppercase tracking-[2px]">
               Available Positions ({totalFound})
             </p>
+            {loading && <Loader2 className="w-4 h-4 animate-spin text-gray-400" />}
           </div>
 
           <div className={`transition-opacity duration-300 ${loading ? "opacity-40" : "opacity-100"}`}>
+            {/* ✅ jobs is now guaranteed to be an array */}
             <JobList jobs={jobs.slice(0, visible)} />
+            
             {!loading && totalFound === 0 && (
               <div className="py-20 text-center text-gray-400 italic text-sm">
                 No positions found.
@@ -106,6 +113,7 @@ export default function CareerClient({ initialData }: { initialData: any }) {
           />
         </div>
       </section>
+      
       <CareerFAQSection />
       <DownloadsSlider />
     </>
