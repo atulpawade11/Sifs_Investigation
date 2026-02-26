@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import { getDownloads } from '@/services/downloadService';
 import { Skeleton } from '@/components/shared/Skeleton';
+import { API_BASE_URL } from '@/lib/config'; // Import your config
 import 'swiper/css';
 
 const DownloadsSlider = () => {
@@ -16,35 +17,42 @@ const DownloadsSlider = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadDownloads = async () => {
+    const loadData = async () => {
       try {
         setLoading(true);
-        const result = await getDownloads();
+        
+        // Fetch both Downloads and Home API (for titles)
+        const [downloadResult, homeRes] = await Promise.all([
+          getDownloads(),
+          fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`).then(res => res.json())
+        ]);
 
-        if (result?.success) {
-          const cleanItems = (result.data.downloads || []).filter(
+        let cleanItems = [];
+        if (downloadResult?.success) {
+          cleanItems = (downloadResult.data.downloads || []).filter(
             (item: any) => item && item.title && item.title.trim() !== ""
           );
-
-          setData({
-            items: cleanItems,
-            title: result.data.bs?.download_section_title || result.data.title || "Downloads",
-            subtitle: result.data.bs?.download_section_subtitle || result.data.subtitle || "Access Forensic Resources"
-          });
         }
+
+        // Extract titles from Home API 'bs' object
+        const homeBs = homeRes?.success ? homeRes.data.bs : null;
+
+        setData({
+          items: cleanItems,
+          title: homeBs?.download_section_title || "Access Forensic Resources",
+          subtitle: homeBs?.download_section_subtitle || "Downloads"
+        });
+
       } catch (err) {
-        console.error('Error:', err);
+        console.error('Error loading downloads data:', err);
       } finally {
         setLoading(false);
       }
     };
-    loadDownloads();
+    loadData();
   }, []);
 
   const totalCount = data.items.length;
-
-  // NEW THRESHOLD: Only slide if we have at least 12 items.
-  // With 9 items, Layout 1 (Centered) will look much better.
   const isSlider = totalCount >= 12;
 
   if (loading) {
@@ -62,6 +70,7 @@ const DownloadsSlider = () => {
       </section>
     );
   }
+  
   if (totalCount === 0) return null;
 
   return (
@@ -77,7 +86,6 @@ const DownloadsSlider = () => {
 
       <div className="w-full px-4">
         {!isSlider ? (
-          /* LAYOUT 1: CENTERED GRID (Best for 1-11 items) */
           <div className="flex flex-wrap justify-center gap-4 max-w-6xl mx-auto">
             {data.items.map((item) => (
               <a
@@ -92,7 +100,6 @@ const DownloadsSlider = () => {
             ))}
           </div>
         ) : (
-          /* LAYOUT 2: MARQUEE SLIDER (Best for 12+ items) */
           <div className="relative space-y-6">
             <Swiper
               modules={[Autoplay]}

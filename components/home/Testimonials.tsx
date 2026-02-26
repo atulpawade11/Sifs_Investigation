@@ -1,19 +1,28 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link'; // Added Link for redirection
 import { getTestimonials } from '@/services/testimonialService';
 import { Skeleton } from '@/components/shared/Skeleton';
+import { API_BASE_URL } from '@/lib/config';
 
 export default function Testimonials() {
   const [data, setData] = useState<any>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [homeBs, setHomeBs] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await getTestimonials();
-        if (res) setData(res);
+        setLoading(true);
+        const [testRes, homeRes] = await Promise.all([
+          getTestimonials(),
+          fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`).then(res => res.json())
+        ]);
+
+        if (testRes) setData(testRes);
+        if (homeRes?.success) setHomeBs(homeRes.data.bs);
+
       } catch (e) {
         console.error(e);
       } finally {
@@ -25,10 +34,11 @@ export default function Testimonials() {
 
   // Safe data extraction
   const testimonialList = data?.data?.data || [];
-  const testimonialTitle = data?.data?.bs?.testimonial_title || "Success Stories";
-  const testimonialSubtitle = data?.data?.bs?.testimonial_subtitle || "Hear What Our Clients Say";
+  const testimonialTitle = homeBs?.testimonial_title || "Success Stories";
+  const testimonialSubtitle = homeBs?.testimonial_subtitle || "Hear What Our Clients Say";
 
-  const visibleItems = isExpanded ? testimonialList : testimonialList.slice(0, 4);
+  // Lock to exactly 4 items for the Home Page
+  const visibleItems = testimonialList.slice(0, 4);
 
   if (loading) {
     return (
@@ -47,13 +57,6 @@ export default function Testimonials() {
                   <Skeleton className="h-4 w-full" />
                   <Skeleton className="h-4 w-2/3" />
                 </div>
-                <div className="flex items-center gap-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-3 w-32" />
-                  </div>
-                </div>
               </div>
             ))}
           </div>
@@ -61,6 +64,7 @@ export default function Testimonials() {
       </section>
     );
   }
+
   if (testimonialList.length === 0) return null;
 
   return (
@@ -77,19 +81,19 @@ export default function Testimonials() {
           </h2>
         </div>
 
-        {/* ---------- VIEW ALL BUTTON ---------- */}
+        {/* ---------- REDIRECT BUTTON (Desktop) ---------- */}
         <div className="absolute right-10 top-24 hidden md:block">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-8 py-3 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none"
+          <Link
+            href="/testimonials"
+            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-8 py-3 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline"
           >
-            {isExpanded ? "Show Less ↑" : "View All →"}
-          </button>
+            View All →
+          </Link>
         </div>
 
-        {/* ---------- CARDS ---------- */}
-        <div className={`relative z-10 mt-[-50px] transition-all duration-500 ${isExpanded ? 'w-[135%] ml-auto' : 'ml-auto w-[135%]'}`}>
-          <div className={`flex gap-6 ${isExpanded ? 'flex-wrap ' : 'overflow-x-auto no-scrollbar pb-4'}`}>
+        {/* ---------- CARDS (Horizontally Scrollable) ---------- */}
+        <div className="relative z-10 mt-[-50px] ml-auto w-[135%]">
+          <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4">
             {visibleItems.map((item: any, index: number) => (
               <div
                 key={item?.id || index}
@@ -128,14 +132,14 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* Mobile Button */}
+        {/* Mobile Button - Also Redirects */}
         <div className="mt-10 md:hidden flex justify-center">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-8 py-3 rounded-full font-bold"
+          <Link
+            href="/testimonials"
+            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-8 py-3 rounded-full font-bold no-underline"
           >
-            {isExpanded ? "Show Less" : "View All"}
-          </button>
+            View All
+          </Link>
         </div>
       </div>
 

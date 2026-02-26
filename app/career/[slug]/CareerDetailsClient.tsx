@@ -99,8 +99,16 @@ export default function CareerDetailsClient({ slug }: { slug: string }) {
               <DetailSection title="Company Benefits" icon={<Users size={24}/>} html={job.benefits} />
 
               <div className="rounded-2xl bg-blue-50/50 p-8 border border-blue-100 mt-10">
-                <h4 className="font-bold text-[#1B2A7A] mb-3 uppercase text-[10px] tracking-[0.2em]">Application Notice</h4>
-                <p className="text-gray-600 leading-relaxed text-sm italic mb-4">{job.read_before_apply}</p>
+                <h4 className="font-bold text-[#1B2A7A] mb-3 uppercase text-[10px] tracking-[0.2em]">
+                  Application Notice
+                </h4>
+                
+                {/* Rendering the HTML string safely */}
+                <div 
+                  className="text-gray-600 leading-relaxed text-sm italic mb-4 prose-p:m-0"
+                  dangerouslySetInnerHTML={{ __html: job.read_before_apply }} 
+                />
+
                 <div className="flex items-center gap-2 text-[#1B2A7A] font-bold text-sm">
                   <Mail size={16} />
                   <span>Send Resume: {job.email}</span>

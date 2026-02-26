@@ -22,8 +22,8 @@ const AboutIntroSection = () => {
 
   const getCleanIntro = (html: string) => {
     if (!html) return "";
-    // Splits the text at the first mention of "Mission" and only keeps the first part (The Journey)
-    const parts = html.split(/Mission/i);
+    // Splits before the Mission header to get "The Journey" section
+    const parts = html.split(/<h5.*?>.*?Mission.*?<\/h5>/i);
     return parts[0]; 
   };
 
@@ -55,7 +55,7 @@ const AboutIntroSection = () => {
           <div className="relative">
             <div className="relative h-[400px] w-full overflow-hidden rounded-l-[100px] md:h-[500px]">
               <Image
-                src={data?.about_feature_image ? `https://forensicinstitute.in/uploads/Investigation-Services-Admin-BasicSettings/${data.about_feature_image}` : "/about/about-us.png"}
+                src={data?.about_feature_image || "/about/about-us.png"}
                 alt="SIFS India"
                 fill
                 className="object-cover"
