@@ -16,6 +16,7 @@ interface Props {
 
 export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props) {
   const [detailData, setDetailData] = useState<any>(null);
+  const [sidebarData, setSidebarData] = useState<any>(null); // Added this to fix "data is not defined"
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,6 +27,9 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
         const result = await res.json();
         
         if (result?.success && result?.data?.categories) {
+          // Store the result data for the sidebar
+          setSidebarData(result.data); 
+
           const categories = result.data.categories;
           const cleanCatSlug = decodeURIComponent(categorySlug).toLowerCase().replace(/[^a-z0-9]/g, '');
   
@@ -37,6 +41,11 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
           if (foundCat) {
             const sRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services?category=${foundCat.id}`);
             const sData = await sRes.json();
+            
+            // Update sidebar data with the specific services of the found category
+            if (sData?.success) {
+                setSidebarData(sData.data);
+            }
             
             if (sData?.success && sData?.data?.data) {
               const decodedServiceSlug = decodeURIComponent(serviceSlug).toLowerCase();
@@ -121,7 +130,8 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
           {/* Sidebar */}
           <aside className="lg:w-1/3 xl:w-1/4 space-y-8">
             <div className="sticky top-28">
-               <ServiceSidebar />
+               {/* Updated this to use sidebarData instead of undefined data */}
+               <ServiceSidebar apiData={sidebarData} />
                <div className="mt-8">
                  <QueryForm serviceTitle={detailData?.title}/>
                </div>
