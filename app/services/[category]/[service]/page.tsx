@@ -9,22 +9,27 @@ type Props = {
 // SEO for individual forensic services
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { service } = await params;
-  
+
   try {
-    // We fetch the service list to find the matching slug for the title/meta
-    const res = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services`, {
-        next: { revalidate: 3600 }
+    const res = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/service/${service}`, {
+      next: { revalidate: 3600 }
     });
     const result = await res.json();
-    
-    const decodedSlug = decodeURIComponent(service).toLowerCase();
-    const serviceInfo = result?.data?.data?.find((s: any) => s.slug.toLowerCase() === decodedSlug);
+
+    const serviceInfo = result?.data?.service;
+
+    if (!serviceInfo) {
+      return { title: "Forensic Services | SIFS India" };
+    }
 
     return {
-      title: serviceInfo ? `${serviceInfo.title} | SIFS India` : "Forensic Service Detail",
-      description: serviceInfo?.meta_description || "Expert forensic investigation and specialized lab services.",
+      title: serviceInfo.seo_title || `${serviceInfo.title} | SIFS India`,
+      description: serviceInfo.meta_description || "Expert forensic investigation and specialized lab services.",
+      keywords: serviceInfo.meta_keywords || "",
       openGraph: {
-        images: [serviceInfo?.featured_image || "/logo/logo.png"],
+        title: serviceInfo.seo_title || serviceInfo.title,
+        description: serviceInfo.meta_description,
+        images: [serviceInfo.featured_image || serviceInfo.main_image || "/logo/logo.png"],
       }
     };
   } catch (err) {
@@ -34,11 +39,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const resolvedParams = await params;
-  
+
   return (
-    <ServiceDetailClient 
-      categorySlug={resolvedParams.category} 
-      serviceSlug={resolvedParams.service} 
+    <ServiceDetailClient
+      categorySlug={resolvedParams.category}
+      serviceSlug={resolvedParams.service}
     />
   );
 }

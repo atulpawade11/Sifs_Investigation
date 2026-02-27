@@ -39,7 +39,7 @@ export default function PageBanner({
 
         {/* Subtitle */}
         {subtitle && (
-          <p className="mt-1 text-xs font-medium tracking-wide text-black">
+          <p className="text-[#96C11F] text-xs font-black mt-1 uppercase tracking-[0.2em]">
             {subtitle}
           </p>
         )}
