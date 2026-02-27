@@ -193,28 +193,28 @@ const Hero = () => {
 
   return (
     <section className="relative w-full bg-white overflow-hidden">
-      <div className="container mx-auto px-4 md:px-10 py-12 md:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[300px]">
+      <div className="container mx-auto px-4 md:px-10 py-6 md:py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-12 items-center min-h-[200px]">
 
           {/* LEFT SIDE: Heading & Text */}
           <div className="relative z-10 transition-all duration-500 animate-in fade-in slide-in-from-left-4" key={activeIndex}>
             <div className="flex items-start gap-4">
               {/* Decorative Scroll Down Icon */}
-              <div className="hidden md:flex flex-col items-center justify-center px-2.5 py-5 border mt-30 rounded-full text-gray-400">
+              {/*<div className="hidden md:flex flex-col items-center justify-center px-2.5 py-5 border mt-30 rounded-full text-gray-400">
                 <MoveDown size={20} />
-              </div>
+              </div>*/}
 
               <div className="space-y-6">
-                <h1 className="text-5xl md:text-7xl font-bold text-[#04063E] leading-tight mb-2">
+                <h1 className="text-5xl md:text-5xl font-bold text-[#04063E] leading-tight mb-2">
                   {heroTitle.includes('Nation') ? (
                     <>
                       {heroTitle.split('Nation')[0]}
                       <span className="relative inline-block">
                         Nation
                         {/* The hand-drawn circle effect */}
-                        <svg className="absolute -inset-x-4 -inset-y-2 w-[120%] h-[140%] text-gray-400 opacity-50 pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        {/*<svg className="absolute -inset-x-4 -inset-y-2 w-[120%] h-[140%] text-gray-400 opacity-50 pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
                           <path d="M5,50 Q25,5 50,5 T95,50 T50,95 T5,50" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
+                        </svg> */}
                       </span>
                       {heroTitle.split('Nation')[1]}
                     </>
@@ -227,52 +227,26 @@ const Hero = () => {
                   <p>{heroText}</p>
                   <span className="text-2xl">🎓</span>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT SIDE: Branding & Buttons */}
-          <div className="flex flex-col items-start w-full relative lg:pl-10">
-
-            {/* Branding Block: Now Left Aligned within the column */}
-            <div className="flex items-center gap-4 mb-10">
-              <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center overflow-hidden border border-gray-100">
-                <div className="w-10 h-10 bg-slate-200 rounded-full opacity-40"></div>
-              </div>
-              <div className="text-left">
-                <h3 className="font-bold text-[#1A365D] text-lg leading-tight uppercase tracking-wide">SIFS INDIA</h3>
-                <p className="text-xs text-gray-400 border-t border-gray-100 pt-1 mt-1">Forensic Science Laboratory</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-4 w-full max-w-[280px]">
-              <Link
-                href={heroButtonUrl}
-                className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] 
-                          text-white px-8 py-3 rounded-full font-bold 
-                          flex items-center gap-4 
-                          hover:from-[#1217c0] hover:to-[#0a0f6b] 
-                          transition-all group"
-              >
-                {heroButtonText}
-                <div className="bg-white/10 p-1 rounded-full">
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                <div className="flex flex-col gap-4 w-full max-w-[280px]">
+                  <Link
+                    href={heroButtonUrl}
+                    className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] 
+                              text-white px-8 py-3 rounded-full font-bold 
+                              flex items-center gap-4 
+                              hover:from-[#1217c0] hover:to-[#0a0f6b] 
+                              transition-all group"
+                  >
+                    {heroButtonText}
+                    <div className="bg-white/10 p-1 rounded-full">
+                      <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </Link>
                 </div>
-              </Link>
-
-              <button className="flex items-center justify-between border border-gray-100 text-gray-400 pl-8 pr-6 py-4 rounded-full font-medium hover:bg-gray-50 transition-all group">
-                Explore More Sifs
-                <ArrowRight size={18} className="opacity-30 group-hover:opacity-100 transition-opacity" />
-              </button>
-            </div>
-
-            {/* The Light Grey Star/Sparkle - Positioned relative to the buttons */}
-            <div className="hidden lg:block absolute bottom-0 right-10 opacity-10">
-              <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor" className="text-gray-900">
-                <path d="M12 .5l2.5 7.5H22l-6 4.5 2.5 7.5-6.5-5-6.5 5 2.5-7.5-6-4.5h7.5L12 .5z" />
-              </svg>
+              </div>
             </div>
           </div>
+
+          
         </div>
 
         {/* BOTTOM IMAGE SECTION */}

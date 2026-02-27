@@ -69,7 +69,7 @@ export default function Testimonials() {
 
   return (
     <section className="relative overflow-hidden bg-[#F3F1F2] py-24">
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="container mx-auto px-4 md:px-10">
 
         {/* ---------- TITLE ---------- */}
         <div className="relative z-0 max-w-xl">
@@ -82,7 +82,7 @@ export default function Testimonials() {
         </div>
 
         {/* ---------- REDIRECT BUTTON (Desktop) ---------- */}
-        <div className="absolute right-10 top-24 hidden md:block">
+        <div className="absolute right-50 top-24 hidden md:block">
           <Link
             href="/testimonials"
             className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-8 py-3 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline"
@@ -92,7 +92,7 @@ export default function Testimonials() {
         </div>
 
         {/* ---------- CARDS (Horizontally Scrollable) ---------- */}
-        <div className="relative z-10 mt-[-50px] ml-auto w-[135%]">
+        <div className="relative z-10 mt-0 ml-auto w-[135%]">
           <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4">
             {visibleItems.map((item: any, index: number) => (
               <div

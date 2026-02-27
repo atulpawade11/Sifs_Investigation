@@ -5,8 +5,14 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import { getDownloads } from '@/services/downloadService';
 import { Skeleton } from '@/components/shared/Skeleton';
-import { API_BASE_URL } from '@/lib/config'; // Import your config
+import { API_BASE_URL } from '@/lib/config';
 import 'swiper/css';
+
+// Import Icons
+import { 
+  FaFilePdf, FaFolderOpen, FaSearch, FaEnvelope, 
+  FaUserInjured, FaShareAlt, FaArchive, FaFileAlt, FaTrashAlt 
+} from 'react-icons/fa';
 
 const DownloadsSlider = () => {
   const [data, setData] = useState({
@@ -16,12 +22,24 @@ const DownloadsSlider = () => {
   });
   const [loading, setLoading] = useState(true);
 
+  // Map API strings to React Icons
+  const getIcon = (iconName: string) => {
+    const name = iconName?.toLowerCase() || "";
+    if (name.includes('pdf')) return <FaFilePdf className="text-red-500" />;
+    if (name.includes('archive')) return <FaArchive className="text-amber-600" />;
+    if (name.includes('folder') || name.includes('open')) return <FaFolderOpen className="text-blue-500" />;
+    if (name.includes('search')) return <FaSearch className="text-slate-500" />;
+    if (name.includes('envelope')) return <FaEnvelope className="text-blue-400" />;
+    if (name.includes('injured')) return <FaUserInjured className="text-orange-500" />;
+    if (name.includes('share')) return <FaShareAlt className="text-green-500" />;
+    if (name.includes('trash')) return <FaTrashAlt className="text-slate-400" />;
+    return <FaFileAlt className="text-[#04063E]" />;
+  };
+
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        
-        // Fetch both Downloads and Home API (for titles)
         const [downloadResult, homeRes] = await Promise.all([
           getDownloads(),
           fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`).then(res => res.json())
@@ -34,7 +52,6 @@ const DownloadsSlider = () => {
           );
         }
 
-        // Extract titles from Home API 'bs' object
         const homeBs = homeRes?.success ? homeRes.data.bs : null;
 
         setData({
@@ -57,7 +74,7 @@ const DownloadsSlider = () => {
 
   if (loading) {
     return (
-      <section className="py-20 bg-white overflow-hidden">
+      <section className="py-12 bg-white overflow-hidden">
         <div className="container mx-auto px-4 text-center mb-12 flex flex-col items-center space-y-4">
           <Skeleton className="h-4 w-32" />
           <Skeleton className="h-10 w-64" />
@@ -74,7 +91,7 @@ const DownloadsSlider = () => {
   if (totalCount === 0) return null;
 
   return (
-    <section className="py-20 bg-white overflow-hidden">
+    <section className="py-12 bg-white overflow-hidden">
       <div className="container mx-auto px-4 text-center mb-12">
         <p className="text-[#04063E] font-bold italic text-sm mb-2 uppercase tracking-widest">
           {data.subtitle}
@@ -93,8 +110,10 @@ const DownloadsSlider = () => {
                 href={item.download_pdf}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm hover:border-[#04063E] hover:shadow-md transition-all whitespace-nowrap"
+                download
+                className="flex items-center gap-3 px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm hover:border-[#04063E] hover:shadow-md transition-all whitespace-nowrap"
               >
+                <span className="text-xl">{getIcon(item.image)}</span>
                 {item.title}
               </a>
             ))}
@@ -112,7 +131,14 @@ const DownloadsSlider = () => {
             >
               {data.items.slice(0, Math.ceil(totalCount / 2)).map((item) => (
                 <SwiperSlide key={`r1-${item.id}`} style={{ width: 'auto' }}>
-                  <a href={item.download_pdf} target="_blank" className="flex items-center px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm whitespace-nowrap">
+                  <a 
+                    href={item.download_pdf} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    download
+                    className="flex items-center gap-3 px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm whitespace-nowrap"
+                  >
+                    <span className="text-xl">{getIcon(item.image)}</span>
                     {item.title}
                   </a>
                 </SwiperSlide>
@@ -130,7 +156,14 @@ const DownloadsSlider = () => {
             >
               {data.items.slice(Math.ceil(totalCount / 2)).map((item) => (
                 <SwiperSlide key={`r2-${item.id}`} style={{ width: 'auto' }}>
-                  <a href={item.download_pdf} target="_blank" className="flex items-center px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm whitespace-nowrap">
+                  <a 
+                    href={item.download_pdf} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    download
+                    className="flex items-center gap-3 px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm whitespace-nowrap"
+                  >
+                    <span className="text-xl">{getIcon(item.image)}</span>
                     {item.title}
                   </a>
                 </SwiperSlide>
