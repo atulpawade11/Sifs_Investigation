@@ -9,6 +9,7 @@ import CareerFAQSection from "@/components/career/CareerFAQSection";
 import DownloadsSlider from "@/components/common/DownloadsSlider";
 import { API_BASE_URL } from '@/lib/config';
 import { Loader2 } from "lucide-react";
+import { useBoot } from "@/context/BootContext";
 
 export default function CareerClient({ initialData }: { initialData: any }) {
   // Use initialData if available, otherwise start with null
@@ -18,7 +19,7 @@ export default function CareerClient({ initialData }: { initialData: any }) {
   const [category, setCategory] = useState("All");
   const [visible, setVisible] = useState(4);
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  
+  const { breadcrumbImage } = useBoot();
   const isFirstRender = useRef(true);
 
   useEffect(() => {
@@ -74,7 +75,7 @@ export default function CareerClient({ initialData }: { initialData: any }) {
       <PageBanner 
         title={careerData?.be?.career_title || "Careers"} 
         subtitle={careerData?.be?.career_subtitle} 
-        bgImage="/about/about-banner.png" 
+        breadcrumbImage={breadcrumbImage} 
       />
       
       <section className="bg-white py-12">

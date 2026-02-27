@@ -5,6 +5,8 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { Toaster } from 'sonner';
 import { getBootData } from '@/services/webService';
+import React from "react";
+import { BootProvider } from "@/context/BootContext";
 
 export async function generateMetadata() {
   try {
@@ -26,8 +28,6 @@ export async function generateMetadata() {
   };
 }
 
-
-
 // Configure Lato
 const lato = Lato({
   subsets: ["latin"],
@@ -35,15 +35,26 @@ const lato = Lato({
   variable: "--font-lato",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: ReactNode;
 }) {
+
+  let breadcrumbImage = "/about/about-banner.png";
+
+  try {
+    const res = await getBootData();
+    if (res?.success && res?.data?.bs?.breadcrumb) {
+      breadcrumbImage = res.data.bs.breadcrumb;
+    }
+  } catch (error) {
+    console.error("Boot data fetch error:", error);
+  }
+
   return (
     <html lang="en">
       <head>
-        {/* Font Awesome CDN Link */}
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -52,7 +63,11 @@ export default function RootLayout({
       <body className={`${lato.variable} font-sans antialiased`}>
         <Toaster position="top-right" richColors />
         <Header />
-        <main>{children}</main>
+
+        <BootProvider breadcrumbImage={breadcrumbImage}>
+          <main>{children}</main>
+        </BootProvider>
+
         <Footer />
       </body>
     </html>

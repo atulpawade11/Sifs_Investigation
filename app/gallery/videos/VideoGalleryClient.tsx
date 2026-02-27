@@ -5,6 +5,7 @@ import PageBanner from "@/components/common/PageBanner";
 import { Play, X, ChevronUp, ArrowRight } from "lucide-react";
 import { API_BASE_URL } from '@/lib/config';
 import { Skeleton } from '@/components/shared/Skeleton';
+import { useBoot } from "@/context/BootContext";
 
 interface VideoItem {
   id: number;
@@ -20,6 +21,7 @@ export default function VideoGalleryClient() {
   const initialCount = 6; 
   const [displayCount, setDisplayCount] = useState(initialCount);
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
+  const { breadcrumbImage } = useBoot();
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -67,7 +69,7 @@ export default function VideoGalleryClient() {
       <PageBanner
         title="Video Gallery"
         subtitle="SIFS India Forensic Lab"
-        bgImage="/about/about-banner.png"
+        breadcrumbImage={breadcrumbImage}
       />
 
       <div className="relative bg-[#FFFFFF] py-16">

@@ -4,6 +4,7 @@ import ClientelePortfolio from "@/components/common/ClientelePortfolio";
 import PageBanner from "@/components/common/PageBanner";
 import { API_BASE_URL } from "@/lib/config";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { useBoot } from "@/context/BootContext";
 
 // SEO Logic
 export async function generateMetadata(): Promise<Metadata> {
@@ -28,11 +29,12 @@ async function getPortfolioSettings() {
       return {
         title: result.data.bs.portfolio_title || "Our Clientele",
         subtitle: result.data.bs.portfolio_subtitle || "Satisfied Clients",
-        bgImage: result.data.bs.portfolio_banner || "/about/about-banner.png"
+        bgImage: result.data.bs.portfolio_banner || "/about/about-banner.png",
+        breadcrumbImage: result.data.bs.breadcrumb || null,
       };
     }
   } catch (e) { console.error(e); }
-  return { title: "Our Clientele", subtitle: "Portfolio", bgImage: "/about/about-banner.png" };
+  return { title: "Our Clientele", subtitle: "Portfolio", bgImage: "/about/about-banner.png", breadcrumbImage: null, };
 }
 
 // Internal Skeleton for this page
@@ -53,13 +55,14 @@ function LocalSkeletonGrid() {
 
 export default async function ClientelePage() {
   const settings = await getPortfolioSettings();
+  
 
   return (
     <main className="bg-white min-h-screen">
       <PageBanner 
         title={settings.title} 
         subtitle={settings.subtitle} 
-        bgImage={settings.bgImage} 
+        breadcrumbImage={settings.breadcrumbImage}
       />
       
       {/* If ClientelePortfolio is a Client Component with a useEffect, 

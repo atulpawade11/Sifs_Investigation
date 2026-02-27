@@ -4,12 +4,14 @@ import React, { useEffect, useState } from 'react';
 import PageBanner from "../../../components/common/PageBanner";
 import { API_BASE_URL } from '@/lib/config';
 import { Skeleton } from '@/components/shared/Skeleton';
+import { useBoot } from "@/context/BootContext";
 
 export default function SketchCopProductClient({ slug }: { slug: string }) {
   const [productData, setProductData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const { breadcrumbImage } = useBoot();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,7 +92,7 @@ export default function SketchCopProductClient({ slug }: { slug: string }) {
       <PageBanner 
         title={productData.title} 
         subtitle={productData.subtitle} 
-        bgImage="/images/banners/product-default.jpg" 
+        breadcrumbImage={breadcrumbImage} 
       />
 
       <div className="max-w-6xl mx-auto px-4 mt-8 space-y-2">
