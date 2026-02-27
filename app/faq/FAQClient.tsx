@@ -5,11 +5,13 @@ import PageBanner from "@/components/common/PageBanner";
 import { ChevronDown, ChevronUp } from "lucide-react"; 
 import { API_BASE_URL } from '@/lib/config';
 import { Skeleton } from "@/components/shared/Skeleton";
+import { useBoot } from "@/context/BootContext";
 
 export default function FAQClient() {
   const [faqData, setFaqData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
+  const { breadcrumbImage } = useBoot();
   
   const INITIAL_LIMIT = 5;
 
@@ -57,7 +59,7 @@ export default function FAQClient() {
       <PageBanner
         title={faqData?.bs?.faq_title || "Frequently Asked Questions"}
         subtitle={faqData?.bs?.faq_subtitle || "SIFS India Support"}
-        bgImage="/about/about-banner.png"
+        breadcrumbImage={breadcrumbImage}
       />
 
       <div className="relative z-10 -mt-12 pb-20 px-4">
