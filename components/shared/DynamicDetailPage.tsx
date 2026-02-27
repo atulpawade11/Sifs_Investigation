@@ -7,6 +7,8 @@ import PillDivider from "./PillDivider";
 import TabbedContentSection from "./TabbedContentSection";
 import AccordionSection from "./AccordionSection";
 import CTASection from "./CTASection";
+import { useBoot } from "@/context/BootContext";
+
 
 // This interface matches the "mappedData" we created in your Laboratory page
 interface DynamicPageProps {
@@ -42,13 +44,14 @@ interface DynamicPageProps {
 }
 
 export default function DynamicDetailPage({ data }: DynamicPageProps) {
+  const { breadcrumbImage } = useBoot();
   return (
     <div className="bg-white">
       {/* 1. Page Banner */}
       <PageBanner
         title={data.banner?.title ?? "Laboratory"}
         subtitle={data.banner?.subtitle ?? "SIFS India"}
-        bgImage={data.banner?.bgImage}
+        breadcrumbImage={breadcrumbImage}
       />
 
       <section className="max-w-7xl mx-auto px-4 py-10">

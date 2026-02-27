@@ -5,6 +5,7 @@ interface PageBannerProps {
   subtitle?: string;
   description?: string;
   bgImage?: string;
+  breadcrumbImage?: string; // 👈 from layout
 }
 
 export default function PageBanner({
@@ -12,41 +13,42 @@ export default function PageBanner({
   subtitle,
   description,
   bgImage,
+  breadcrumbImage,
 }: PageBannerProps) {
+
+  const bannerImage = bgImage || breadcrumbImage;
+
   return (
-    <section className="relative overflow-hidden">
-      {/* Background */}
-      {bgImage ? (
+    <section className="relative overflow-hidden min-h-[250px] flex items-center justify-center">
+
+      {bannerImage ? (
         <div className="absolute inset-0">
           <Image
-            src={bgImage}
-            alt=""
+            src={bannerImage}
+            alt="Page Banner"
             fill
             priority
             className="object-cover"
           />
+          <div className="absolute inset-0 bg-black/40" />
         </div>
       ) : (
         <div className="absolute inset-0 bg-[#F5F6F8]" />
       )}
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 text-center">
-        {/* Title */}
-        <h1 className="text-[24px] font-medium text-black">
+      <div className="relative z-10 text-center text-white px-4">
+        <h1 className="text-3xl md:text-4xl font-semibold">
           {title}
         </h1>
 
-        {/* Subtitle */}
         {subtitle && (
-          <p className="text-[#96C11F] text-xs font-black mt-1 uppercase tracking-[0.2em]">
+          <p className="mt-2 text-sm md:text-base">
             {subtitle}
           </p>
         )}
 
-        {/* Description */}
         {description && (
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-3 text-sm text-gray-200">
             {description}
           </p>
         )}

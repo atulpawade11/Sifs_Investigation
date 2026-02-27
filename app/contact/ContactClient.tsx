@@ -6,10 +6,12 @@ import ContactInfoSection from "@/components/contact/ContactInfoSection";
 import ContactFormSection from "@/components/contact/ContactFormSection";
 import { getContactInfo } from "@/services/contactService";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { useBoot } from "@/context/BootContext";
 
 export default function ContactClient() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { breadcrumbImage } = useBoot();
 
   useEffect(() => {
     let isMounted = true;
@@ -92,7 +94,7 @@ export default function ContactClient() {
       <PageBanner
         title="Contact Us"
         subtitle="We are here to help you"
-        bgImage="/about/about-banner.png"
+        breadcrumbImage={breadcrumbImage}
       />
       <ContactInfoSection
         locations={data?.locations || []}

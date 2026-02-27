@@ -28,8 +28,8 @@ const aboutMenu = [
 ];
 
 const departmentMenu = [
-  { label: "Forensic Education", href: "https://example-education-link.com", isExternal: true },
-  { label: "Forensic Training", href: "https://example-training-link.com", isExternal: true },
+  //{ label: "Forensic Education", href: "https://example-education-link.com", isExternal: true },
+  //{ label: "Forensic Training", href: "https://example-training-link.com", isExternal: true },
   { label: "Forensic Investigation", href: "/department/investigation", isExternal: false },
 ];
 

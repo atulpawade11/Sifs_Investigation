@@ -6,12 +6,14 @@ import PageBanner from "@/components/common/PageBanner";
 import { getTeamMembers, getTeamMemberById } from "@/services/teamService";
 import { Facebook, Instagram, Linkedin, AlertCircle, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { useBoot } from "@/context/BootContext";
 
 export default function TeamDetailClient({ idFromUrl }: { idFromUrl: string }) {
   const router = useRouter();
   const [member, setMember] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const { breadcrumbImage } = useBoot();
 
   useEffect(() => {
     async function loadData() {
@@ -96,7 +98,7 @@ export default function TeamDetailClient({ idFromUrl }: { idFromUrl: string }) {
 
   return (
     <main className="bg-white min-h-screen pb-20">
-      <PageBanner title={member.name} subtitle={member.rank} bgImage="/about/about-banner.png" />
+      <PageBanner title={member.name} subtitle={member.rank} breadcrumbImage={breadcrumbImage} />
       
       <div className="max-w-6xl mx-auto px-4 py-8">
         <button 

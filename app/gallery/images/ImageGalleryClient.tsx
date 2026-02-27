@@ -5,6 +5,7 @@ import PageBanner from "@/components/common/PageBanner";
 import { ArrowRight, X, ChevronUp } from "lucide-react";
 import { API_BASE_URL } from '@/lib/config';
 import { Skeleton } from '@/components/shared/Skeleton';
+import { useBoot } from "@/context/BootContext";
 
 interface GalleryItem {
   id: number;
@@ -19,6 +20,7 @@ export default function ImageGalleryClient() {
   const initialCount = 4;
   const [displayCount, setDisplayCount] = useState(initialCount);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+  const { breadcrumbImage } = useBoot();
 
   useEffect(() => {
     const fetchGallery = async () => {
@@ -72,7 +74,7 @@ export default function ImageGalleryClient() {
       <PageBanner
         title="Image Gallery"
         subtitle="SIFS India"
-        bgImage="/about/about-banner.png"
+        breadcrumbImage={breadcrumbImage}
       />
 
       <div className="relative bg-[#FFFFFF] py-12">

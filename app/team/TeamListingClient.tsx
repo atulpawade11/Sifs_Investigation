@@ -5,12 +5,14 @@ import Link from "next/link";
 import PageBanner from "@/components/common/PageBanner";
 import { getTeamMembers } from "@/services/teamService";
 import { Skeleton } from "@/components/shared/Skeleton";
+import { useBoot } from "@/context/BootContext";
 
 export default function TeamListingClient() {
   const [members, setMembers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [activeCatId, setActiveCatId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const { breadcrumbImage } = useBoot();
 
   useEffect(() => {
     async function loadData() {
@@ -63,7 +65,7 @@ export default function TeamListingClient() {
 
   return (
     <main className="bg-gray-50 min-h-screen">
-      <PageBanner title="Our Experts" subtitle="SIFS India Team" bgImage="/about/about-banner.png" />
+      <PageBanner title="Our Experts" subtitle="SIFS India Team" breadcrumbImage={breadcrumbImage} />
 
       {loading ? (
         <TeamSkeleton />
