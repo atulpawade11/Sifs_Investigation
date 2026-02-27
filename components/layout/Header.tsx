@@ -221,7 +221,7 @@ const Header = () => {
           {/* Department Dropdown */}
           <div className="group relative">
             <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
-              Department <ChevronDown size={16} />
+              Department & Laboratory <ChevronDown size={16} />
             </div>
             <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <ul className="py-2">
@@ -237,7 +237,7 @@ const Header = () => {
           </div>
 
           {/* Laboratory Dropdown */}
-          <div className="group relative">
+          {/* <div className="group relative">
             <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
               Laboratory <ChevronDown size={16} />
             </div>
@@ -252,7 +252,7 @@ const Header = () => {
                 ))}
               </ul>
             </div>
-          </div>
+          </div> */}
 
           {/* Product Dropdown (New) */}
           <div className="group relative">

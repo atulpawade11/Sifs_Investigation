@@ -20,7 +20,7 @@ export default function PageBanner({
 
   return (
     <section className="relative overflow-hidden min-h-[250px] flex items-center justify-center">
-      
+
       {bannerImage ? (
         <div className="absolute inset-0">
           <Image

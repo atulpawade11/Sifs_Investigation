@@ -8,6 +8,7 @@ import ShowcaseStats from "../components/home/ShowcaseStats";
 import Team from "../components/home/Team";
 import Testimonials from "../components/home/Testimonials";
 import BlogsCaseStudies from "../components/home/BlogsCaseStudies";
+import ExpertSupport from "../components/home/ExpertSupport";
 import DownloadsSlider from "../components/common/DownloadsSlider";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -48,6 +49,7 @@ export default function HomePage() {
       <Team />
       <Testimonials />
       <BlogsCaseStudies />
+      <ExpertSupport />
       <DownloadsSlider />
     </>
   );

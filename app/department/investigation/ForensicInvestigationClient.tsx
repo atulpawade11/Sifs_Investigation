@@ -39,14 +39,14 @@ export default function ForensicInvestigationClient() {
   return (
     <main className="bg-white min-h-screen">
       <PageBanner
-        title={data?.title || "Forensic Investigation"}
-        subtitle={data?.subtitle || "SIFS India Department"}
+        title={data?.title}
+        subtitle={data?.name}
         bgImage="/about/about-banner.png"
       />
 
-      <HeroSection 
+      <HeroSection
         name={data?.name}
-        content={data?.body} 
+        content={data?.body}
       />
 
       <CoreServices />

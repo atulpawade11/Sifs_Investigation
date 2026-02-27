@@ -23,41 +23,45 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
     async function loadDetail() {
       try {
         setLoading(true);
-        const res = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services`);
-        const result = await res.json();
-        
-        if (result?.success && result?.data?.categories) {
-          // Store the result data for the sidebar
-          setSidebarData(result.data); 
 
-          const categories = result.data.categories;
+        // 1. Fetch categories for sidebar
+        const catRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services`);
+        const catResult = await catRes.json();
+
+        let foundCategoryName = "";
+        if (catResult?.success && catResult?.data?.categories) {
+          setSidebarData(catResult.data);
+
+          const categories = catResult.data.categories;
           const cleanCatSlug = decodeURIComponent(categorySlug).toLowerCase().replace(/[^a-z0-9]/g, '');
-  
+
           const foundCat = categories.find((c: any) => {
             const apiName = c.name.toLowerCase().replace(/[^a-z0-9]/g, '');
             return apiName.includes(cleanCatSlug) || cleanCatSlug.includes(apiName);
           });
-  
+
           if (foundCat) {
+            foundCategoryName = foundCat.name;
+            // 2. Fetch sidebar services for this category
             const sRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services?category=${foundCat.id}`);
             const sData = await sRes.json();
-            
-            // Update sidebar data with the specific services of the found category
             if (sData?.success) {
-                setSidebarData(sData.data);
-            }
-            
-            if (sData?.success && sData?.data?.data) {
-              const decodedServiceSlug = decodeURIComponent(serviceSlug).toLowerCase();
-              const targetService = sData.data.data.find((s: any) => 
-                s.slug.toLowerCase() === decodedServiceSlug
-              );
-  
-              if (targetService) {
-                setDetailData(targetService);
-              }
+              setSidebarData(sData.data);
             }
           }
+        }
+
+        // 3. Fetch specific service detail (includes content and pccqueries)
+        const detailRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/service/${serviceSlug}`);
+        const detailResult = await detailRes.json();
+
+        if (detailResult?.success && detailResult?.data?.service) {
+          // Flatten the structure for the components
+          setDetailData({
+            ...detailResult.data.service,
+            category_name: detailResult.data.service.category_name || foundCategoryName || "Service",
+            pccqueries: detailResult.data.pccqueries || []
+          });
         }
       } catch (err) {
         console.error("Detail Page Error:", err);
@@ -120,41 +124,35 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
 
   return (
     <div className="bg-[#F8F9FA] min-h-screen">
-      <PageBanner 
-        title={detailData.category_name || "Investigation Service"} 
-        subtitle={detailData.title} 
-        bgImage={detailData.main_image || "/about/about-banner.png"} 
+      <PageBanner
+        title={detailData.category_name || "Investigation Service"}
+        subtitle={detailData.title}
+        bgImage={detailData.main_image || "/about/about-banner.png"}
       />
       <div className="max-w-7xl mx-auto px-4 md:px-10 py-16 relative">
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Sidebar */}
           <aside className="lg:w-1/3 xl:w-1/4 space-y-8">
             <div className="sticky top-28">
-               {/* Updated this to use sidebarData instead of undefined data */}
-               <ServiceSidebar apiData={sidebarData} />
-               <div className="mt-8">
-                 <QueryForm serviceTitle={detailData?.title}/>
-               </div>
+              {/* Updated this to use sidebarData instead of undefined data */}
+              <ServiceSidebar apiData={sidebarData} />
+              <div className="mt-8">
+                <QueryForm serviceTitle={detailData?.title} />
+              </div>
             </div>
           </aside>
 
           {/* Main Content */}
           <main className="lg:w-2/3 xl:w-3/4">
             <div className="bg-white p-6 md:p-12 rounded-[2rem] shadow-xl shadow-blue-900/5 border border-gray-100">
-               <div className="mb-10 overflow-hidden rounded-2xl border-b-4 border-[#96C11F]">
-                  <img 
-                    src={detailData.featured_image || detailData.main_image} 
-                    alt={detailData.title} 
-                    className="w-full h-auto object-cover max-h-[400px]"
-                  />
-               </div>
-               
-               <ServiceDetailContent apiData={detailData} />
-               
-               <div className="mt-12 pt-12 border-t border-gray-100">
-                 <h4 className="text-xl font-bold text-[#04063E] mb-6">Frequently Asked Questions</h4>
-                 <FAQAccordion />
-               </div>
+
+
+              <ServiceDetailContent apiData={detailData} />
+
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                {/* <h4 className="text-xl font-bold text-[#04063E] mb-6">Forensic Examination Enquiries</h4> */}
+                <FAQAccordion apiFaqs={detailData.pccqueries} />
+              </div>
             </div>
           </main>
         </div>
