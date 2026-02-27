@@ -31,6 +31,7 @@ const AboutIntro = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  /*
   // Static fallback highlights (Not provided in JSON, keeping as per original design)
   const staticHighlights = [
     "Forged Document Examination",
@@ -38,13 +39,14 @@ const AboutIntro = () => {
     "Signature Verification",
     "Fingerprint Comparison"
   ];
+  */
 
   // Fetch data from API on mount
   useEffect(() => {
     const fetchAboutData = async () => {
       try {
         setLoading(true);
-        // Using API_BASE_URL as per your Hero reference
+
         const response = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`);
 
         if (!response.ok) {
@@ -69,7 +71,7 @@ const AboutIntro = () => {
     fetchAboutData();
   }, []);
 
-  // Helper to resolve image paths (mirrors your Hero logic)
+  // Helper to resolve image paths
   const getImageUrl = (path: string | undefined) => {
     if (!path || path.trim() === "") return "/about.png";
     if (path.startsWith('http')) return path;
@@ -79,10 +81,9 @@ const AboutIntro = () => {
     return `${baseUrl}${imgPath}`;
   };
 
-  // Show loading state matching Hero reference
   if (loading) {
     return (
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-8 md:py-12 bg-white">
         <div className="container mx-auto px-4 md:px-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             <div className="space-y-8">
@@ -111,12 +112,11 @@ const AboutIntro = () => {
     );
   }
 
-  // Fallback to API data or static defaults
   const content = aboutData?.data?.bs;
   const introBg = getImageUrl(content?.intro_bg);
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="py-8 md:py-12 bg-white">
       <div className="container mx-auto px-4 md:px-10">
 
         {error && (
@@ -130,15 +130,16 @@ const AboutIntro = () => {
           {/* LEFT CONTENT */}
           <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-700">
             <div className="space-y-4">
-              <span className="text-[#04063E] font-medium italic">
-                {content?.intro_section_title || "Efficiency Meets the Finest Forensic Expertise"}
-              </span>
               <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
                 {content?.intro_section_text || "SIFS India has successfully carved a niche in the field of forensics."}
               </h2>
+              <span className="text-[#04063E] font-medium italic">
+                {content?.intro_section_title || "Efficiency Meets the Finest Forensic Expertise"}
+              </span>
             </div>
 
-            {/* Feature List */}
+            {/* Feature List (Commented Out) */}
+            {/*
             <div className="grid grid-cols-1 gap-4">
               {staticHighlights.map((item, index) => (
                 <div key={index} className="flex items-center gap-3 group mb-1">
@@ -156,6 +157,7 @@ const AboutIntro = () => {
                 </div>
               ))}
             </div>
+            */}
 
             <div className="flex items-center gap-6 pt-4">
               <button
@@ -183,7 +185,7 @@ const AboutIntro = () => {
             </div>
           </div>
 
-          {/* RIGHT CONTENT: Image & Video Overlay */}
+          {/* RIGHT IMAGE */}
           <div className="relative group animate-in fade-in slide-in-from-right-4 duration-700">
             <div className="relative rounded-[32px] overflow-hidden shadow-2xl aspect-[4/3]">
               <Image
@@ -195,7 +197,6 @@ const AboutIntro = () => {
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
 
-              {/* Video Button - Dynamic link from API */}
               <div className="absolute inset-0 flex items-center justify-center bg-black/5 group-hover:bg-black/20 transition-all">
                 <button
                   className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center text-[#1A365D] shadow-2xl hover:scale-110 hover:bg-white transition-transform"
@@ -210,13 +211,13 @@ const AboutIntro = () => {
               </div>
             </div>
 
-            {/* Decorative Sparkle matching your brand style */}
             <div className="absolute -bottom-6 -right-6 opacity-10 -z-10">
               <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor" className="text-gray-900">
                 <path d="M12 .5l2.5 7.5H22l-6 4.5 2.5 7.5-6.5-5-6.5 5 2.5-7.5-6-4.5h7.5L12 .5z" />
               </svg>
             </div>
           </div>
+
         </div>
       </div>
     </section>

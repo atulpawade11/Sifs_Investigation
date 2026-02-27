@@ -122,7 +122,7 @@ const ShowcaseStats = () => {
         </div>
 
         <div className="relative z-10 text-center px-4">
-          <div className="mt-12 md:mt-24 mb-10 md:mb-14">
+          <div className="mt-12 md:mt-16 mb-20 md:mb-24">
             <p className="text-white md:text-[#04063E] font-semibold text-xs md:text-sm tracking-widest mb-2 uppercase">
               {content.title}
             </p>
@@ -133,7 +133,7 @@ const ShowcaseStats = () => {
 
           {/* DYNAMIC LOGO SWIPER */}
           {logoSlides.length > 0 && (
-            <div className="mb-12 md:mb-20 mt-12 md:mt-20">
+            <div className="mb-12 md:mb-20 mt-20 md:mt-40">
               <Swiper
                 modules={[Autoplay]}
                 spaceBetween={12}

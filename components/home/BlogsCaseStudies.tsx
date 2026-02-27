@@ -83,7 +83,7 @@ const BlogsCaseStudies = () => {
 
   if (loading) {
     return (
-      <section className="py-24 bg-white">
+      <section className="py-12 bg-white">
         <div className="container mx-auto px-4 md:px-10">
           <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-4">
             <div className="space-y-4">
@@ -123,7 +123,7 @@ const BlogsCaseStudies = () => {
   const sideBlogs = blogs.slice(1, 4);
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-12 bg-white">
       <div className="container mx-auto px-4 md:px-10">
         
         {/* Header Section */}
