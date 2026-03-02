@@ -31,3 +31,13 @@ export const getBootData = async () => {
         throw err;
     }
 };
+export const getProducts = async () => {
+    try {
+        const res = await fetchWithTimeout(`${backendUrl}${BASE_PATH}/products`);
+        if (!res.ok) throw new Error(`GET Error: ${res.status}`);
+        return res.json();
+    } catch (err: any) {
+        if (err.name === 'AbortError') throw new Error('Request timed out after 10 seconds');
+        throw err;
+    }
+};

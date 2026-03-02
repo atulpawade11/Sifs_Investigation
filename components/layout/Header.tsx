@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, ChevronDown, Menu, X, ArrowRight, Globe } from 'lucide-react';
 
-import { getBootData } from '@/services/webService';
+import { getBootData, getProducts } from '@/services/webService';
 
 
 // Menu Data
@@ -44,18 +44,14 @@ const servicesMenu = [
   { label: "Forensic Support", slug: "forensic-support" },
 ];
 
-const productMenu = [
-  {
-    label: "SketchCop® Software",
-    slug: "sketchcop-facial-composite-software"
-  },
-];
+// Static product removed, will be fetched dynamically
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [data, setData] = useState<any>(null);
   const [selectedLang, setSelectedLang] = useState<any>(null);
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [products, setProducts] = useState<any[]>([]);
 
 
   useEffect(() => {
@@ -73,6 +69,18 @@ const Header = () => {
       }
     }
     loadBootData();
+
+    async function loadProducts() {
+      try {
+        const res = await getProducts();
+        if (res && res.success) {
+          setProducts(res.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to load products:", err);
+      }
+    }
+    loadProducts();
   }, []);
 
 
@@ -221,7 +229,7 @@ const Header = () => {
           {/* Department Dropdown */}
           <div className="group relative">
             <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
-              Department & Laboratory <ChevronDown size={16} />
+              {data?.bs?.parent_link_name || 'Department & Laboratory'} <ChevronDown size={16} />
             </div>
             <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <ul className="py-2">
@@ -257,17 +265,21 @@ const Header = () => {
           {/* Product Dropdown (New) */}
           <div className="group relative">
             <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
-              <Link href="/product">Product</Link> <ChevronDown size={16} />
+              <Link href="/product">{data?.bs?.parent_product_name || 'Product'}</Link> <ChevronDown size={16} />
             </div>
             <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <ul className="py-2">
-                {productMenu.map((item, index) => (
-                  <li key={index}>
-                    <Link href={`/product/${item.slug}`} className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
+                {products.length > 0 ? (
+                  products.map((item, index) => (
+                    <li key={item.id || index}>
+                      <Link href={`/product/${item.slug}`} className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                        {item.name || item.title}
+                      </Link>
+                    </li>
+                  ))
+                ) : (
+                  <li className="px-5 py-3 text-sm text-gray-400 italic">No products available</li>
+                )}
               </ul>
             </div>
           </div>
@@ -334,7 +346,7 @@ const Header = () => {
 
           {/* Laboratory Mobile */}
           <div className="space-y-2">
-            <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">Laboratory</p>
+            <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">{data?.bs?.parent_link_name || 'Laboratory'}</p>
             {laboratoryMenu.map((item) => (
               <Link key={item.label} href={`/laboratory/${item.slug}`} className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
                 {item.label}
@@ -344,15 +356,19 @@ const Header = () => {
 
           {/* Product Mobile (New) */}
           <div className="space-y-2">
-            <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">Product</p>
+            <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">{data?.bs?.parent_product_name || 'Product'}</p>
             <Link href="/product" className="block pl-4 py-1 text-sm text-gray-800 font-bold" onClick={() => setIsOpen(false)}>
-              All Products
+              {data?.bs?.parent_product_name || 'Products'}
             </Link>
-            {productMenu.map((item) => (
-              <Link key={item.label} href={`/product/${item.slug}`} className="block pl-8 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
-                {item.label}
-              </Link>
-            ))}
+            {products.length > 0 ? (
+              products.map((item) => (
+                <Link key={item.id || item.slug} href={`/product/${item.slug}`} className="block pl-8 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
+                  {item.name || item.title}
+                </Link>
+              ))
+            ) : (
+              <p className="block pl-8 py-1 text-sm text-gray-400 italic">No products available</p>
+            )}
           </div>
 
           <Link href="/contact" className="block text-[#F68A07] text-lg" onClick={() => setIsOpen(false)}>Contact Us</Link>
