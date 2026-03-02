@@ -31,9 +31,29 @@ export const getBootData = async () => {
         throw err;
     }
 };
+
+/**
+ * GET: Fetches Products list
+ * Endpoint: {{BaseUrl}}/InvestigationServices/Website/front/products
+ */
 export const getProducts = async () => {
     try {
         const res = await fetchWithTimeout(`${backendUrl}${BASE_PATH}/products`);
+        if (!res.ok) throw new Error(`GET Error: ${res.status}`);
+        return res.json();
+    } catch (err: any) {
+        if (err.name === 'AbortError') throw new Error('Request timed out after 10 seconds');
+        throw err;
+    }
+};
+
+/**
+ * GET: Fetches Departments list (Dynamic Menu)
+ * Endpoint: {{BaseUrl}}/InvestigationServices/Website/front/departments
+ */
+export const getDepartments = async () => {
+    try {
+        const res = await fetchWithTimeout(`${backendUrl}${BASE_PATH}/departments`);
         if (!res.ok) throw new Error(`GET Error: ${res.status}`);
         return res.json();
     } catch (err: any) {

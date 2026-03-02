@@ -5,32 +5,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, ChevronDown, Menu, X, ArrowRight, Globe } from 'lucide-react';
 
-import { getBootData, getProducts } from '@/services/webService';
+// Import getDepartments alongside your other services
+import { getBootData, getProducts, getDepartments } from '@/services/webService';
 
-
-// Menu Data
-const laboratoryMenu = [
-  { label: "Document Examination", slug: "document-examination" },
-  { label: "Fingerprint Examination", slug: "fingerprint-examination" },
-  { label: "Cyber Forensics", slug: "cyber-forensics" },
-  { label: "Fire Forensics", slug: "fire-forensics" },
-  { label: "Forensic Biology", slug: "forensic-biology" },
-  { label: "Key Forensics", slug: "key-forensics" },
-  { label: "Accident Reconstruction", slug: "accident-reconstruction" },
-  { label: "Forensic Facial Imaging", slug: "forensic-facial-imaging" },
-];
-
+// Menu Data (Static fallbacks if needed)
 const aboutMenu = [
   { label: "About Us", href: "/about" },
   { label: "Image Gallery", href: "/gallery/images" },
   { label: "Video Gallery", href: "/gallery/videos" },
   { label: "FAQ", href: "/faq" },
-];
-
-const departmentMenu = [
-  //{ label: "Forensic Education", href: "https://example-education-link.com", isExternal: true },
-  //{ label: "Forensic Training", href: "https://example-training-link.com", isExternal: true },
-  { label: "Forensic Investigation", href: "/department/investigation", isExternal: false },
 ];
 
 const servicesMenu = [
@@ -44,15 +27,14 @@ const servicesMenu = [
   { label: "Forensic Support", slug: "forensic-support" },
 ];
 
-// Static product removed, will be fetched dynamically
-
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [data, setData] = useState<any>(null);
   const [selectedLang, setSelectedLang] = useState<any>(null);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
-
+  // New state for dynamic departments
+  const [departments, setDepartments] = useState<any[]>([]);
 
   useEffect(() => {
     async function loadBootData() {
@@ -81,8 +63,21 @@ const Header = () => {
       }
     }
     loadProducts();
-  }, []);
 
+    // Fetch Departments dynamically
+    async function loadDepartments() {
+      try {
+        const res = await getDepartments();
+        if (res && res.success) {
+          // Mapping data.data based on your API response structure
+          setDepartments(res.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to load departments:", err);
+      }
+    }
+    loadDepartments();
+  }, []);
 
   useEffect(() => {
     if (selectedLang) {
@@ -92,7 +87,6 @@ const Header = () => {
   }, [selectedLang]);
 
   return (
-
     <nav className="w-full flex flex-col">
       {/* Top Bar */}
       <div className="bg-[#04063E] text-white py-2 px-4 md:px-10 hidden md:flex justify-between items-center text-sm font-medium">
@@ -145,7 +139,6 @@ const Header = () => {
             </div>
           )}
 
-
           <div className="flex items-center gap-4">
             {data?.socials?.map((social: any) => (
               <a
@@ -158,22 +151,12 @@ const Header = () => {
                 <i className={`${social.icon}`}></i>
               </a>
             ))}
-            {!data?.socials && (
-              <>
-                <i className="fab fa-facebook-f cursor-pointer hover:text-blue-100"></i>
-                <i className="fab fa-linkedin-in cursor-pointer hover:text-blue-100"></i>
-                <i className="fab fa-twitter cursor-pointer hover:text-blue-100"></i>
-              </>
-            )}
           </div>
         </div>
-
       </div>
-
 
       {/* MAIN Header */}
       <div className="bg-white sticky top-0 z-50 px-4 md:px-10 py-3 flex justify-between items-center shadow-sm">
-
         {/* LOGO */}
         <Link href="/" className="flex items-center">
           <Image
@@ -226,43 +209,29 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Department Dropdown */}
+          {/* Department Dropdown (Dynamic) */}
           <div className="group relative">
             <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
               {data?.bs?.parent_link_name || 'Department & Laboratory'} <ChevronDown size={16} />
             </div>
-            <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div className="absolute left-0 top-full w-[260px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <ul className="py-2">
-                {departmentMenu.map((item, index) => (
-                  <li key={index}>
-                    <Link href={item.href} target={item.isExternal ? "_blank" : "_self"} rel={item.isExternal ? "noopener noreferrer" : ""} className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
+                {departments.length > 0 ? (
+                  departments.map((item) => (
+                    <li key={item.id}>
+                      <Link href={`/department/${item.slug}`} className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))
+                ) : (
+                  <li className="px-5 py-3 text-sm text-gray-400 italic">No departments available</li>
+                )}
               </ul>
             </div>
           </div>
 
-          {/* Laboratory Dropdown */}
-          {/* <div className="group relative">
-            <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
-              Laboratory <ChevronDown size={16} />
-            </div>
-            <div className="absolute left-0 top-full w-[260px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-              <ul className="py-2">
-                {laboratoryMenu.map((item, index) => (
-                  <li key={index}>
-                    <Link href={`/laboratory/${item.slug}`} className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div> */}
-
-          {/* Product Dropdown (New) */}
+          {/* Product Dropdown (Dynamic) */}
           <div className="group relative">
             <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
               <Link href="/product">{data?.bs?.parent_product_name || 'Product'}</Link> <ChevronDown size={16} />
@@ -270,8 +239,8 @@ const Header = () => {
             <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <ul className="py-2">
                 {products.length > 0 ? (
-                  products.map((item, index) => (
-                    <li key={item.id || index}>
+                  products.map((item) => (
+                    <li key={item.id}>
                       <Link href={`/product/${item.slug}`} className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                         {item.name || item.title}
                       </Link>
@@ -323,7 +292,6 @@ const Header = () => {
             </div>
           )}
 
-
           {/* About Mobile */}
           <div className="space-y-2">
             <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">About</p>
@@ -344,17 +312,21 @@ const Header = () => {
             ))}
           </div>
 
-          {/* Laboratory Mobile */}
+          {/* Department & Laboratory Mobile (Dynamic) */}
           <div className="space-y-2">
-            <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">{data?.bs?.parent_link_name || 'Laboratory'}</p>
-            {laboratoryMenu.map((item) => (
-              <Link key={item.label} href={`/laboratory/${item.slug}`} className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
-                {item.label}
-              </Link>
-            ))}
+            <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">{data?.bs?.parent_link_name || 'Department & Laboratory'}</p>
+            {departments.length > 0 ? (
+              departments.map((item) => (
+                <Link key={item.id} href={`/department/${item.slug}`} className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
+                  {item.name}
+                </Link>
+              ))
+            ) : (
+              <p className="block pl-4 py-1 text-sm text-gray-400 italic">No departments available</p>
+            )}
           </div>
 
-          {/* Product Mobile (New) */}
+          {/* Product Mobile (Dynamic) */}
           <div className="space-y-2">
             <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">{data?.bs?.parent_product_name || 'Product'}</p>
             <Link href="/product" className="block pl-4 py-1 text-sm text-gray-800 font-bold" onClick={() => setIsOpen(false)}>
@@ -362,7 +334,7 @@ const Header = () => {
             </Link>
             {products.length > 0 ? (
               products.map((item) => (
-                <Link key={item.id || item.slug} href={`/product/${item.slug}`} className="block pl-8 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
+                <Link key={item.id} href={`/product/${item.slug}`} className="block pl-8 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
                   {item.name || item.title}
                 </Link>
               ))

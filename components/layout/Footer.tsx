@@ -203,11 +203,11 @@ export default function Footer() {
           <span className="hidden md:block mx-1">|</span>
           
           <div className="flex gap-3">
-            <Link href="/terms" className="hover:text-white">Terms & Conditions</Link>
+            <Link href="/" className="hover:text-white">Terms & Conditions</Link>
             <span>|</span>
-            <Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link>
+            <Link href="/" className="hover:text-white">Privacy Policy</Link>
             <span>|</span>
-            <Link href="#" className="hover:text-white">Site map</Link>
+            <Link href="/" className="hover:text-white">Site map</Link>
           </div>
         </div>
       </div>
