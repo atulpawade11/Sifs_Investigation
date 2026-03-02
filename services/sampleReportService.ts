@@ -18,6 +18,20 @@ const fetchWithTimeout = async (url: string, options: any = {}, timeout = 10000)
 };
 
 /**
+ * GET: Fetches quote form data (categories, inputs, etc.)
+ */
+export const getQuoteData = async () => {
+    try {
+        const res = await fetchWithTimeout(`${backendUrl}${BASE_PATH}/quote`);
+        if (!res.ok) throw new Error(`GET Error: ${res.status}`);
+        return res.json();
+    } catch (err: any) {
+        if (err.name === 'AbortError') throw new Error('Request timed out after 10 seconds');
+        throw err;
+    }
+};
+
+/**
  * GET: Fetches sample report form fields
  */
 export const getSampleReportForm = async () => {
@@ -32,18 +46,18 @@ export const getSampleReportForm = async () => {
 };
 
 /**
- * POST: Submits sample report request
+ * POST: Submits sample report request (Quote)
  */
-export const submitSampleReport = async (data: any) => {
-    const url = `${backendUrl}${BASE_PATH}/sample-report?page=1&limit=10`;
+export const submitSampleReport = async (data: FormData) => {
+    const url = `${backendUrl}${BASE_PATH}/sendquote`;
     try {
         const res = await fetchWithTimeout(url, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
+                // Note: Do not set Content-Type for FormData, let the browser set it with boundary
             },
-            body: JSON.stringify(data),
+            body: data,
         });
 
         const result = await res.json().catch(() => ({}));

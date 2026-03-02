@@ -2,13 +2,13 @@
 
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { 
-    User, Mail, Phone, Globe, MapPin, 
-    MessageSquare, Send, Loader2, Layers 
+import {
+    User, Mail, Phone, Globe, MapPin,
+    MessageSquare, Send, Loader2, Layers
 } from 'lucide-react';
 import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
-import { submitSampleReport } from '../../services/sampleReportService';
+import { submitSampleReport, getQuoteData } from '../../services/sampleReportService';
 
 export default function SubmitCaseForm() {
     const [loading, setLoading] = useState(false);
@@ -21,14 +21,32 @@ export default function SubmitCaseForm() {
         contact_number: '',
         address: '',
         country: '',
-        case_type: '',
+        'Case/Report_Type': '',
         details: '',
     });
 
+    const [categories, setCategories] = useState<any[]>([]);
+    const [inputs, setInputs] = useState<any[]>([]);
+
     const [files, setFiles] = useState<{ [key: string]: File | null }>({
-        document1: null, document2: null, document3: null,
-        document4: null, document5: null, document6: null
+        nda: null, nda2: null, nda3: null,
+        nda4: null, nda5: null, nda6: null
     });
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getQuoteData();
+                if (res.success) {
+                    setCategories(res.data.categories || []);
+                    setInputs(res.data.inputs || []);
+                }
+            } catch (err) {
+                console.error("Failed to fetch quote data", err);
+            }
+        };
+        fetchData();
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -59,7 +77,8 @@ export default function SubmitCaseForm() {
             const res = await submitSampleReport(submitData);
             if (res.success) {
                 toast.success("Submitted successfully!");
-                setFormData({ name: '', email: '', contact_number: '', address: '', country: '', case_type: '', details: '' });
+                setFormData({ name: '', email: '', contact_number: '', address: '', country: '', 'Case/Report_Type': '', details: '' });
+                setFiles({ nda: null, nda2: null, nda3: null, nda4: null, nda5: null, nda6: null });
                 recaptchaRef.current?.reset();
             }
         } catch (err: any) {
@@ -76,7 +95,7 @@ export default function SubmitCaseForm() {
     const fieldStyle = "w-full pl-12 pr-4 py-4 bg-[#F8FAFC] border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400 text-gray-700";
 
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className="w-full max-w-6xl mx-auto bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-gray-50"
@@ -101,71 +120,85 @@ export default function SubmitCaseForm() {
                         </div>
                     </div>
 
-                    {/* Contact */}
-                    <div>
-                        <label className={labelStyle}>Contact Number *</label>
-                        <div className={inputContainer}>
-                            <Phone className={iconStyle} />
-                            <input type="tel" name="contact_number" placeholder="+1 (234) 567-890" onChange={handleChange} value={formData.contact_number} required className={fieldStyle} />
-                        </div>
-                    </div>
+                    {/* Dynamic Inputs */}
+                    {inputs.map((input) => {
+                        if (input.name === 'details' || input.name === 'Case/Report_Type') return null;
+
+                        let Icon = Phone;
+                        if (input.name === 'address') Icon = MapPin;
+                        if (input.name === 'country') Icon = Globe;
+
+                        return (
+                            <div key={input.id}>
+                                <label className={labelStyle}>{input.label} {input.required ? '*' : ''}</label>
+                                <div className={inputContainer}>
+                                    <Icon className={iconStyle} />
+                                    <input
+                                        type={input.type === 1 ? "text" : "text"}
+                                        name={input.name}
+                                        placeholder={input.placeholder}
+                                        onChange={handleChange}
+                                        value={formData[input.name] || ''}
+                                        required={!!input.required}
+                                        className={fieldStyle}
+                                    />
+                                </div>
+                            </div>
+                        );
+                    })}
 
                     {/* Case Type/Category */}
                     <div>
                         <label className={labelStyle}>Case Category / Type *</label>
                         <div className={inputContainer}>
                             <Layers className={iconStyle} />
-                            <select name="case_type" onChange={handleChange} value={formData.case_type} required className={fieldStyle}>
-                                <option value="">e.g. Forensic Analysis</option>
-                                <option value="cyber">Cyber Crime</option>
-                                <option value="document">Document Examination</option>
+                            <select name="Case/Report_Type" onChange={handleChange} value={formData['Case/Report_Type']} required className={fieldStyle}>
+                                <option value="">Select Category</option>
+                                {categories.map(cat => (
+                                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                                ))}
                             </select>
-                        </div>
-                    </div>
-
-                    {/* Full Address */}
-                    <div>
-                        <label className={labelStyle}>Full Address *</label>
-                        <div className={inputContainer}>
-                            <MapPin className={iconStyle} />
-                            <input type="text" name="address" placeholder="Communication Address" onChange={handleChange} value={formData.address} required className={fieldStyle} />
-                        </div>
-                    </div>
-
-                    {/* Country */}
-                    <div>
-                        <label className={labelStyle}>Country *</label>
-                        <div className={inputContainer}>
-                            <Globe className={iconStyle} />
-                            <input type="text" name="country" placeholder="United States" onChange={handleChange} value={formData.country} required className={fieldStyle} />
                         </div>
                     </div>
                 </div>
 
                 {/* Details */}
-                <div>
-                    <label className={labelStyle}>Case Details / Message *</label>
-                    <div className="relative">
-                        <MessageSquare className="absolute left-4 top-4 text-gray-400 w-5 h-5" />
-                        <textarea name="details" placeholder="Please provide some context..." rows={4} onChange={handleChange} value={formData.details} required className={`${fieldStyle} resize-none`} />
+                {inputs.find(i => i.name === 'details') && (
+                    <div>
+                        <label className={labelStyle}>{inputs.find(i => i.name === 'details').label} *</label>
+                        <div className="relative">
+                            <MessageSquare className="absolute left-4 top-4 text-gray-400 w-5 h-5" />
+                            <textarea
+                                name="details"
+                                placeholder={inputs.find(i => i.name === 'details').placeholder}
+                                rows={4}
+                                onChange={handleChange}
+                                value={formData.details}
+                                required
+                                className={`${fieldStyle} resize-none`}
+                            />
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* 6 Upload Fields (Grid from Screenshot 1, Styling from Screenshot 2) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
-                    {[1, 2, 3, 4, 5, 6].map((num) => (
-                        <div key={num} className="space-y-2">
-                            <label className="text-xs font-bold text-[#04063E] uppercase tracking-wider ml-1">Document {num}</label>
-                            <input 
-                                type="file" 
-                                onChange={(e) => handleFileChange(e, `document${num}`)}
-                                className="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
-                            />
-                            <p className="text-[10px] text-[#F9A01B] font-bold leading-tight ml-1">
-                                ** Only doc, docx, pdf, rtf, txt, zip, rar files are allowed
-                            </p>
-                        </div>
-                    ))}
+                    {[1, 2, 3, 4, 5, 6].map((num) => {
+                        const fileKey = num === 1 ? 'nda' : `nda${num}`;
+                        return (
+                            <div key={num} className="space-y-2">
+                                <label className="text-xs font-bold text-[#04063E] uppercase tracking-wider ml-1">Document {num}</label>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e, fileKey)}
+                                    className="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                                />
+                                <p className="text-[10px] text-[#F9A01B] font-bold leading-tight ml-1">
+                                    ** Only doc, docx, pdf, rtf, txt, zip, rar files are allowed
+                                </p>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {/* Footer Section */}
