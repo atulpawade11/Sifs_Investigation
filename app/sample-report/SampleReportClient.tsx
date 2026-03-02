@@ -1,7 +1,7 @@
 "use client";
 
 import PageBanner from '../../components/common/PageBanner';
-import SubmitCaseForm from '../../components/submit-case/SubmitCaseForm';
+import SampleReportForm from '../../components/sample-report/SampleReportForm';
 
 export default function SubmitCaseClient() {
     return (
@@ -12,7 +12,7 @@ export default function SubmitCaseClient() {
             />
 
             <div className="container mx-auto px-4 md:px-10 py-16 md:py-24">
-                <SubmitCaseForm />
+                <SampleReportForm />
             </div>
         </main>
     );

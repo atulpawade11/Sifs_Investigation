@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import SubmitCaseClient from './SubmitCaseClient';
+import SampleReportClient from './SampleReportClient';
 
 export const metadata: Metadata = {
     title: 'Sample Report | SIFS Investigation',
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function SampleReportPage() {
-    return <SubmitCaseClient />;
+    return <SampleReportClient />;
 }

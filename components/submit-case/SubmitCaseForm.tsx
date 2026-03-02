@@ -1,20 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import {
-    User, Mail, Phone, MapPin, Globe,
-    MessageSquare, Send, Loader2, ClipboardList,
-    Building2, Hash, Layers
+import { 
+    User, Mail, Phone, Globe, MapPin, 
+    MessageSquare, Send, Loader2, Layers 
 } from 'lucide-react';
 import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
-import { getSampleReportForm, submitSampleReport } from '../../services/sampleReportService';
+import { submitSampleReport } from '../../services/sampleReportService';
 
 export default function SubmitCaseForm() {
-    const [formFields, setFormFields] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
-    const [fetching, setFetching] = useState(true);
     const [captchaToken, setCaptchaToken] = useState<string | null>(null);
     const recaptchaRef = useRef<ReCAPTCHA>(null);
 
@@ -22,260 +19,169 @@ export default function SubmitCaseForm() {
         name: '',
         email: '',
         contact_number: '',
-        city: '',
-        state: '',
-        postcode: '',
+        address: '',
         country: '',
-        category: '',
+        case_type: '',
         details: '',
     });
 
-    useEffect(() => {
-        const fetchFields = async () => {
-            try {
-                const res = await getSampleReportForm();
-                if (res.success && res.data.inputs) {
-                    setFormFields(res.data.inputs);
-                }
-            } catch (err) {
-                console.error("Error fetching form fields:", err);
-            } finally {
-                setFetching(false);
-            }
-        };
-        fetchFields();
-    }, []);
+    const [files, setFiles] = useState<{ [key: string]: File | null }>({
+        document1: null, document2: null, document3: null,
+        document4: null, document5: null, document6: null
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const onCaptchaChange = (token: string | null) => {
-        setCaptchaToken(token);
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
+        if (e.target.files && e.target.files[0]) {
+            setFiles(prev => ({ ...prev, [key]: e.target.files![0] }));
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!captchaToken) {
             toast.error("Please complete the reCAPTCHA.");
             return;
         }
 
         setLoading(true);
-        const toastId = toast.loading("Submitting your request...");
-
         try {
-            const payload = {
-                ...formData,
-                "g-recaptcha-response": captchaToken,
-            };
+            const submitData = new FormData();
+            Object.keys(formData).forEach(key => submitData.append(key, formData[key]));
+            Object.keys(files).forEach(key => {
+                if (files[key]) submitData.append(key, files[key] as File);
+            });
+            submitData.append("g-recaptcha-response", captchaToken);
 
-            const res = await submitSampleReport(payload);
+            const res = await submitSampleReport(submitData);
             if (res.success) {
-                toast.success(res.message || "Request submitted successfully!", { id: toastId });
-                setFormData({
-                    name: '',
-                    email: '',
-                    contact_number: '',
-                    city: '',
-                    state: '',
-                    postcode: '',
-                    country: '',
-                    category: '',
-                    details: '',
-                });
-                setCaptchaToken(null);
+                toast.success("Submitted successfully!");
+                setFormData({ name: '', email: '', contact_number: '', address: '', country: '', case_type: '', details: '' });
                 recaptchaRef.current?.reset();
             }
         } catch (err: any) {
-            toast.error(err.message || "Submission failed. Please try again.", { id: toastId });
+            toast.error("Submission failed.");
         } finally {
             setLoading(false);
         }
     };
 
-    if (fetching) {
-        return (
-            <div className="flex flex-col items-center justify-center py-20">
-                <Loader2 className="w-10 h-10 text-blue-600 animate-spin mb-4" />
-                <p className="text-gray-500 font-medium">Loading form details...</p>
-            </div>
-        );
-    }
+    // UI Helpers based on screenshot 2
+    const labelStyle = "text-sm font-bold text-[#04063E] ml-1 mb-2 block";
+    const inputContainer = "relative flex items-center";
+    const iconStyle = "absolute left-4 text-gray-400 w-5 h-5";
+    const fieldStyle = "w-full pl-12 pr-4 py-4 bg-[#F8FAFC] border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400 text-gray-700";
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
+        <motion.div 
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-8 md:p-12"
+            className="w-full max-w-6xl mx-auto bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-gray-50"
         >
-            <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-[#04063E] mb-4">Request a Sample Report</h2>
-            </div>
-
             <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Standard Fields */}
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-700 ml-1">Full Name *</label>
-                        <div className="relative">
-                            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input
-                                type="text"
-                                name="name"
-                                required
-                                value={formData.name}
-                                onChange={handleChange}
-                                placeholder="John Doe"
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
-                            />
+                    {/* Name */}
+                    <div>
+                        <label className={labelStyle}>Full Name *</label>
+                        <div className={inputContainer}>
+                            <User className={iconStyle} />
+                            <input type="text" name="name" placeholder="John Doe" onChange={handleChange} value={formData.name} required className={fieldStyle} />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-700 ml-1">Email Address *</label>
-                        <div className="relative">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input
-                                type="email"
-                                name="email"
-                                required
-                                value={formData.email}
-                                onChange={handleChange}
-                                placeholder="john@example.com"
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
-                            />
+                    {/* Email */}
+                    <div>
+                        <label className={labelStyle}>Email Address *</label>
+                        <div className={inputContainer}>
+                            <Mail className={iconStyle} />
+                            <input type="email" name="email" placeholder="john@example.com" onChange={handleChange} value={formData.email} required className={fieldStyle} />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-700 ml-1">Contact Number *</label>
-                        <div className="relative">
-                            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input
-                                type="tel"
-                                name="contact_number"
-                                required
-                                value={formData.contact_number}
-                                onChange={handleChange}
-                                placeholder="+1 (234) 567-890"
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
-                            />
+                    {/* Contact */}
+                    <div>
+                        <label className={labelStyle}>Contact Number *</label>
+                        <div className={inputContainer}>
+                            <Phone className={iconStyle} />
+                            <input type="tel" name="contact_number" placeholder="+1 (234) 567-890" onChange={handleChange} value={formData.contact_number} required className={fieldStyle} />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-700 ml-1">Case Category / Type *</label>
-                        <div className="relative">
-                            <Layers className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input
-                                type="text"
-                                name="category"
-                                required
-                                value={formData.category}
-                                onChange={handleChange}
-                                placeholder="e.g. Forensic Analysis"
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
-                            />
+                    {/* Case Type/Category */}
+                    <div>
+                        <label className={labelStyle}>Case Category / Type *</label>
+                        <div className={inputContainer}>
+                            <Layers className={iconStyle} />
+                            <select name="case_type" onChange={handleChange} value={formData.case_type} required className={fieldStyle}>
+                                <option value="">e.g. Forensic Analysis</option>
+                                <option value="cyber">Cyber Crime</option>
+                                <option value="document">Document Examination</option>
+                            </select>
                         </div>
                     </div>
 
-                    {/* Address Section */}
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-700 ml-1">City</label>
-                        <div className="relative">
-                            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input
-                                type="text"
-                                name="city"
-                                value={formData.city}
-                                onChange={handleChange}
-                                placeholder="New York"
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
-                            />
+                    {/* Full Address */}
+                    <div>
+                        <label className={labelStyle}>Full Address *</label>
+                        <div className={inputContainer}>
+                            <MapPin className={iconStyle} />
+                            <input type="text" name="address" placeholder="Communication Address" onChange={handleChange} value={formData.address} required className={fieldStyle} />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-700 ml-1">State / Province</label>
-                        <div className="relative">
-                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input
-                                type="text"
-                                name="state"
-                                value={formData.state}
-                                onChange={handleChange}
-                                placeholder="NY"
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-700 ml-1">Postcode</label>
-                        <div className="relative">
-                            <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input
-                                type="text"
-                                name="postcode"
-                                value={formData.postcode}
-                                onChange={handleChange}
-                                placeholder="10001"
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-700 ml-1">Country *</label>
-                        <div className="relative">
-                            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input
-                                type="text"
-                                name="country"
-                                required
-                                value={formData.country}
-                                onChange={handleChange}
-                                placeholder="United States"
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all"
-                            />
+                    {/* Country */}
+                    <div>
+                        <label className={labelStyle}>Country *</label>
+                        <div className={inputContainer}>
+                            <Globe className={iconStyle} />
+                            <input type="text" name="country" placeholder="United States" onChange={handleChange} value={formData.country} required className={fieldStyle} />
                         </div>
                     </div>
                 </div>
 
-                <div className="space-y-2">
-                    <label className="text-sm font-bold text-gray-700 ml-1">Case Details / Message *</label>
+                {/* Details */}
+                <div>
+                    <label className={labelStyle}>Case Details / Message *</label>
                     <div className="relative">
                         <MessageSquare className="absolute left-4 top-4 text-gray-400 w-5 h-5" />
-                        <textarea
-                            name="details"
-                            required
-                            value={formData.details}
-                            onChange={handleChange}
-                            placeholder="Please provide some context for the report..."
-                            rows={5}
-                            className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all resize-none"
-                        />
+                        <textarea name="details" placeholder="Please provide some context..." rows={4} onChange={handleChange} value={formData.details} required className={`${fieldStyle} resize-none`} />
                     </div>
                 </div>
 
-                <div className="flex flex-col items-center gap-6">
-                    <div className="scale-90 md:scale-100">
-                        <ReCAPTCHA
-                            ref={recaptchaRef}
-                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
-                            onChange={onCaptchaChange}
-                        />
-                    </div>
+                {/* 6 Upload Fields (Grid from Screenshot 1, Styling from Screenshot 2) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
+                    {[1, 2, 3, 4, 5, 6].map((num) => (
+                        <div key={num} className="space-y-2">
+                            <label className="text-xs font-bold text-[#04063E] uppercase tracking-wider ml-1">Document {num}</label>
+                            <input 
+                                type="file" 
+                                onChange={(e) => handleFileChange(e, `document${num}`)}
+                                className="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                            />
+                            <p className="text-[10px] text-[#F9A01B] font-bold leading-tight ml-1">
+                                ** Only doc, docx, pdf, rtf, txt, zip, rar files are allowed
+                            </p>
+                        </div>
+                    ))}
+                </div>
 
+                {/* Footer Section */}
+                <div className="flex flex-col items-center gap-8 pt-6">
+                    <ReCAPTCHA
+                        ref={recaptchaRef}
+                        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                        onChange={(token) => setCaptchaToken(token)}
+                    />
                     <button
                         type="submit"
                         disabled={loading || !captchaToken}
-                        className="w-full md:w-auto min-w-[200px] bg-gradient-to-r from-[#04063E] to-blue-900 text-white font-bold py-4 px-10 rounded-2xl shadow-xl shadow-blue-900/10 hover:shadow-blue-900/20 hover:-translate-y-1 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full md:w-auto min-w-[220px] bg-[#04063E] text-white font-bold py-4 px-10 rounded-2xl shadow-lg hover:bg-black hover:-translate-y-1 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                     >
                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                        <span>Submit Request</span>
+                        <span>Submit Case</span>
                     </button>
                 </div>
             </form>
