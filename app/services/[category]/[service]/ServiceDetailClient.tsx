@@ -8,6 +8,7 @@ import ServiceDetailContent from "../../../../components/services/ServiceDetailC
 import FAQAccordion from "../../../../components/services/FAQAccordion";
 import { API_BASE_URL } from '@/lib/config';
 import { Skeleton } from '@/components/shared/Skeleton';
+import { useBoot } from "@/context/BootContext";
 
 interface Props {
   categorySlug: string;
@@ -18,6 +19,7 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
   const [detailData, setDetailData] = useState<any>(null);
   const [sidebarData, setSidebarData] = useState<any>(null); // Added this to fix "data is not defined"
   const [loading, setLoading] = useState(true);
+  const { breadcrumbImage } = useBoot();
 
   useEffect(() => {
     async function loadDetail() {
@@ -127,7 +129,7 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
       <PageBanner
         title={detailData.category_name || "Investigation Service"}
         subtitle={detailData.title}
-        bgImage={detailData.main_image || "/about/about-banner.png"}
+        breadcrumbImage={breadcrumbImage}
       />
       <div className="max-w-7xl mx-auto px-4 md:px-10 py-16 relative">
         <div className="flex flex-col lg:flex-row gap-12">
