@@ -5,27 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, ChevronDown, Menu, X, ArrowRight, Globe } from 'lucide-react';
 
-// Import getDepartments alongside your other services
-import { getBootData, getProducts, getDepartments } from '@/services/webService';
-
-// Menu Data (Static fallbacks if needed)
-const aboutMenu = [
-  { label: "About Us", href: "/about" },
-  { label: "Image Gallery", href: "/gallery/images" },
-  { label: "Video Gallery", href: "/gallery/videos" },
-  { label: "FAQ", href: "/faq" },
-];
-
-const servicesMenu = [
-  { label: "Document Examination", slug: "document-examination" },
-  { label: "Fingerprint Analysis", slug: "fingerprint-analysis" },
-  { label: "Cyber Forensics", slug: "cyber-forensics" },
-  { label: "Insurance Investigation", slug: "insurance-investigation" },
-  { label: "Forensic Biology", slug: "forensic-biology" },
-  { label: "Key & Accident Reconstruction", slug: "accident-reconstruction" },
-  { label: "Forensic Facial Imaging", slug: "forensic-facial-imaging" },
-  { label: "Forensic Support", slug: "forensic-support" },
-];
+// Import your services
+import { getBootData, getProducts, getDepartments, getServices } from '@/services/webService';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,8 +14,9 @@ const Header = () => {
   const [selectedLang, setSelectedLang] = useState<any>(null);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
-  // New state for dynamic departments
   const [departments, setDepartments] = useState<any[]>([]);
+  // State for dynamic services
+  const [serviceCategories, setServiceCategories] = useState<any[]>([]);
 
   useEffect(() => {
     async function loadBootData() {
@@ -42,7 +24,6 @@ const Header = () => {
         const res = await getBootData();
         if (res && res.success) {
           setData(res.data);
-          // Set default language
           const defaultLang = res.data.langs?.find((l: any) => l.is_default === 1) || res.data.langs?.[0];
           setSelectedLang(defaultLang);
         }
@@ -64,12 +45,10 @@ const Header = () => {
     }
     loadProducts();
 
-    // Fetch Departments dynamically
     async function loadDepartments() {
       try {
         const res = await getDepartments();
         if (res && res.success) {
-          // Mapping data.data based on your API response structure
           setDepartments(res.data.data);
         }
       } catch (err) {
@@ -77,6 +56,20 @@ const Header = () => {
       }
     }
     loadDepartments();
+
+    // Fetch Services dynamically using the API response structure
+    async function loadServices() {
+      try {
+        const res = await getServices();
+        if (res && res.success) {
+          // Extract categories from the response
+          setServiceCategories(res.data.categories || []);
+        }
+      } catch (err) {
+        console.error("Failed to load services:", err);
+      }
+    }
+    loadServices();
   }, []);
 
   useEffect(() => {
@@ -85,6 +78,11 @@ const Header = () => {
       document.documentElement.lang = selectedLang.code || 'en';
     }
   }, [selectedLang]);
+
+  // Filter active services (status = 1) and sort by serial_number
+  const activeServices = serviceCategories
+    .filter((service: any) => service.status === 1)
+    .sort((a: any, b: any) => a.serial_number - b.serial_number);
 
   return (
     <nav className="w-full flex flex-col">
@@ -180,31 +178,61 @@ const Header = () => {
             </div>
             <div className="absolute left-0 top-full w-[220px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <ul className="py-2">
-                {aboutMenu.map((item, index) => (
-                  <li key={index}>
-                    <Link href={item.href} className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
+                <li>
+                  <Link href="/about" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/gallery/images" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                    Image Gallery
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/gallery/videos" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                    Video Gallery
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faq" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                    FAQ
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
 
-          {/* Services Dropdown */}
+          {/* Services Dropdown - NOW DYNAMIC from API */}
           <div className="group relative">
             <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
               Services <ChevronDown size={16} />
             </div>
-            <div className="absolute left-0 top-full w-[260px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div className="absolute left-0 top-full w-[280px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
               <ul className="py-2">
-                {servicesMenu.map((item, index) => (
-                  <li key={index}>
-                    <Link href={`/services/${item.slug}`} className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
+                {activeServices.length > 0 ? (
+                  activeServices.map((service: any) => (
+                    <li key={service.id}>
+                      <Link 
+                        href={`/services/${service.id}`} 
+                        className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition border-b border-gray-50 last:border-0"
+                      >
+                        <div className="font-medium">{service.name}</div>
+                        {/*{service.short_text && (
+                          <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">
+                            {service.short_text}
+                          </div>
+                        )}*/}
+                        {service.service_count > 0 && (
+                          <div className="text-[10px] text-[#F68A07] mt-1">
+                            {service.service_count} sub-services
+                          </div>
+                        )}
+                      </Link>
+                    </li>
+                  ))
+                ) : (
+                  <li className="px-5 py-3 text-sm text-gray-400 italic">Loading services...</li>
+                )}
               </ul>
             </div>
           </div>
@@ -214,7 +242,7 @@ const Header = () => {
             <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
               {data?.bs?.parent_link_name || 'Department & Laboratory'} <ChevronDown size={16} />
             </div>
-            <div className="absolute left-0 top-full w-[260px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div className="absolute left-0 top-full w-[260px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
               <ul className="py-2">
                 {departments.length > 0 ? (
                   departments.map((item) => (
@@ -236,7 +264,7 @@ const Header = () => {
             <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
               <Link href="/product">{data?.bs?.parent_product_name || 'Product'}</Link> <ChevronDown size={16} />
             </div>
-            <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
               <ul className="py-2">
                 {products.length > 0 ? (
                   products.map((item) => (
@@ -266,7 +294,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* MOBILE MENU - Updated with dynamic services */}
       {isOpen && (
         <div className="lg:hidden bg-white border-b p-6 space-y-6 font-semibold text-gray-700 overflow-y-auto max-h-[80vh]">
           <Link href="/" className="block text-lg" onClick={() => setIsOpen(false)}>Home</Link>
@@ -295,21 +323,32 @@ const Header = () => {
           {/* About Mobile */}
           <div className="space-y-2">
             <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">About</p>
-            {aboutMenu.map((item) => (
-              <Link key={item.label} href={item.href} className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
-                {item.label}
-              </Link>
-            ))}
+            <Link href="/about" className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>About Us</Link>
+            <Link href="/gallery/images" className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>Image Gallery</Link>
+            <Link href="/gallery/videos" className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>Video Gallery</Link>
+            <Link href="/faq" className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>FAQ</Link>
           </div>
 
-          {/* Services Mobile */}
+          {/* Services Mobile - NOW DYNAMIC */}
           <div className="space-y-2">
             <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">Services</p>
-            {servicesMenu.map((item) => (
-              <Link key={item.label} href={`/services/${item.slug}`} className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
-                {item.label}
-              </Link>
-            ))}
+            {activeServices.length > 0 ? (
+              activeServices.map((service: any) => (
+                <Link 
+                  key={service.id} 
+                  href={`/services/${service.id}`} 
+                  className="block pl-4 py-2 text-sm text-gray-600 hover:text-[#0B10A4] transition-colors border-b border-gray-50 last:border-0" 
+                  onClick={() => setIsOpen(false)}
+                >
+                  <div>{service.name}</div>
+                  {service.service_count > 0 && (
+                    <span className="text-[10px] text-[#F68A07]">({service.service_count} sub-services)</span>
+                  )}
+                </Link>
+              ))
+            ) : (
+              <p className="block pl-4 py-1 text-sm text-gray-400 italic">Loading services...</p>
+            )}
           </div>
 
           {/* Department & Laboratory Mobile (Dynamic) */}
@@ -330,10 +369,10 @@ const Header = () => {
           <div className="space-y-2">
             <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">{data?.bs?.parent_product_name || 'Product'}</p>
             <Link href="/product" className="block pl-4 py-1 text-sm text-gray-800 font-bold" onClick={() => setIsOpen(false)}>
-              {data?.bs?.parent_product_name || 'Products'}
+              All Products
             </Link>
             {products.length > 0 ? (
-              products.map((item) => (
+              products.slice(0, 5).map((item) => (
                 <Link key={item.id} href={`/product/${item.slug}`} className="block pl-8 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
                   {item.name || item.title}
                 </Link>
