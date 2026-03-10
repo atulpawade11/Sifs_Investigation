@@ -17,7 +17,7 @@ interface Props {
 
 export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props) {
   const [detailData, setDetailData] = useState<any>(null);
-  const [sidebarData, setSidebarData] = useState<any>(null); // Added this to fix "data is not defined"
+  const [sidebarData, setSidebarData] = useState<any>(null); 
   const [loading, setLoading] = useState(true);
   const { breadcrumbImage } = useBoot();
 
@@ -25,46 +25,50 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
     async function loadDetail() {
       try {
         setLoading(true);
-
-        // 1. Fetch categories for sidebar
-        const catRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services`);
-        const catResult = await catRes.json();
-
+  
+        // 1. Fetch ALL services data (for sidebar - needs categories AND all services)
+        const allServicesRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services`);
+        const allServicesResult = await allServicesRes.json();
+  
+        // Store COMPLETE data for sidebar (has categories AND all services)
+        if (allServicesResult?.success && allServicesResult?.data) {
+          setSidebarData(allServicesResult.data);
+        }
+  
         let foundCategoryName = "";
-        if (catResult?.success && catResult?.data?.categories) {
-          setSidebarData(catResult.data);
-
-          const categories = catResult.data.categories;
+        let foundCategoryId = null;
+  
+        // 2. Find the current category from the complete categories list
+        if (allServicesResult?.success && allServicesResult?.data?.categories) {
+          const categories = allServicesResult.data.categories;
           const cleanCatSlug = decodeURIComponent(categorySlug).toLowerCase().replace(/[^a-z0-9]/g, '');
-
+  
           const foundCat = categories.find((c: any) => {
             const apiName = c.name.toLowerCase().replace(/[^a-z0-9]/g, '');
             return apiName.includes(cleanCatSlug) || cleanCatSlug.includes(apiName);
           });
-
+  
           if (foundCat) {
             foundCategoryName = foundCat.name;
-            // 2. Fetch sidebar services for this category
-            const sRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services?category=${foundCat.id}`);
-            const sData = await sRes.json();
-            if (sData?.success) {
-              setSidebarData(sData.data);
-            }
+            foundCategoryId = foundCat.id;
           }
         }
-
-        // 3. Fetch specific service detail (includes content and pccqueries)
+  
+        // 3. Fetch specific service detail
         const detailRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/service/${serviceSlug}`);
         const detailResult = await detailRes.json();
-
+  
         if (detailResult?.success && detailResult?.data?.service) {
-          // Flatten the structure for the components
           setDetailData({
             ...detailResult.data.service,
             category_name: detailResult.data.service.category_name || foundCategoryName || "Service",
             pccqueries: detailResult.data.pccqueries || []
           });
         }
+  
+        // 4. DON'T overwrite sidebarData with filtered results
+        // The sidebar needs ALL categories and ALL services to work properly
+        
       } catch (err) {
         console.error("Detail Page Error:", err);
       } finally {
