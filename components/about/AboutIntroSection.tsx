@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { API_BASE_URL } from "@/lib/config";
+import { parseAboutContent } from "@/lib/parseAboutContent";
 
 const AboutIntroSection = () => {
   const [data, setData] = useState<any>(null);
@@ -20,12 +21,14 @@ const AboutIntroSection = () => {
     fetchData();
   }, []);
 
-  const getCleanIntro = (html: string) => {
-    if (!html) return "";
+  //const getCleanIntro = (html: string) => {
+   // if (!html) return "";
     // Splits before the Mission header to get "The Journey" section
-    const parts = html.split(/<h5.*?>.*?Mission.*?<\/h5>/i);
-    return parts[0]; 
-  };
+    //const parts = html.split(/<h5.*?>.*?Mission.*?<\/h5>/i);
+    //return parts[0]; 
+  //};
+
+  const parsed = parseAboutContent(data?.about_us);
 
   return (
     <section className="bg-white py-16 md:py-20">
@@ -48,7 +51,7 @@ const AboutIntroSection = () => {
                          [&_p]:mb-4 
                          [&_ul]:grid [&_ul]:grid-cols-1 md:[&_ul]:grid-cols-2 [&_ul]:gap-2 [&_ul]:mt-6
                          [&_li]:flex [&_li]:items-center [&_li]:before:content-['›'] [&_li]:before:mr-2 [&_li]:before:text-[#0B10A4] [&_li]:before:font-bold"
-              dangerouslySetInnerHTML={{ __html: getCleanIntro(data?.about_us) }}
+              dangerouslySetInnerHTML={{ __html: parsed.intro }}
             />
           </div>
 
