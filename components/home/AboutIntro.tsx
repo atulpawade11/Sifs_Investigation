@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { ArrowRight, Play } from 'lucide-react';
+import { ArrowRight, Play, X } from 'lucide-react';
 import { Skeleton } from '@/components/shared/Skeleton';
 
 // Import API base URL from config
@@ -30,6 +30,9 @@ const AboutIntro = () => {
   const [aboutData, setAboutData] = useState<AboutIntroData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // ✅ NEW: Video modal state
+  const [showVideo, setShowVideo] = useState(false);
 
   /*
   // Static fallback highlights (Not provided in JSON, keeping as per original design)
@@ -71,6 +74,15 @@ const AboutIntro = () => {
     fetchAboutData();
   }, []);
 
+  // ✅ NEW: ESC key close
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShowVideo(false);
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
+
   // Helper to resolve image paths
   const getImageUrl = (path: string | undefined) => {
     if (!path || path.trim() === "") return "/about.png";
@@ -79,6 +91,15 @@ const AboutIntro = () => {
     const baseUrl = API_BASE_URL.replace(/\/api\/?$/, '').replace(/\/$/, '');
     const imgPath = path.startsWith('/') ? path : `/${path}`;
     return `${baseUrl}${imgPath}`;
+  };
+
+  // ✅ NEW: Extract YouTube ID
+  const getYoutubeId = (url: string) => {
+    if (!url) return null;
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return match && match[2].length === 11 ? match[2] : null;
   };
 
   if (loading) {
@@ -114,6 +135,7 @@ const AboutIntro = () => {
 
   const content = aboutData?.data?.bs;
   const introBg = getImageUrl(content?.intro_bg);
+  const videoId = getYoutubeId(content?.intro_section_video_link || "");
 
   return (
     <section className="py-8 md:py-12 bg-white">
@@ -137,27 +159,6 @@ const AboutIntro = () => {
                 {content?.intro_section_title || "Efficiency Meets the Finest Forensic Expertise"}
               </span>
             </div>
-
-            {/* Feature List (Commented Out) */}
-            {/*
-            <div className="grid grid-cols-1 gap-4">
-              {staticHighlights.map((item, index) => (
-                <div key={index} className="flex items-center gap-3 group mb-1">
-                  <div className="relative w-6 h-6 flex-shrink-0">
-                    <Image
-                      src="/orange-check.png"
-                      alt="check"
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <span className="font-regular text-sm text-black group-hover:text-[#FF8C00] transition-colors">
-                    {item}
-                  </span>
-                </div>
-              ))}
-            </div>
-            */}
 
             <div className="flex items-center gap-6 pt-4">
               <button
@@ -200,11 +201,7 @@ const AboutIntro = () => {
               <div className="absolute inset-0 flex items-center justify-center bg-black/5 group-hover:bg-black/20 transition-all">
                 <button
                   className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center text-[#1A365D] shadow-2xl hover:scale-110 hover:bg-white transition-transform"
-                  onClick={() => {
-                    if (content?.intro_section_video_link) {
-                      window.open(content.intro_section_video_link, '_blank');
-                    }
-                  }}
+                  onClick={() => setShowVideo(true)}
                 >
                   <Play size={32} fill="currentColor" />
                 </button>
@@ -220,6 +217,40 @@ const AboutIntro = () => {
 
         </div>
       </div>
+
+      {/* ✅ VIDEO MODAL */}
+      {showVideo && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#414264e6]/90 backdrop-blur-sm"
+          onClick={() => setShowVideo(false)}
+        >
+          <button
+            onClick={() => setShowVideo(false)}
+            className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full border border-white/10"
+          >
+            <X size={28} />
+          </button>
+
+          <div
+            className="w-full max-w-5xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-white/10 bg-black"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {videoId ? (
+              <iframe
+                className="w-full h-full"
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                title="Intro Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full text-white">
+                Video not available
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 };

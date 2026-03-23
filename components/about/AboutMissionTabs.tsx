@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { API_BASE_URL } from "@/lib/config";
+import { parseAboutContent } from "@/lib/parseAboutContent";
 
 export default function AboutMissionTabs() {
   const [activeTab, setActiveTab] = useState("mission");
@@ -20,6 +21,9 @@ export default function AboutMissionTabs() {
       .then((result) => {
         if (result.success && result.data.bs.about_us) {
           const html = result.data.bs.about_us;
+
+          const parsed = parseAboutContent(html);
+
           setData(result.data.bs);
   
           const getSection = (section: string) => {
@@ -33,9 +37,9 @@ export default function AboutMissionTabs() {
           };
   
           setParsedContent({
-            mission: getSection("Mission"),
-            vision: getSection("Vision"),
-            purpose: getSection("Purpose"),
+            mission: parsed.mission,
+            vision: parsed.vision,
+            purpose: parsed.purpose,
           });
         }
       })

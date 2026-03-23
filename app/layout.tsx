@@ -14,7 +14,7 @@ export async function generateMetadata() {
     if (res && res.success) {
       return {
         icons: {
-          icon: res.data.bs?.favicon || '/favicon.ico',
+          icon: res.data.bs?.favicon || '/favicon.png',
         },
       };
     }
@@ -23,7 +23,7 @@ export async function generateMetadata() {
   }
   return {
     icons: {
-      icon: '/favicon.ico',
+      icon: '/favicon.png',
     },
   };
 }
