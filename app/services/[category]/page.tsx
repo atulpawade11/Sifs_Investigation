@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { API_BASE_URL } from '@/lib/config'; // Ensure this is an absolute https URL
+import { API_BASE_URL } from '@/lib/config'; 
 import ServiceListingClient from './ServiceListingClient';
 
 type Props = {
@@ -9,11 +9,9 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
   
-  // Decoded category for the title
   const decodedTitle = decodeURIComponent(category).replace(/-/g, ' ');
 
   try {
-    // FORCE CACHE for Vercel to see the SEO data
     const res = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`, {
       cache: 'force-cache', 
       next: { revalidate: 3600 }
@@ -26,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       return {
         title: `${decodedTitle.toUpperCase()} | ${seo.services_meta_title}`,
         description: seo.services_meta_description,
-        keywords: seo.services_meta_keywords, // This is the big list you provided
+        keywords: seo.services_meta_keywords,
         openGraph: {
           title: seo.services_meta_title,
           description: seo.services_meta_description,

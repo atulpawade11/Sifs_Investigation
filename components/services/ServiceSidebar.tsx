@@ -238,7 +238,7 @@ export default function ServiceSidebar({ apiData }: SidebarProps) {
                 >
                   <span className={isActiveCategory ? "text-[#044782]" : ""}>
                     {cat.name} {categoryServices.length > 0 && `(${categoryServices.length})`}
-                  </span>
+                  </span>     
                   {categoryServices.length > 0 && (
                     isExpanded
                       ? <Minus size={14} className="text-[#F68A07]" />

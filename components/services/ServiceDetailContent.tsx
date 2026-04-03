@@ -86,8 +86,8 @@ export default function ServiceDetailContent({ apiData }: ServiceDetailContentPr
             We use dangerouslySetInnerHTML to render it. 
         */}
         <div
-          className="api-content text-gray-600 text-[14px] leading-[1.8] font-medium prose prose-slate max-w-none
-          [&>p]:mb-4 [&>b]:text-[#04063E] [&>ul]:list-disc [&>ul]:ml-5"
+          className="api-content text-gray-600 text-[16px] leading-[1.8] font-medium prose prose-slate max-w-none
+          [&>p]:mb-4 [&>b]:text-[#04063E] [&>ul]:list-disc [&>ul]:ml-5 gap-2"
           dangerouslySetInnerHTML={{ __html: apiData.content }}
         />
       </div>

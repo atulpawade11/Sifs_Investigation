@@ -67,8 +67,8 @@ export default function VideoGalleryClient() {
   return (
     <div className="bg-white min-h-screen">
       <PageBanner
-        title="Video Gallery"
-        subtitle="SIFS India Forensic Lab"
+        title="Our Gallery"
+        subtitle="Our Legacy : Achieving Excellence and Joy"
         breadcrumbImage={breadcrumbImage}
       />
 

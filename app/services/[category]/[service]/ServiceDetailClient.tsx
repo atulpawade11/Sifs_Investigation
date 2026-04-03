@@ -155,7 +155,7 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
 
               <ServiceDetailContent apiData={detailData} />
 
-              <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="mt-12 pt-4 border-t border-gray-100">
                 {/* <h4 className="text-xl font-bold text-[#04063E] mb-6">Forensic Examination Enquiries</h4> */}
                 <FAQAccordion apiFaqs={detailData.pccqueries} />
               </div>

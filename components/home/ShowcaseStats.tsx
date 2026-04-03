@@ -123,7 +123,7 @@ const ShowcaseStats = () => {
 
         <div className="relative z-10 text-center px-4">
           <div className="mt-12 md:mt-16 mb-20 md:mb-24">
-            <p className="text-white md:text-[#04063E] font-semibold text-xs md:text-sm tracking-widest mb-2 uppercase">
+            <p className="text-white md:text-[#04063E] font-medium text-xs md:text-sm tracking-widest mb-2">
               {content.title}
             </p>
             <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white md:text-black tracking-tight max-w-2xl mx-auto">

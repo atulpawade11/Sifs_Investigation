@@ -137,14 +137,14 @@ const Hero = () => {
 
   const heroTitle = currentSlideData?.title || homeData?.data?.bs?.hero_section_title || "Serving The Nation Forensically";
   const heroText = currentSlideData?.text || homeData?.data?.bs?.hero_section_text || "Delivering Justice Through Forensic Excellence";
-  const heroButtonText = currentSlideData?.button_text || homeData?.data?.bs?.hero_section_button_text || "Learn More";
+  //const heroButtonText = currentSlideData?.button_text || homeData?.data?.bs?.hero_section_button_text || "Learn More";
   const heroButtonUrl = currentSlideData?.button_url || homeData?.data?.bs?.hero_section_button_url || "/";
 
   // Show loading state
   if (loading) {
     return (
       <section className="relative w-full bg-white overflow-hidden">
-        <div className="container mx-auto px-4 md:px-10 py-12 md:py-20">
+        <div className="mx-auto py-12 md:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <div className="flex items-start gap-4">
@@ -181,7 +181,7 @@ const Hero = () => {
   if (error) {
     return (
       <section className="relative w-full bg-white overflow-hidden">
-        <div className="container mx-auto px-4 md:px-10 py-12 md:py-20">
+        <div className="mx-auto py-12 md:py-20">
           <div className="text-center text-red-500">
             <p>Error loading content: {error}</p>
             <p className="mt-2 text-sm text-gray-600">Showing static content instead.</p>
@@ -193,9 +193,9 @@ const Hero = () => {
 
   return (
     <section className="relative w-full bg-white overflow-hidden">
-      <div className="container mx-auto px-4 md:px-10 py-6 md:py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-1 gap-12 items-center min-h-[200px]">
-
+      <div className="container mx-auto py-6 md:py-10">
+        {/* <div className="grid grid-cols-1 lg:grid-cols-1 gap-12 items-center min-h-[200px]">*/}
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-12 items-center">
           {/* LEFT SIDE: Heading & Text */}
           <div className="relative z-10 transition-all duration-500 animate-in fade-in slide-in-from-left-4" key={activeIndex}>
             <div className="flex items-start gap-4">
@@ -205,7 +205,7 @@ const Hero = () => {
               </div>*/}
 
               <div className="space-y-6">
-                <h1 className="text-5xl md:text-5xl font-bold text-[#04063E] leading-tight mb-2">
+                <h2 className="text-5xl md:text-5xl font-bold text-[#04063E] leading-tight mb-2">
                   {heroTitle.includes('Nation') ? (
                     <>
                       {heroTitle.split('Nation')[0]}
@@ -221,13 +221,13 @@ const Hero = () => {
                   ) : (
                     heroTitle
                   )}
-                </h1>
+                </h2>
 
                 <div className="flex items-center gap-2 text-gray-500 text-lg">
                   <p>{heroText}</p>
                   <span className="text-2xl">🎓</span>
                 </div>
-                <div className="flex flex-col gap-4 w-full max-w-[280px]">
+                {/*<div className="flex flex-col gap-4 w-full max-w-[280px]">
                   <Link
                     href={heroButtonUrl}
                     className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] 
@@ -241,7 +241,7 @@ const Hero = () => {
                       <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                     </div>
                   </Link>
-                </div>
+                  </div>*/}
               </div>
             </div>
           </div>

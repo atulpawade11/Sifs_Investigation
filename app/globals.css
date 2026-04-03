@@ -374,3 +374,7 @@ button{cursor:pointer;}
   margin-bottom: 1rem;
   color: #04063E;
 }
+
+.ql-align-justify img{
+  margin-bottom:20px;
+}

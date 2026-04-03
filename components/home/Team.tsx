@@ -95,30 +95,20 @@ const Team = () => {
       <div className="container mx-auto px-4 md:px-10">
 
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+        <div className="flex flex-col md:flex-row justify-center items-center text-center mb-12 gap-6">
           <div>
-            <p className="text-[#FF8C00] font-medium italic mb-2">
+            <p className="text-[#04063E] font-medium italic mb-2">
               {content.title}
             </p>
             <h2 className="text-4xl md:text-5xl font-bold text-[#04063E]">
               {content.subtitle}
             </h2>
           </div>
-          <Link
-            href="/team"
-            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E]
-                        text-white px-8 py-3 rounded-full font-bold
-                        flex items-center gap-4
-                        hover:from-[#1217c0] hover:to-[#0a0f6b]
-                        transition-all group"
-          >
-            View All Teams
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
+          
         </div>
 
         {/* Team Grid adjusted for 5 items */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
           {members.map((member) => (
             <div key={member.id} className="flex flex-col">
 
@@ -166,6 +156,19 @@ const Team = () => {
             </div>
           ))}
         </div>
+        <div className="text-center gap-6 flex items-center justify-center">
+          <Link
+              href="/team"
+              className="bg-gradient-to-r from-[#0B10A4] to-[#04063E]
+                          text-white px-8 py-3 rounded-full font-bold
+                          flex items-center gap-4
+                          hover:from-[#1217c0] hover:to-[#0a0f6b]
+                          transition-all group w-1/6"
+            >
+              View All Teams
+              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
       </div>
     </section>
   );

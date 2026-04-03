@@ -93,7 +93,7 @@ const DownloadsSlider = () => {
   return (
     <section className="py-12 bg-white overflow-hidden">
       <div className="container mx-auto px-4 text-center mb-12">
-        <p className="text-[#04063E] font-bold italic text-sm mb-2 uppercase tracking-widest">
+        <p className="text-[#04063E] font-semibold italic text-sm mb-2 tracking-widest">
           {data.subtitle}
         </p>
         <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">

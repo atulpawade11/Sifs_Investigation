@@ -198,6 +198,7 @@ const Header = () => {
                     FAQ
                   </Link>
                 </li>
+                <li><Link href="/blog" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">Blog</Link></li>
               </ul>
             </div>
           </div>

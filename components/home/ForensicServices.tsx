@@ -102,8 +102,8 @@ const ForensicServices = () => {
       }}
     >
       <div className="container mx-auto px-4 md:px-10 relative z-10">
-        <div className="mb-12">
-          <p className="text-[#04063E] font-medium italic mb-2 uppercase tracking-widest text-sm">
+        <div className="mb-12 text-center">
+          <p className="text-[#04063E] font-medium italic mb-2 tracking-widest text-sm">
             {sectionTitles.title}
           </p>
           <h2 className="text-4xl md:text-5xl font-bold text-slate-900">

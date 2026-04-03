@@ -5,17 +5,58 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { API_BASE_URL } from '@/lib/config';
 import { Skeleton } from '@/components/shared/Skeleton';
+import * as FaIcons from 'react-icons/fa';
+import * as BsIcons from 'react-icons/bs';
+import * as MdIcons from 'react-icons/md';
+import * as IoIcons from 'react-icons/io5';
+import * as RiIcons from 'react-icons/ri';
+import { IconType } from 'react-icons';
 
 interface VisionPoint {
   id: number;
   title: string;
   short_text: string;
   icon: string;
+  serial_number: number;
 }
+
+// Comprehensive icon mapping
+const getIconComponent = (iconName: string): IconType | null => {
+  // Clean the icon name (remove 'fas fa-' prefix if exists)
+  let cleanIconName = iconName.replace(/^fas\s+fa-/, '').replace(/^far\s+fa-/, '');
+  
+  // Convert to proper case for component lookup (e.g., "bullseye" -> "FaBullseye")
+  const componentName = `Fa${cleanIconName.charAt(0).toUpperCase()}${cleanIconName.slice(1)}`;
+  
+  // Try different icon libraries
+  const iconLibraries = [FaIcons, BsIcons, MdIcons, IoIcons, RiIcons];
+  
+  for (const library of iconLibraries) {
+    // @ts-ignore - Dynamic lookup
+    const Icon = library[iconName] || library[componentName];
+    if (Icon) return Icon as IconType;
+  }
+  
+  // Try with original name
+  for (const library of iconLibraries) {
+    // @ts-ignore
+    const Icon = library[iconName];
+    if (Icon) return Icon as IconType;
+  }
+  
+  return null;
+};
+
+// Fallback icon component
+const FallbackIcon = ({ color = "#04063E" }: { color?: string }) => (
+  <svg className="w-8 h-8" fill="none" stroke={color} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+  </svg>
+);
 
 const VisionMission = () => {
   const [points, setPoints] = useState<VisionPoint[]>([]);
-  const [showAll, setShowAll] = useState(false); // State for toggle
+  const [showAll, setShowAll] = useState(false);
   const [content, setContent] = useState({
     title: "Forensic Services",
     subtitle: "Scientifically Revealing the Truth with Utmost Precision",
@@ -43,7 +84,7 @@ const VisionMission = () => {
           });
 
           if (result.data.points) {
-            setPoints(result.data.points); // Store all points
+            setPoints(result.data.points);
           }
         }
       } catch (err) {
@@ -56,14 +97,20 @@ const VisionMission = () => {
     fetchVisionData();
   }, []);
 
-  // Determine which points to display
   const displayedPoints = showAll ? points : points.slice(0, 3);
 
-  const cardStyles = [
-    { bgColor: "bg-[#04063E]", invertIcon: true, icon: "/vision.png" },
-    { bgColor: "bg-white border-2 border-[#04063E]", invertIcon: false, icon: "/mission.png" },
-    { bgColor: "bg-[#04063E]", invertIcon: true, icon: "/purpose.png" }
-  ];
+  const renderIcon = (iconName: string, bgColor: string, invertIcon: boolean) => {
+    const IconComponent = getIconComponent(iconName);
+    const iconColor = invertIcon ? '#FFFFFF' : '#04063E';
+    
+    if (IconComponent) {
+      return <IconComponent className={`w-8 h-8`} color={iconColor} />;
+    }
+    
+    // If no icon found, show fallback
+    console.warn(`Icon not found for: ${iconName}`);
+    return <FallbackIcon color={iconColor} />;
+  };
 
   if (loading) {
     return (
@@ -87,25 +134,19 @@ const VisionMission = () => {
           {content.subtitle}
         </h2>
 
-        {/* DYNAMIC GRID - Animates when showAll changes */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-10 transition-all duration-500">
           {displayedPoints.map((item, index) => {
-            // Re-use 3 styles in a loop for any number of cards
-            const style = cardStyles[index % 3]; 
+            const isEven = index % 2 === 0;
+            const bgColor = isEven ? "bg-[#04063E]" : "bg-white border-2 border-[#04063E]";
+            const invertIcon = isEven;
+            
             const cleanTitle = item.title.replace(/[,.]+$/, "").toUpperCase();
             const cleanText = item.short_text.replace(/[,.]+$/, "");
 
             return (
               <div key={item.id} className="flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className={`w-20 h-20 ${style.bgColor} rounded-full flex items-center justify-center mb-6 shadow-lg shadow-blue-50 relative`}>
-                  <div className="relative w-8 h-8">
-                    <Image
-                      src={style.icon} 
-                      alt={cleanTitle}
-                      fill
-                      className={`object-contain ${style.invertIcon ? 'brightness-0 invert' : ''}`}
-                    />
-                  </div>
+                <div className={`w-20 h-20 ${bgColor} rounded-full flex items-center justify-center mb-6 shadow-lg shadow-blue-50 relative`}>
+                  {renderIcon(item.icon, bgColor, invertIcon)}
                 </div>
                 <h3 className="text-xl font-bold text-[#04063E] mb-3">{cleanTitle}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed max-w-[280px]">{cleanText}</p>
@@ -114,7 +155,6 @@ const VisionMission = () => {
           })}
         </div>
 
-        {/* VIEW MORE / LESS TOGGLE */}
         {points.length > 3 && (
           <button 
             onClick={() => setShowAll(!showAll)}
@@ -124,7 +164,6 @@ const VisionMission = () => {
           </button>
         )}
 
-        {/* DIVIDER & INFO BUTTON */}
         <div className="relative flex items-center justify-center mb-20">
           <div className="absolute w-full h-px bg-gray-100"></div>
           <div className="relative z-10 bg-white px-6 flex flex-col md:flex-row items-center gap-4">
@@ -139,7 +178,6 @@ const VisionMission = () => {
           </div>
         </div>
 
-        {/* BOTTOM IMAGE */}
         <div className="relative w-full max-w-5xl mx-auto h-[400px] md:h-[500px] rounded-[20px] md:rounded-[250px] overflow-hidden shadow-2xl">
           <Image
             src={content.image}
