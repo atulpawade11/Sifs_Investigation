@@ -72,8 +72,8 @@ export default function ImageGalleryClient() {
   return (
     <div className="bg-gray-50 min-h-screen">
       <PageBanner
-        title="Image Gallery"
-        subtitle="SIFS India"
+        title="Our Gallery"
+        subtitle="Our Legacy : Achieving Excellence and Joy"
         breadcrumbImage={breadcrumbImage}
       />
 

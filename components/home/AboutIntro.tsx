@@ -152,12 +152,12 @@ const AboutIntro = () => {
           {/* LEFT CONTENT */}
           <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-700">
             <div className="space-y-4">
-              <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
-                {content?.intro_section_text || "SIFS India has successfully carved a niche in the field of forensics."}
-              </h2>
               <span className="text-[#04063E] font-medium italic">
                 {content?.intro_section_title || "Efficiency Meets the Finest Forensic Expertise"}
               </span>
+              <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
+                {content?.intro_section_text || "SIFS India has successfully carved a niche in the field of forensics."}
+              </h2>
             </div>
 
             <div className="flex items-center gap-6 pt-4">

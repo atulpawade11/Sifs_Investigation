@@ -71,14 +71,14 @@ export default function Footer() {
             {footerData?.newsletter_text || "Let’s contact"} <ArrowRight size={22} />
           </h2>
 
-          <form onSubmit={handleSubscribe} className="relative flex w-full max-w-md items-center rounded-full bg-[#2E3333] px-4 py-2 border border-transparent focus-within:border-blue-500 transition-all">
+          <form onSubmit={handleSubscribe} className="relative flex w-full max-w-md items-center rounded-full bg-[#fff] px-4 py-2 border border-transparent focus-within:border-blue-500 transition-all">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
-              className="flex-1 bg-transparent text-sm text-white placeholder:text-gray-400 focus:outline-none"
+              className="flex-1 bg-transparent text-sm text-black bg-white placeholder:text-gray-400 focus:outline-none"
             />
             <button 
               disabled={status === 'loading' || status === 'success'}

@@ -3,17 +3,22 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { API_BASE_URL } from "@/lib/config";
 import { parseAboutContent } from "@/lib/parseAboutContent";
 
 export default function AboutMissionTabs() {
   const [activeTab, setActiveTab] = useState("mission");
   const [data, setData] = useState<any>(null);
+  const [isExpanded, setIsExpanded] = useState(false); // New state for toggle
   const [parsedContent, setParsedContent] = useState({
     mission: "",
     vision: "",
     purpose: "",
   });
+
+  // Reset expansion when switching tabs
+  useEffect(() => {
+    setIsExpanded(false);
+  }, [activeTab]);
 
   useEffect(() => {
     fetch("/api/about")
@@ -21,21 +26,8 @@ export default function AboutMissionTabs() {
       .then((result) => {
         if (result.success && result.data.bs.about_us) {
           const html = result.data.bs.about_us;
-
           const parsed = parseAboutContent(html);
-
           setData(result.data.bs);
-  
-          const getSection = (section: string) => {
-            const regex = new RegExp(
-              `<h5[^>]*>\\s*<strong>\\s*${section}\\s*<\\/strong>\\s*<\\/h5>([\\s\\S]*?)(?=<h5|$)`,
-              "i"
-            );
-  
-            const match = html.match(regex);
-            return match ? match[1].trim() : "";
-          };
-  
           setParsedContent({
             mission: parsed.mission,
             vision: parsed.vision,
@@ -47,20 +39,20 @@ export default function AboutMissionTabs() {
   }, []);
 
   const contentStyle = `
-  text-[14px] leading-relaxed text-gray-600 
-  [&_ul]:list-disc 
-  [&_ul]:ms-6 
-  [&_ul]:my-4 
-  [&_ul]:grid 
-  [&_ul]:grid-cols-1 
-  md:[&_ul]:grid-cols-2 
-  [&_ul]:gap-x-8 
-  [&_ul]:gap-y-2
-  [&_li]:list-item 
-  [&_li]:mb-2 
-  [&_li]:ps-1
-  [&_p]:mb-4
-`;
+    text-[14px] leading-relaxed text-gray-600 
+    [&_ul]:list-disc 
+    [&_ul]:ms-6 
+    [&_ul]:my-4 
+    [&_ul]:grid 
+    [&_ul]:grid-cols-1 
+    md:[&_ul]:grid-cols-2 
+    [&_ul]:gap-x-8 
+    [&_ul]:gap-y-2
+    [&_li]:list-item 
+    [&_li]:mb-2 
+    [&_li]:ps-1
+    [&_p]:mb-4
+  `;
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-20">
@@ -78,9 +70,7 @@ export default function AboutMissionTabs() {
             />
           </div>
           <div className="flex items-center gap-4 border-t border-[#D9D9D9] pt-4">
-            <span className="text-[90px] font-extrabold text-black leading-none">
-              20
-            </span>
+            <span className="text-[90px] font-extrabold text-black leading-none">20</span>
             <div className="text-[18px] font-semibold text-black leading-tight">
               +<br />Year of <br /> Experience
             </div>
@@ -116,30 +106,30 @@ export default function AboutMissionTabs() {
               <div className="animate-in fade-in duration-500">
                 {activeTab === "mission" ? (
                   <>
-                    <h4 className="mb-2 text-sm font-bold uppercase text-black">
-                      Mission
-                    </h4>
-                    <div
-                      className={contentStyle}
-                      dangerouslySetInnerHTML={{ __html: parsedContent.mission }}
-                    />
-                    <h4 className="mb-2 mt-6 text-sm font-bold uppercase text-black">
-                      Vision
-                    </h4>
-                    <div
-                      className={contentStyle}
-                      dangerouslySetInnerHTML={{ __html: parsedContent.vision }}
-                    />
+                    <h4 className="mb-2 text-sm font-bold uppercase text-black">Mission</h4>
+                    <div className={contentStyle} dangerouslySetInnerHTML={{ __html: parsedContent.mission }} />
+                    <h4 className="mb-2 mt-6 text-sm font-bold uppercase text-black">Vision</h4>
+                    <div className={contentStyle} dangerouslySetInnerHTML={{ __html: parsedContent.vision }} />
                   </>
                 ) : (
                   <>
-                    <h4 className="mb-2 text-sm font-bold uppercase text-black">
-                      Our Purpose
-                    </h4>
-                    <div
-                      className={contentStyle}
-                      dangerouslySetInnerHTML={{ __html: parsedContent.purpose }}
-                    />
+                    <h4 className="mb-2 text-sm font-bold uppercase text-black">Our Purpose</h4>
+                    <div className="relative">
+                      <div
+                        className={`${contentStyle} transition-all duration-500 overflow-hidden ${
+                          !isExpanded ? "max-h-[250px] mask-gradient" : "max-h-[2000px]"
+                        }`}
+                        dangerouslySetInnerHTML={{ __html: parsedContent.purpose }}
+                      />
+                      
+                      {/* Styled Toggle Button */}
+                      <button
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        className="mt-4 text-[12px] font-bold uppercase tracking-wider text-[#0B10A4] hover:underline flex items-center gap-2"
+                      >
+                        {isExpanded ? "Read Less ↑" : "Read More ↓"}
+                      </button>
+                    </div>
                   </>
                 )}
               </div>
@@ -159,9 +149,7 @@ export default function AboutMissionTabs() {
             />
           </div>
           <div className="absolute -left-10 top-80 max-w-[300px] rounded-2xl bg-gradient-to-br from-[#0B10A4] to-[#04063E] p-8 text-white shadow-2xl">
-            <p className="mb-2 text-[10px] font-bold uppercase opacity-70">
-              Expertise
-            </p>
+            <p className="mb-2 text-[10px] font-bold uppercase opacity-70">Expertise</p>
             <h4 className="mb-6 text-lg font-bold leading-snug">
               {data?.newsletter_text || "Scientifically Revealing the Truth"}
             </h4>
@@ -174,6 +162,14 @@ export default function AboutMissionTabs() {
           </div>
         </div>
       </div>
+
+      {/* Global CSS for the fade effect */}
+      <style jsx global>{`
+        .mask-gradient {
+          mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+          -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
+      `}</style>
     </section>
   );
 }
