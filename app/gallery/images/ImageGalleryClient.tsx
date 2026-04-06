@@ -54,10 +54,7 @@ export default function ImageGalleryClient() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {[1, 2, 3, 4].map((i) => (
         <div key={i} className="relative space-y-4">
-          {/* Main Image Placeholder */}
           <Skeleton className="aspect-[16/9] w-full rounded-xl" />
-          
-          {/* Floating Info Box Placeholder */}
           <div className="absolute bottom-4 left-4 right-12 md:right-24 bg-white p-2 rounded-lg shadow-xl">
              <div className="space-y-2">
                 <Skeleton className="h-4 w-3/4" />
@@ -72,8 +69,9 @@ export default function ImageGalleryClient() {
   return (
     <div className="bg-gray-50 min-h-screen">
       <PageBanner
-        title="Our Gallery"
-        subtitle="Our Legacy : Achieving Excellence and Joy"
+        title="Our Legacy : Achieving Excellence and Joy"
+        subtitle="Our Gallery"
+        isGallery={true} // 👈 This activates the swap logic in PageBanner
         breadcrumbImage={breadcrumbImage}
       />
 
@@ -131,7 +129,6 @@ export default function ImageGalleryClient() {
         </section>
       </div>
 
-      {/* Modal logic ... */}
       {selectedItem && (
          <div 
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"

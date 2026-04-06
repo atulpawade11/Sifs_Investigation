@@ -1,3 +1,6 @@
+"use client";
+
+import React from 'react';
 import Image from "next/image";
 
 interface PageBannerProps {
@@ -5,7 +8,8 @@ interface PageBannerProps {
   subtitle?: string;
   description?: string;
   bgImage?: string;
-  breadcrumbImage?: string; // 👈 from layout
+  breadcrumbImage?: string;
+  isGallery?: boolean; // 👈 Add this prop
 }
 
 export default function PageBanner({
@@ -14,6 +18,7 @@ export default function PageBanner({
   description,
   bgImage,
   breadcrumbImage,
+  isGallery = false, // 👈 Default to false
 }: PageBannerProps) {
 
   const bannerImage = bgImage || breadcrumbImage;
@@ -37,14 +42,32 @@ export default function PageBanner({
       )}
 
       <div className="relative z-10 text-center text-white px-4">
-        <h1 className="text-3xl md:text-4xl font-semibold">
-          {title}
-        </h1>
-
-        {subtitle && (
-          <p className="mt-2 text-sm md:text-base">
-            {subtitle}
-          </p>
+        {/* FLIP LOGIC: 
+            If isGallery is true, show Subtitle THEN Title. 
+            Otherwise, show Title THEN Subtitle.
+        */}
+        {isGallery ? (
+          <>
+            {subtitle && (
+              <p className="mb-2 text-sm md:text-base font-medium uppercase tracking-wider">
+                {subtitle}
+              </p>
+            )}
+            <h1 className="text-3xl md:text-4xl font-semibold">
+              {title}
+            </h1>
+          </>
+        ) : (
+          <>
+            <h1 className="text-3xl md:text-4xl font-semibold">
+              {title}
+            </h1>
+            {subtitle && (
+              <p className="mt-2 text-sm md:text-base">
+                {subtitle}
+              </p>
+            )}
+          </>
         )}
 
         {description && (

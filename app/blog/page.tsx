@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import { API_BASE_URL } from '@/lib/config';
-import PageBanner from "@/components/common/PageBanner";
-import BlogLayout from "@/components/blog/BlogLayout/index";
+import BlogPageClient from "./BlogPageClient";
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -31,18 +30,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function BlogPage() {
-  return (
-    <>
-      <PageBanner
-        title="Latest News & Blog"
-        subtitle="Forensic Discoveries: From Lab to Field"
-        bgImage="/about/about-banner.png"
-      />
-      <section className="py-12">
-        <div className="mx-auto max-w-7xl px-4">
-          <BlogLayout />
-        </div>
-      </section>
-    </>
-  );
+  return <BlogPageClient />;
 }
