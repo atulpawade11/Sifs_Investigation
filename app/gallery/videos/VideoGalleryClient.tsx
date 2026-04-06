@@ -67,8 +67,9 @@ export default function VideoGalleryClient() {
   return (
     <div className="bg-white min-h-screen">
       <PageBanner
-        title="Our Gallery"
-        subtitle="Our Legacy : Achieving Excellence and Joy"
+        title="Our Legacy : Achieving Excellence and Joy"
+        subtitle="Our Gallery"
+        isGallery={true} 
         breadcrumbImage={breadcrumbImage}
       />
 
