@@ -3,24 +3,19 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, MoveDown } from 'lucide-react';
 import { Skeleton } from '@/components/shared/Skeleton';
-
-// Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-// Import Swiper styles
+// Swiper Smooth Transition Imports
 import 'swiper/css';
+import 'swiper/css/effect-fade';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
-// import required modules
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-
-// Import API base URL from config
 import { API_BASE_URL } from '@/lib/config';
 
-// Define types based on the API response structure
+// --- RESTORED INTERFACE ---
 interface HomePageData {
   success: boolean;
   message: string;
@@ -33,8 +28,6 @@ interface HomePageData {
       hero_section_button_text: string;
       hero_section_button_url: string;
       hero_bg?: string;
-      about_us?: string;
-      website_title?: string;
     };
     sliders: Array<{
       id: number;
@@ -45,19 +38,6 @@ interface HomePageData {
       image: string;
       mobile_image: string;
     }>;
-    features?: Array<{
-      id: number;
-      title: string;
-      icon: string;
-    }>;
-    portfolios?: Array<any>;
-    testimonials?: Array<any>;
-    blogs?: Array<any>;
-    packages?: Array<any>;
-    statistics?: Array<any>;
-    faqs?: Array<any>;
-    services?: Array<any>;
-    serviceCategories?: Array<any>;
   };
 }
 
@@ -65,48 +45,33 @@ const Hero = () => {
   const [homeData, setHomeData] = useState<HomePageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // Fetch homepage data on component mount
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
         setLoading(true);
         const response = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data: HomePageData = await response.json();
-
-        if (data.success) {
-          setHomeData(data);
-        } else {
-          throw new Error(data.message || 'Failed to fetch data');
-        }
+        if (data.success) setHomeData(data);
+        else throw new Error(data.message || 'Failed to fetch data');
       } catch (err) {
-        console.error('Error fetching homepage data:', err);
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
       } finally {
         setLoading(false);
       }
     };
-
     fetchHomeData();
   }, []);
 
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  // Get slides from API or use static fallback
   const apiSlides = homeData?.data?.sliders?.map(slider => {
-    let slideSrc = "/hero-banner.png";
+    let slideSrc = "/hero-banner.png"; 
     if (slider.image && slider.image.trim() !== "") {
-      if (slider.image.startsWith('http')) {
-        slideSrc = slider.image;
-      } else {
+      if (slider.image.startsWith('http')) { slideSrc = slider.image; } 
+      else {
         const baseUrl = API_BASE_URL.replace(/\/api\/?$/, '').replace(/\/$/, '');
-        const imgPath = slider.image.startsWith('/') ? slider.image : `/${slider.image}`;
-        slideSrc = `${baseUrl}${imgPath}`;
+        slideSrc = `${baseUrl}${slider.image.startsWith('/') ? slider.image : `/${slider.image}`}`;
       }
     }
     return {
@@ -120,179 +85,82 @@ const Hero = () => {
   }) || [];
 
   const slides = apiSlides.length > 0 ? apiSlides : [
-    { src: "/hero-banner.png", alt: "Forensic Student Working", title: "Serving The Nation Forensically", text: "Delivering Justice Through Forensic Excellence", button_text: "Learn More", button_url: "/" },
-    { src: "/about.png", alt: "About SIFS", title: "About SIFS India", text: "Pioneering Forensic Science Education", button_text: "Discover More", button_url: "/about" },
-    { src: "/lab/overview.png", alt: "Lab Overview", title: "State-of-the-Art Laboratories", text: "Advanced Facilities for Practical Training", button_text: "View Labs", button_url: "/labs" },
+    { src: "/hero-banner.png", alt: "Forensic Investigation", title: "Illuminating The Concealed Reality", text: "Forensic Excellence Creating Global Impact", button_text: "LEARN MORE", button_url: "/" },
   ];
 
-  // Debugging logs
-  useEffect(() => {
-    if (slides.length > 0) {
-      console.log("Hero Slides URLs:", slides.map(s => s.src));
-    }
-  }, [slides]);
-
-  // Use API data or fallback to static data
-  const currentSlideData = slides[activeIndex];
-
-  const heroTitle = currentSlideData?.title || homeData?.data?.bs?.hero_section_title || "Serving The Nation Forensically";
-  const heroText = currentSlideData?.text || homeData?.data?.bs?.hero_section_text || "Delivering Justice Through Forensic Excellence";
-  //const heroButtonText = currentSlideData?.button_text || homeData?.data?.bs?.hero_section_button_text || "Learn More";
-  const heroButtonUrl = currentSlideData?.button_url || homeData?.data?.bs?.hero_section_button_url || "/";
-
-  // Show loading state
-  if (loading) {
-    return (
-      <section className="relative w-full bg-white overflow-hidden">
-        <div className="mx-auto py-12 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <Skeleton className="hidden md:block w-10 h-32 rounded-full" />
-                <div className="space-y-6 w-full">
-                  <Skeleton className="h-16 md:h-24 w-full" />
-                  <Skeleton className="h-6 w-3/4" />
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col items-start w-full lg:pl-10 space-y-8">
-              <div className="flex items-center gap-4">
-                <Skeleton className="w-14 h-14 rounded-full" />
-                <div className="space-y-2">
-                  <Skeleton className="h-5 w-24" />
-                  <Skeleton className="h-3 w-32" />
-                </div>
-              </div>
-              <div className="space-y-4 w-full max-w-[280px]">
-                <Skeleton className="h-12 w-full rounded-full" />
-                <Skeleton className="h-14 w-full rounded-full" />
-              </div>
-            </div>
-          </div>
-          <div className="mt-12">
-            <Skeleton className="h-[400px] md:h-[600px] w-full rounded-2xl" />
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // Show error state
-  if (error) {
-    return (
-      <section className="relative w-full bg-white overflow-hidden">
-        <div className="mx-auto py-12 md:py-20">
-          <div className="text-center text-red-500">
-            <p>Error loading content: {error}</p>
-            <p className="mt-2 text-sm text-gray-600">Showing static content instead.</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  if (loading) return <Skeleton className="w-full h-[750px]" />;
 
   return (
-    <section className="relative w-full bg-white overflow-hidden">
-      <div className="container mx-auto py-6 md:py-10">
-        {/* <div className="grid grid-cols-1 lg:grid-cols-1 gap-12 items-center min-h-[200px]">*/}
-        <div className="grid grid-cols-1 lg:grid-cols-1 gap-12 items-center">
-          {/* LEFT SIDE: Heading & Text */}
-          <div className="relative z-10 transition-all duration-500 animate-in fade-in slide-in-from-left-4" key={activeIndex}>
-            <div className="flex items-start gap-4">
-              {/* Decorative Scroll Down Icon */}
-              {/*<div className="hidden md:flex flex-col items-center justify-center px-2.5 py-5 border mt-30 rounded-full text-gray-400">
-                <MoveDown size={20} />
-              </div>*/}
-
-              <div className="space-y-6">
-                <h2 className="text-5xl md:text-5xl font-bold text-[#04063E] leading-tight mb-2">
-                  {heroTitle.includes('Nation') ? (
-                    <>
-                      {heroTitle.split('Nation')[0]}
-                      <span className="relative inline-block">
-                        Nation
-                        {/* The hand-drawn circle effect */}
-                        {/*<svg className="absolute -inset-x-4 -inset-y-2 w-[120%] h-[140%] text-gray-400 opacity-50 pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-                          <path d="M5,50 Q25,5 50,5 T95,50 T50,95 T5,50" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                        </svg> */}
-                      </span>
-                      {heroTitle.split('Nation')[1]}
-                    </>
-                  ) : (
-                    heroTitle
-                  )}
-                </h2>
-
-                <div className="flex items-center gap-2 text-gray-500 text-lg">
-                  <p>{heroText}</p>
-                  <span className="text-2xl">🎓</span>
-                </div>
-                {/*<div className="flex flex-col gap-4 w-full max-w-[280px]">
-                  <Link
-                    href={heroButtonUrl}
-                    className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] 
-                              text-white px-8 py-3 rounded-full font-bold 
-                              flex items-center gap-4 
-                              hover:from-[#1217c0] hover:to-[#0a0f6b] 
-                              transition-all group"
-                  >
-                    {heroButtonText}
-                    <div className="bg-white/10 p-1 rounded-full">
-                      <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </Link>
-                  </div>*/}
+    <section className="relative w-full h-[750px]">
+      {/* 1. BACKGROUND SWIPER (Full BG Image with Fade) */}
+      <div className="absolute inset-0 z-0">
+        <Swiper
+          modules={[Autoplay, EffectFade, Pagination, Navigation]}
+          effect="fade"
+          fadeEffect={{ crossFade: true }}
+          speed={1500}
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          loop={slides.length > 1}
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+          className="h-full w-full"
+        >
+          {slides.map((slide, index) => (
+            <SwiperSlide key={index}>
+              <div className="relative w-full h-full">
+                <Image
+                  src={slide.src}
+                  alt={slide.alt}
+                  fill
+                  className="object-full brightness-90 transition-transform duration-[7000ms] ease-out scale-110" 
+                  priority={index === 0}
+                  unoptimized
+                />
               </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+
+      {/* 2. THE CONTENT OVERLAY */}
+      <div className="relative z-10 h-full container mx-auto flex items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 w-full items-center gap-10">
+          
+          {/* LEFT SIDE: Spacer to keep text on the right as per screenshot */}
+          <div className="hidden lg:block" />
+
+          {/* RIGHT SIDE: Text Content */}
+          <div className="flex flex-col justify-center px-6 lg:px-0 text-white text-center lg:text-left">
+            <div 
+              key={activeIndex} 
+              className="max-w-xl space-y-6 animate-in fade-in slide-in-from-bottom-10 duration-1000"
+            >
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+                {slides[activeIndex]?.title}
+              </h2>
+              
+              <p className="text-lg md:text-2xl font-light opacity-90 italic">
+                {slides[activeIndex]?.text}
+              </p>
+
+              {/* Commented out button from your initial code
+              <div className="pt-4">
+                <Link
+                  href={slides[activeIndex]?.button_url || "/"}
+                  className="inline-block border-2 border-white px-8 py-3 text-sm font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-all"
+                >
+                  {slides[activeIndex]?.button_text || "LEARN MORE"}
+                </Link>
+              </div>
+              */}
             </div>
           </div>
-
-          
-        </div>
-
-        {/* BOTTOM IMAGE SECTION */}
-        <div className="mt-12 relative w-full h-[400px] md:h-[600px] rounded-2xl overflow-hidden shadow-2xl">
-          <Swiper
-            key={slides.length} // Force re-initialize Swiper when slide count changes
-            slidesPerView={1}
-            spaceBetween={0}
-            loop={slides.length > 1}
-            centeredSlides={true}
-            speed={1000}
-            onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-            autoplay={{
-              delay: 4500, // Increased delay slightly for better reading
-              disableOnInteraction: false,
-            }}
-            pagination={{
-              clickable: true,
-            }}
-            navigation={false}
-            modules={[Autoplay, Pagination, Navigation]}
-            className="w-full h-full hero-swiper"
-          >
-            {slides.map((slide, index) => (
-              <SwiperSlide key={index}>
-                <div className="relative w-full h-full">
-                  <Image
-                    src={slide.src}
-                    alt={slide.alt}
-                    fill
-                    className="object-cover"
-                    priority={index === 0}
-                    unoptimized={true}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                  />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
         </div>
       </div>
 
-      {/* Background decoration (optional star/sparkle from your screenshot) */}
-      <div className="absolute top-1/2 right-10 opacity-10 pointer-events-none">
-        <div className="w-20 h-20 border-8 border-gray-300 rounded-full border-dotted animate-spin-slow"></div>
-      </div>
+      <style jsx global>{`
+        .swiper-pagination-bullet { background: white !important; opacity: 0.5; }
+        .swiper-pagination-bullet-active { background: #f97316 !important; opacity: 1; }
+      `}</style>
     </section>
   );
 };
