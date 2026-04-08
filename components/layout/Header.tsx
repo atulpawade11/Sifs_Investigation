@@ -17,6 +17,12 @@ const Header = () => {
   const [departments, setDepartments] = useState<any[]>([]);
   // State for dynamic services
   const [serviceCategories, setServiceCategories] = useState<any[]>([]);
+  // Mobile Menus
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+
+  const toggleMenu = (menu: string) => {
+    setOpenMenu(openMenu === menu ? null : menu);
+  };
 
   useEffect(() => {
     async function loadBootData() {
@@ -79,13 +85,24 @@ const Header = () => {
     }
   }, [selectedLang]);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   // Filter active services (status = 1) and sort by serial_number
   const activeServices = serviceCategories
     .filter((service: any) => service.status === 1)
     .sort((a: any, b: any) => a.serial_number - b.serial_number);
 
   return (
-    <nav className="w-full flex flex-col">
+    <>
       {/* Top Bar */}
       <div className="bg-[#04063E] text-white py-2 px-4 md:px-10 hidden md:flex justify-between items-center text-sm font-medium">
         <div className="flex items-center gap-8">
@@ -184,6 +201,16 @@ const Header = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/team" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                    Experts & Associates
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/clientele" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                    Our Clientele
+                  </Link>
+                </li>
+                <li>
                   <Link href="/gallery/images" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Image Gallery
                   </Link>
@@ -194,11 +221,21 @@ const Header = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/career" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                    Career
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blog" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                    Blog
+                  </Link>
+                </li>
+                <li>
                   <Link href="/faq" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     FAQ
                   </Link>
                 </li>
-                <li><Link href="/blog" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">Blog</Link></li>
+                
               </ul>
             </div>
           </div>
@@ -297,96 +334,113 @@ const Header = () => {
 
       {/* MOBILE MENU - Updated with dynamic services */}
       {isOpen && (
-        <div className="lg:hidden bg-white border-b p-6 space-y-6 font-semibold text-gray-700 overflow-y-auto max-h-[80vh]">
-          <Link href="/" className="block text-lg" onClick={() => setIsOpen(false)}>Home</Link>
-
-          {/* Language Mobile */}
-          {data?.langs && data.langs.length > 0 && (
-            <div className="space-y-4">
-              <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">Language</p>
-              <div className="grid grid-cols-2 gap-2">
-                {data.langs.map((lang: any) => (
-                  <button
-                    key={lang.id}
-                    onClick={() => {
-                      setSelectedLang(lang);
-                      setIsOpen(false);
-                    }}
-                    className={`px-4 py-2 text-sm rounded-md border transition-all ${selectedLang?.id === lang.id ? 'bg-[#0B10A4] text-white border-[#0B10A4]' : 'bg-gray-50 text-gray-700 border-gray-200'}`}
-                  >
-                    {lang.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* About Mobile */}
-          <div className="space-y-2">
-            <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">About</p>
-            <Link href="/about" className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>About Us</Link>
-            <Link href="/gallery/images" className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>Image Gallery</Link>
-            <Link href="/gallery/videos" className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>Video Gallery</Link>
-            <Link href="/faq" className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>FAQ</Link>
-          </div>
-
-          {/* Services Mobile - NOW DYNAMIC */}
-          <div className="space-y-2">
-            <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">Services</p>
-            {activeServices.length > 0 ? (
-              activeServices.map((service: any) => (
-                <Link 
-                  key={service.id} 
-                  href={`/services/${service.id}`} 
-                  className="block pl-4 py-2 text-sm text-gray-600 hover:text-[#0B10A4] transition-colors border-b border-gray-50 last:border-0" 
-                  onClick={() => setIsOpen(false)}
-                >
-                  <div>{service.name}</div>
-                  {service.service_count > 0 && (
-                    <span className="text-[10px] text-[#F68A07]">({service.service_count} sub-services)</span>
-                  )}
-                </Link>
-              ))
-            ) : (
-              <p className="block pl-4 py-1 text-sm text-gray-400 italic">Loading services...</p>
-            )}
-          </div>
-
-          {/* Department & Laboratory Mobile (Dynamic) */}
-          <div className="space-y-2">
-            <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">{data?.bs?.parent_link_name || 'Department & Laboratory'}</p>
-            {departments.length > 0 ? (
-              departments.map((item) => (
-                <Link key={item.id} href={`/department/${item.slug}`} className="block pl-4 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
-                  {item.name}
-                </Link>
-              ))
-            ) : (
-              <p className="block pl-4 py-1 text-sm text-gray-400 italic">No departments available</p>
-            )}
-          </div>
-
-          {/* Product Mobile (Dynamic) */}
-          <div className="space-y-2">
-            <p className="text-[#F68A07] text-xs uppercase tracking-widest font-bold">{data?.bs?.parent_product_name || 'Product'}</p>
-            <Link href="/product" className="block pl-4 py-1 text-sm text-gray-800 font-bold" onClick={() => setIsOpen(false)}>
-              All Products
+        <div className="lg:hidden fixed inset-0 top-[64px] z-[100] bg-white flex flex-col">
+          {/* top-[64px] should match your header height. Adjust if your header is taller/shorter */}
+          
+          <div className="flex-1 overflow-y-auto p-6 pb-20 space-y-6 font-semibold text-gray-700">
+            <Link href="/" className="block text-lg border-b border-gray-50 pb-2" onClick={() => setIsOpen(false)}>
+              Home
             </Link>
-            {products.length > 0 ? (
-              products.slice(0, 5).map((item) => (
-                <Link key={item.id} href={`/product/${item.slug}`} className="block pl-8 py-1 text-sm text-gray-600" onClick={() => setIsOpen(false)}>
-                  {item.name || item.title}
-                </Link>
-              ))
-            ) : (
-              <p className="block pl-8 py-1 text-sm text-gray-400 italic">No products available</p>
-            )}
-          </div>
 
-          <Link href="/contact" className="block text-[#F68A07] text-lg" onClick={() => setIsOpen(false)}>Contact Us</Link>
+            
+
+            {/* About Mobile */}
+            <div className="border-b border-gray-50 pb-2">
+              <button
+                onClick={() => toggleMenu("about")}
+                className="flex justify-between w-full text-left text-lg"
+              >
+                About <ChevronDown size={18} className={`transition-transform ${openMenu === "about" ? "rotate-180" : ""}`} />
+              </button>
+
+              {openMenu === "about" && (
+                <div className="pl-4 mt-2 space-y-3 bg-gray-50 rounded-lg p-3">
+                  <Link href="/about" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>About Us</Link>
+                  <Link href="/team" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Experts & Associates</Link>
+                  <Link href="/clientele" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Our Clientele</Link>
+                  <Link href="/gallery/images" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Image Gallery</Link>
+                  <Link href="/gallery/videos" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Video Gallery</Link>
+                  <Link href="/career" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Career</Link>
+                  <Link href="/blog" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Blog</Link>
+                  <Link href="/faq" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>FAQ</Link>
+                </div>
+              )}
+            </div>
+
+            {/* Services Mobile */}
+            <div className="border-b border-gray-50 pb-2">
+              <button
+                onClick={() => toggleMenu("services")}
+                className="flex justify-between w-full text-left text-lg"
+              >
+                Services <ChevronDown size={18} className={`transition-transform ${openMenu === "services" ? "rotate-180" : ""}`} />
+              </button>
+
+              {openMenu === "services" && (
+                <div className="pl-4 mt-2 space-y-3 bg-gray-50 rounded-lg p-3">
+                  {activeServices.map((service) => (
+                    <Link
+                      key={service.id}
+                      href={`/services/${service.id}`}
+                      onClick={() => setIsOpen(false)}
+                      className="block text-sm text-gray-600 border-b border-white last:border-0 pb-1"
+                    >
+                      {service.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Department Mobile */}
+            <div className="border-b border-gray-50 pb-2">
+              <button
+                onClick={() => toggleMenu("departments")}
+                className="flex justify-between w-full text-left text-lg"
+              >
+                {data?.bs?.parent_link_name || 'Departments'} 
+                <ChevronDown size={18} className={`transition-transform ${openMenu === "departments" ? "rotate-180" : ""}`} />
+              </button>
+
+              {openMenu === "departments" && (
+                <div className="pl-4 mt-2 space-y-3 bg-gray-50 rounded-lg p-3">
+                  {departments.map((item) => (
+                    <Link key={item.id} className="block text-sm text-gray-600" href={`/department/${item.slug}`} onClick={() => setIsOpen(false)}>
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Product Mobile */}
+            <div className="border-b border-gray-50 pb-2">
+              <button
+                onClick={() => toggleMenu("products")}
+                className="flex justify-between w-full text-left text-lg"
+              >
+                {data?.bs?.parent_product_name || 'Products'} 
+                <ChevronDown size={18} className={`transition-transform ${openMenu === "products" ? "rotate-180" : ""}`} />
+              </button>
+
+              {openMenu === "products" && (
+                <div className="pl-4 mt-2 space-y-3 bg-gray-50 rounded-lg p-3">
+                  {products.map((item) => (
+                    <Link key={item.id} className="block text-sm text-gray-600" href={`/product/${item.slug}`} onClick={() => setIsOpen(false)}>
+                      {item.name || item.title}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Link href="/contact" className="block text-gray-600 text-lg pt-2" onClick={() => setIsOpen(false)}>
+              Contact Us
+            </Link>
+          </div>
         </div>
       )}
-    </nav>
+    </>
   );
 };
 
