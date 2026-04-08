@@ -134,11 +134,11 @@ const Hero = () => {
               key={activeIndex} 
               className="max-w-xl space-y-6 animate-in fade-in slide-in-from-bottom-10 duration-1000"
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+              <h2 className="text-3xl md:text-5xl lg:text-5xl font-extrabold leading-tight tracking-tight">
                 {slides[activeIndex]?.title}
               </h2>
               
-              <p className="text-lg md:text-2xl font-light opacity-90 italic">
+              <p className="text-lg md:text-2xl font-light opacity-90">
                 {slides[activeIndex]?.text}
               </p>
 

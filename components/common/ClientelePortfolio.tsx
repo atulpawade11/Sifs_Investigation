@@ -64,11 +64,9 @@ export default function ClientelePortfolio() {
     initFetch();
   }, []);
 
-  // --- CLIENTELE SKELETON ---
   const PortfolioSkeleton = () => (
     <section className="mx-auto max-w-7xl px-4 py-20 bg-white">
       <div className="grid gap-10 lg:grid-cols-[260px_1fr]">
-        {/* Sidebar Skeleton */}
         <aside className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100 h-fit">
           <div className="space-y-2">
             {[...Array(8)].map((_, i) => (
@@ -76,21 +74,10 @@ export default function ClientelePortfolio() {
             ))}
           </div>
         </aside>
-
-        {/* Grid Skeleton */}
-        <div className="relative">
-          {/* Badge Placeholder */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-             <div className="h-[250px] w-[250px] md:h-[350px] md:w-[350px] rounded-full border border-dashed border-gray-100 flex items-center justify-center">
-                <Skeleton className="h-20 w-48 rounded-md" />
-             </div>
-          </div>
-          {/* Logo Cards Skeleton */}
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 relative z-10">
-            {[...Array(12)].map((_, i) => (
-              <Skeleton key={i} className="h-[130px] w-full rounded-3xl" />
-            ))}
-          </div>
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 relative z-10">
+          {[...Array(12)].map((_, i) => (
+            <Skeleton key={i} className="h-[130px] w-full rounded-3xl" />
+          ))}
         </div>
       </div>
     </section>
@@ -117,93 +104,106 @@ export default function ClientelePortfolio() {
   if (loading) return <PortfolioSkeleton />;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-20 bg-white min-h-screen">
-      <div className="grid gap-10 lg:grid-cols-[260px_1fr]">
+    <section className="mx-auto max-w-7xl px-4 py-12 lg:py-20 bg-white min-h-screen">
+      {/* Using a Grid with defined columns for Sidebar and Content. 
+          This prevents the "Sidebar Overlapping" seen in the screenshot.
+      */}
+      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-10 items-start">
         
-        {/* SIDEBAR */}
-        <aside className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100 h-fit sticky top-24 z-20">
-          <ul className="space-y-1 text-sm">
-            <li>
-              <button 
-                onClick={() => setActiveTab("All")} 
-                className={`relative flex w-full items-center rounded-lg px-4 py-3 transition ${activeTab === "All" ? "bg-gray-100 font-bold text-[#04063E]" : "text-gray-500 hover:bg-gray-50"}`}
-              >
-                {activeTab === "All" && <span className="absolute left-0 top-2 h-8 w-[4px] rounded-r bg-[#1C274C]" />}
-                All Portfolios
-              </button>
-            </li>
-            {categories.map((cat) => (
-              <li key={cat.id}>
+        {/* SIDEBAR - Filter Navigation */}
+        <aside className="lg:sticky lg:top-24 z-30">
+          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+            <h5 className="px-4 mb-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Filters</h5>
+            <ul className="space-y-1 text-sm">
+              <li>
                 <button 
-                  onClick={() => setActiveTab(cat.name)} 
-                  className={`relative flex w-full items-center rounded-lg px-4 py-3 transition ${activeTab === cat.name ? "bg-gray-100 font-bold text-[#04063E]" : "text-gray-500 hover:bg-gray-50"}`}
+                  onClick={() => setActiveTab("All")} 
+                  className={`relative flex w-full items-center rounded-lg px-4 py-3 transition ${activeTab === "All" ? "bg-gray-100 font-bold text-[#04063E]" : "text-gray-500 hover:bg-gray-50"}`}
                 >
-                  {activeTab === cat.name && <span className="absolute left-0 top-2 h-8 w-[4px] rounded-r bg-[#1C274C]" />}
-                  {cat.name}
+                  {activeTab === "All" && <span className="absolute left-0 top-2 h-8 w-[4px] rounded-r bg-[#1C274C]" />}
+                  All Portfolios
                 </button>
               </li>
-            ))}
-          </ul>
+              {categories.map((cat) => (
+                <li key={cat.id}>
+                  <button 
+                    onClick={() => setActiveTab(cat.name)} 
+                    className={`relative flex w-full items-center rounded-lg px-4 py-3 transition ${activeTab === cat.name ? "bg-gray-100 font-bold text-[#04063E]" : "text-gray-500 hover:bg-gray-50"}`}
+                  >
+                    {activeTab === cat.name && <span className="absolute left-0 top-2 h-8 w-[4px] rounded-r bg-[#1C274C]" />}
+                    {cat.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </aside>
 
         {/* LOGO GRID AREA */}
-        <div className="relative">
+        <div className="relative min-h-[400px]">
           
-          {/* THE CENTRAL BADGE (Floating behind logos) */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-21">
-             <div className="h-[200px] w-[200px] md:h-[350px] md:w-[350px] rounded-full border border-dashed border-gray-200 flex flex-col items-center justify-center text-center p-10 bg-white/40 backdrop-blur-sm">
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-800 mb-2">{header.title}</p>
-                <h4 className="text-2xl font-black text-black leading-tight">{header.subtitle}</h4>
+          {/* BACKGROUND DECORATIVE BADGE - Sent to back */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 lg:opacity-0">
+             <div className="h-[280px] w-[280px] md:h-[350px] md:w-[350px] rounded-full border border-dashed border-gray-200 flex flex-col items-center justify-center text-center p-8 bg-white/10 backdrop-blur-[2px]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-800 mb-2">{header.title}</p>
+                <h4 className="text-xl md:text-2xl font-black text-black leading-tight">{header.subtitle}</h4>
               </div>
           </div>
 
-          {/* GRID OF LOGOS */}
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 w-full relative z-10">
+          {/* GRID OF LOGOS - Foreground */}
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4 w-full relative z-10">
             {filteredLogos.map((item) => (
               <div 
                 key={item.id} 
                 onClick={() => setSelectedItem(item)} 
-                className="group flex h-[130px] cursor-pointer items-center justify-center rounded-3xl bg-white/80 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 backdrop-blur-sm"
+                className="group flex h-[140px] cursor-pointer items-center justify-center rounded-3xl bg-white/90 shadow-sm border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 backdrop-blur-md"
               >
-                <div className="relative h-14 w-28 grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-110">
-                  <Image src={item.featured_image} alt={item.title} fill className="object-contain" unoptimized />
+                <div className="relative h-16 w-32 grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105">
+                  <Image src={item.featured_image} alt={item.title} fill className="object-contain p-2" unoptimized />
                 </div>
               </div>
             ))}
           </div>
 
-          {/* VIEW MORE */}
+          {/* VIEW MORE BUTTON */}
           {nextPageUrl && (
             <div className="mt-16 flex justify-center relative z-20">
               <button 
                 onClick={handleLoadMore} 
                 disabled={loadMoreLoading} 
-                className="flex items-center gap-3 px-10 py-4 bg-[#04063E] text-white rounded-full font-bold text-xs uppercase tracking-widest hover:bg-blue-900 transition-all shadow-xl disabled:opacity-50"
+                className="group flex items-center gap-3 px-10 py-4 bg-[#04063E] text-white rounded-full font-bold text-xs uppercase tracking-widest hover:bg-[#0B10A4] transition-all shadow-xl disabled:opacity-50"
               >
-                {loadMoreLoading ? <Loader2 className="animate-spin" /> : <ChevronDown size={18} />}
-                {loadMoreLoading ? "Fetching..." : "View More Clients"}
+                {loadMoreLoading ? <Loader2 className="animate-spin" /> : <ChevronDown size={18} className="group-hover:translate-y-1 transition-transform" />}
+                {loadMoreLoading ? "Loading..." : "View More Clients"}
               </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* 30:70 DETAIL POPUP */}
+      {/* DETAIL MODAL (30:70 Split) */}
       {selectedItem && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="relative w-full max-w-6xl bg-white rounded-[48px] shadow-2xl overflow-hidden flex flex-col md:flex-row h-auto max-h-[85vh] animate-in zoom-in-95 duration-300">
-            <div className="w-full md:w-[32%] bg-[#F8FAFC] p-12 flex flex-col items-center justify-center text-center border-r border-gray-100">
-              <div className="w-40 h-40 bg-white rounded-full shadow-2xl p-6 mb-8 flex items-center justify-center">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 md:p-10 bg-black/80 backdrop-blur-sm">
+          <div className="relative w-full max-w-6xl bg-white rounded-[2rem] md:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-fit max-h-[90vh] animate-in zoom-in-95 duration-300">
+            {/* Sidebar (30%) */}
+            <div className="w-full md:w-[32%] bg-gray-50 p-8 md:p-12 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-gray-100">
+              <div className="w-32 h-32 md:w-48 md:h-48 bg-white rounded-3xl shadow-lg p-6 mb-6 flex items-center justify-center">
                 <div className="relative w-full h-full">
-                  <Image src={selectedItem.featured_image} alt="Logo" fill className="object-contain" unoptimized />
+                  <Image src={selectedItem.featured_image} alt="Client Logo" fill className="object-contain" unoptimized />
                 </div>
               </div>
-              <h3 className="text-xl font-black text-[#020433] leading-tight uppercase">{selectedItem.title}</h3>
+              <h3 className="text-lg md:text-xl font-black text-[#020433] uppercase">{selectedItem.title}</h3>
             </div>
-            <div className="w-full md:w-[68%] p-10 md:p-20 overflow-y-auto bg-white relative">
-              <button onClick={() => setSelectedItem(null)} className="absolute top-10 right-10 p-3 bg-gray-50 hover:bg-gray-100 rounded-full transition-all"><X size={24} /></button>
-              <div className="prose prose-slate max-w-none">
-                <div className="text-gray-600 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: selectedItem.content }} />
+            {/* Content (70%) */}
+            <div className="w-full md:w-[68%] p-8 md:p-16 overflow-y-auto bg-white relative">
+              <button 
+                onClick={() => setSelectedItem(null)} 
+                className="absolute top-6 right-6 md:top-10 md:right-10 p-2 hover:bg-gray-100 rounded-full transition-all"
+              >
+                <X size={24} className="text-gray-400" />
+              </button>
+              <div className="prose prose-slate max-w-none prose-img:rounded-xl">
+                <div className="text-gray-600 text-base md:text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: selectedItem.content }} />
               </div>
             </div>
           </div>
