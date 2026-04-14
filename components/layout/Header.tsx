@@ -21,10 +21,10 @@ const Header = () => {
   const [laboratories, setLaboratories] = useState<any[]>([]);
   
   // Mobile expanded state
-  const [expandedMobile, setExpandedMobile] = useState<string | null>(null);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
 
-  const toggleMobileMenu = (menu: string) => {
-    setExpandedMobile(expandedMobile === menu ? null : menu);
+  const toggleMenu = (menu: string) => {
+    setOpenMenu(openMenu === menu ? null : menu);
   };
 
   useEffect(() => {
@@ -64,29 +64,16 @@ const Header = () => {
         
         // Fetch laboratories separately using getLaboratories
         const labRes = await getLaboratories();
-        console.log("Laboratories API response:", labRes); // Debug log
+        console.log("Laboratories API response:", labRes);
         if (labRes && labRes.success) {
           setLaboratories(labRes.data.data);
-          console.log("Laboratories set:", labRes.data.data); // Debug log
+          console.log("Laboratories set:", labRes.data.data);
         }
       } catch (err) {
         console.error("Failed to load departments/laboratories:", err);
       }
     }
     loadDepartmentsData();
-
-    // ADDED: Load laboratories separately if needed
-    async function loadLaboratoriesData() {
-      try {
-        const res = await getLaboratories();
-        if (res && res.success) {
-          setLaboratories(res.data.data);
-        }
-      } catch (err) {
-        console.error("Failed to load laboratories:", err);
-      }
-    }
-    loadLaboratoriesData();
   }, []);
 
   useEffect(() => {
@@ -108,7 +95,7 @@ const Header = () => {
   }, [isOpen]);
 
   return (
-    <nav className="w-full flex flex-col">
+    <>
       {/* Top Bar */}
       <div className="bg-[#04063E] text-white py-2 px-4 md:px-10 hidden md:flex justify-between items-center text-sm font-medium">
         <div className="flex items-center gap-8">
@@ -176,7 +163,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* MAIN Header */}
+      {/* MAIN Header - Fixed on scroll */}
       <div className="bg-white sticky top-0 z-50 px-4 md:px-10 py-3 flex justify-between items-center shadow-sm">
         {/* LOGO */}
         <Link href="/" className="flex items-center">
@@ -192,14 +179,14 @@ const Header = () => {
 
         {/* Desktop Menu */}
         <div className="hidden lg:flex items-center gap-8 font-semibold text-gray-700">
-          <Link href="/" className="hover:text-[#F68A07] transition-colors">Home</Link>
+          <Link href="/" className="hover:text-[#F68A07]">Home</Link>
 
           {/* About Dropdown */}
           <div className="group relative">
-            <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07]">
+            <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
               About <ChevronDown size={16} />
             </div>
-            <div className="absolute left-0 top-full mt-4 w-[220px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div className="absolute left-0 top-full w-[220px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <ul className="py-2">
                 <li>
                   <Link href="/about" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
@@ -251,10 +238,10 @@ const Header = () => {
           {/* Department Dropdown */}
           {departments.length > 0 && (
             <div className="group relative">
-              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07]">
+              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
                 Department <ChevronDown size={16} />
               </div>
-              <div className="absolute left-0 top-full mt-4 w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
+              <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
                 <ul className="py-2">
                   {departments.map((item) => (
                     <li key={item.id}>
@@ -274,10 +261,10 @@ const Header = () => {
           {/* Laboratory Dropdown */}
           {laboratories.length > 0 && (
             <div className="group relative">
-              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07]">
+              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
                 Laboratory <ChevronDown size={16} />
               </div>
-              <div className="absolute left-0 top-full mt-4 w-[260px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
+              <div className="absolute left-0 top-full w-[260px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
                 <ul className="py-2">
                   {laboratories.map((item) => (
                     <li key={item.id}>
@@ -320,151 +307,136 @@ const Header = () => {
         {/* Action Buttons */}
         <div className="flex items-center gap-4">
           <Link href="/contact" className="hidden md:flex bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-8 py-3 rounded-full font-bold flex items-center gap-4 hover:from-[#1217c0] hover:to-[#0a0f6b] transition-all group">
-            Contact Us <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            Contact Us <ArrowRight size={18} />
           </Link>
 
-          <button className="lg:hidden p-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors" onClick={() => setIsOpen(!isOpen)}>
+          <button className="lg:hidden p-2 bg-gray-100 rounded-md" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* MOBILE MENU - Updated with dynamic services */}
       {isOpen && (
-        <div className="lg:hidden bg-white border-b p-6 space-y-6 font-semibold text-gray-700 max-h-[calc(100vh-64px)] overflow-y-auto">
-          <Link href="/" className="block text-lg pb-2 border-b border-gray-100" onClick={() => setIsOpen(false)}>
-            Home
-          </Link>
+        <div className="lg:hidden fixed inset-0 top-[64px] z-[100] bg-white flex flex-col">
+          <div className="flex-1 overflow-y-auto p-6 pb-20 space-y-6 font-semibold text-gray-700">
+            <Link href="/" className="block text-lg border-b border-gray-50 pb-2" onClick={() => setIsOpen(false)}>
+              Home
+            </Link>
 
-          {/* About Mobile */}
-          <div className="space-y-2">
-            <button
-              onClick={() => toggleMobileMenu("about")}
-              className="flex justify-between items-center w-full text-left text-[#F68A07] text-xs uppercase tracking-widest font-bold"
-            >
-              About
-              <ChevronDown size={16} className={`transition-transform duration-200 ${expandedMobile === "about" ? "rotate-180" : ""}`} />
-            </button>
-            {expandedMobile === "about" && (
-              <div className="pl-4 space-y-2 mt-2 animate-in slide-in-from-top-2 duration-200">
-                <Link href="/about" className="block py-1 text-sm text-gray-600 hover:text-[#0B10A4]" onClick={() => setIsOpen(false)}>About Us</Link>
-                <Link href="/team" className="block py-1 text-sm text-gray-600 hover:text-[#0B10A4]" onClick={() => setIsOpen(false)}>Experts & Associates</Link>
-                <Link href="/clientele" className="block py-1 text-sm text-gray-600 hover:text-[#0B10A4]" onClick={() => setIsOpen(false)}>Our Clientele</Link>
-                <Link href="/gallery/images" className="block py-1 text-sm text-gray-600 hover:text-[#0B10A4]" onClick={() => setIsOpen(false)}>Image Gallery</Link>
-                <Link href="/gallery/videos" className="block py-1 text-sm text-gray-600 hover:text-[#0B10A4]" onClick={() => setIsOpen(false)}>Video Gallery</Link>
-                <Link href="/career" className="block py-1 text-sm text-gray-600 hover:text-[#0B10A4]" onClick={() => setIsOpen(false)}>Career</Link>
-                <Link href="/blog" className="block py-1 text-sm text-gray-600 hover:text-[#0B10A4]" onClick={() => setIsOpen(false)}>Blog</Link>
-                <Link href="/faq" className="block py-1 text-sm text-gray-600 hover:text-[#0B10A4]" onClick={() => setIsOpen(false)}>FAQ</Link>
-              </div>
-            )}
-          </div>
-
-          {/* Services Mobile Mega Menu */}
-          <div className="space-y-2">
-            <button
-              onClick={() => toggleMobileMenu("services")}
-              className="flex justify-between items-center w-full text-left text-[#F68A07] text-xs uppercase tracking-widest font-bold"
-            >
-              Services
-              <ChevronDown size={16} className={`transition-transform duration-200 ${expandedMobile === "services" ? "rotate-180" : ""}`} />
-            </button>
-            {expandedMobile === "services" && (
-              <div className="mt-3 animate-in slide-in-from-top-2 duration-200">
-                <MobileMegaMenu onClose={() => setIsOpen(false)} />
-              </div>
-            )}
-          </div>
-
-          {/* Department Mobile */}
-          {departments.length > 0 && (
-            <div className="space-y-2">
+            {/* About Mobile */}
+            <div className="border-b border-gray-50 pb-2">
               <button
-                onClick={() => toggleMobileMenu("departments")}
-                className="flex justify-between items-center w-full text-left text-[#F68A07] text-xs uppercase tracking-widest font-bold"
+                onClick={() => toggleMenu("about")}
+                className="flex justify-between w-full text-left text-lg"
               >
-                Department
-                <ChevronDown size={16} className={`transition-transform duration-200 ${expandedMobile === "departments" ? "rotate-180" : ""}`} />
+                About <ChevronDown size={18} className={`transition-transform ${openMenu === "about" ? "rotate-180" : ""}`} />
               </button>
-              {expandedMobile === "departments" && (
-                <div className="pl-4 space-y-2 mt-2 animate-in slide-in-from-top-2 duration-200">
-                  {departments.map((item) => (
-                    <Link
-                      key={item.id}
-                      href={`/department/${item.slug}`}
-                      className="block py-1 text-sm text-gray-600 hover:text-[#0B10A4]"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
+
+              {openMenu === "about" && (
+                <div className="pl-4 mt-2 space-y-3 bg-gray-50 rounded-lg p-3">
+                  <Link href="/about" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>About Us</Link>
+                  <Link href="/team" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Experts & Associates</Link>
+                  <Link href="/clientele" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Our Clientele</Link>
+                  <Link href="/gallery/images" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Image Gallery</Link>
+                  <Link href="/gallery/videos" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Video Gallery</Link>
+                  <Link href="/career" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Career</Link>
+                  <Link href="/blog" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>Blog</Link>
+                  <Link href="/faq" className="block text-sm text-gray-600" onClick={() => setIsOpen(false)}>FAQ</Link>
                 </div>
               )}
             </div>
-          )}
 
-          {/* Laboratory Mobile */}
-          {laboratories.length > 0 && (
-            <div className="space-y-2">
+            {/* Services Mobile Mega Menu */}
+            <div className="border-b border-gray-50 pb-2">
               <button
-                onClick={() => toggleMobileMenu("laboratories")}
-                className="flex justify-between items-center w-full text-left text-[#F68A07] text-xs uppercase tracking-widest font-bold"
+                onClick={() => toggleMenu("services")}
+                className="flex justify-between w-full text-left text-lg"
               >
-                Laboratory
-                <ChevronDown size={16} className={`transition-transform duration-200 ${expandedMobile === "laboratories" ? "rotate-180" : ""}`} />
+                Services <ChevronDown size={18} className={`transition-transform ${openMenu === "services" ? "rotate-180" : ""}`} />
               </button>
-              {expandedMobile === "laboratories" && (
-                <div className="pl-4 space-y-2 mt-2 animate-in slide-in-from-top-2 duration-200">
-                  {laboratories.map((item) => (
-                    <Link
-                      key={item.id}
-                      href={`/laboratory/${item.slug}`}
-                      className="block py-1 text-sm text-gray-600 hover:text-[#0B10A4]"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
+
+              {openMenu === "services" && (
+                <div className="mt-3 animate-in slide-in-from-top-2 duration-200">
+                  <MobileMegaMenu onClose={() => setIsOpen(false)} />
                 </div>
               )}
             </div>
-          )}
 
-          {/* Product Mobile - FIXED: Use expandedMobile and toggleMobileMenu */}
-          <div className="space-y-2">
-            <button
-              onClick={() => toggleMobileMenu("products")}
-              className="flex justify-between items-center w-full text-left text-[#F68A07] text-xs uppercase tracking-widest font-bold"
-            >
-              {data?.bs?.parent_product_name || 'Products'}
-              <ChevronDown size={16} className={`transition-transform duration-200 ${expandedMobile === "products" ? "rotate-180" : ""}`} />
-            </button>
-            {expandedMobile === "products" && (
-              <div className="pl-4 space-y-2 mt-2 animate-in slide-in-from-top-2 duration-200">
-                {products.length > 0 ? (
-                  products.map((item) => (
-                    <Link
-                      key={item.id}
-                      href={`/product/${item.slug}`}
-                      className="block py-1 text-sm text-gray-600 hover:text-[#0B10A4]"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.name || item.title}
-                    </Link>
-                  ))
-                ) : (
-                  <p className="text-sm text-gray-400 italic">No products available</p>
+            {/* Department Mobile */}
+            {departments.length > 0 && (
+              <div className="border-b border-gray-50 pb-2">
+                <button
+                  onClick={() => toggleMenu("departments")}
+                  className="flex justify-between w-full text-left text-lg"
+                >
+                  Department
+                  <ChevronDown size={18} className={`transition-transform ${openMenu === "departments" ? "rotate-180" : ""}`} />
+                </button>
+
+                {openMenu === "departments" && (
+                  <div className="pl-4 mt-2 space-y-3 bg-gray-50 rounded-lg p-3">
+                    {departments.map((item) => (
+                      <Link key={item.id} className="block text-sm text-gray-600" href={`/department/${item.slug}`} onClick={() => setIsOpen(false)}>
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
                 )}
               </div>
             )}
-          </div>
 
-          {/* Contact Link */}
-          <Link href="/contact" className="block text-[#F68A07] font-bold pt-2" onClick={() => setIsOpen(false)}>
-            Contact Us
-          </Link>
+            {/* Laboratory Mobile */}
+            {laboratories.length > 0 && (
+              <div className="border-b border-gray-50 pb-2">
+                <button
+                  onClick={() => toggleMenu("laboratories")}
+                  className="flex justify-between w-full text-left text-lg"
+                >
+                  Laboratory
+                  <ChevronDown size={18} className={`transition-transform ${openMenu === "laboratories" ? "rotate-180" : ""}`} />
+                </button>
+
+                {openMenu === "laboratories" && (
+                  <div className="pl-4 mt-2 space-y-3 bg-gray-50 rounded-lg p-3">
+                    {laboratories.map((item) => (
+                      <Link key={item.id} className="block text-sm text-gray-600" href={`/laboratory/${item.slug}`} onClick={() => setIsOpen(false)}>
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Product Mobile */}
+            <div className="border-b border-gray-50 pb-2">
+              <button
+                onClick={() => toggleMenu("products")}
+                className="flex justify-between w-full text-left text-lg"
+              >
+                {data?.bs?.parent_product_name || 'Products'} 
+                <ChevronDown size={18} className={`transition-transform ${openMenu === "products" ? "rotate-180" : ""}`} />
+              </button>
+
+              {openMenu === "products" && (
+                <div className="pl-4 mt-2 space-y-3 bg-gray-50 rounded-lg p-3">
+                  {products.map((item) => (
+                    <Link key={item.id} className="block text-sm text-gray-600" href={`/product/${item.slug}`} onClick={() => setIsOpen(false)}>
+                      {item.name || item.title}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Link href="/contact" className="block text-gray-600 text-lg pt-2" onClick={() => setIsOpen(false)}>
+              Contact Us
+            </Link>
+          </div>
         </div>
       )}
-    </nav>
+    </>
   );
 };
 
