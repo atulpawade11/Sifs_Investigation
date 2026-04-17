@@ -4,23 +4,39 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { 
+  ArrowRight, 
+  ChevronDown, 
+  ChevronUp, 
+  Calendar, 
+  Users, 
+  Award, 
+  Shield, 
+  Clock, 
+  CheckCircle,
+  FileText,
+  Microscope
+} from 'lucide-react';
 import { API_BASE_URL } from '@/lib/config';
 import { Skeleton } from '@/components/shared/Skeleton';
 import PageBanner from '@/components/common/PageBanner';
+import ServiceSidebar from '@/components/services/ServiceSidebar';
+import QueryForm from '@/components/services/QueryForm';
+import { useBoot } from "@/context/BootContext";
 
 interface Props {
   categorySlug: string;
 }
 
-const INITIAL_VISIBLE_COUNT = 3; // Show first 3 services initially
+const INITIAL_VISIBLE_COUNT = 6;
 
 export default function ServiceListingClient({ categorySlug }: Props) {
   const [categoryInfo, setCategoryInfo] = useState<any>(null);
   const [subServices, setSubServices] = useState<any[]>([]);
-  const [breadcrumbImage, setBreadcrumbImage] = useState<string | undefined>(undefined);
+  const [sidebarData, setSidebarData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
+  const { breadcrumbImage } = useBoot();
 
   // Function to fetch all pages of services
   const fetchAllServices = async () => {
@@ -29,20 +45,15 @@ export default function ServiceListingClient({ categorySlug }: Props) {
     let totalPages = 1;
     
     try {
-      // First, fetch page 1 to get total pages
-      const firstRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services?page=1`);
+      const firstRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services?page=1&per_page=50`);
       const firstData = await firstRes.json();
       
       if (firstData.success && firstData.data) {
-        // Add services from page 1
         allServices = [...(firstData.data.data || [])];
-        
-        // Get total pages
         totalPages = firstData.data.pagination?.total_pages || 1;
         
-        // Fetch remaining pages
         for (let page = 2; page <= totalPages; page++) {
-          const pageRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services?page=${page}`);
+          const pageRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/services?page=${page}&per_page=50`);
           const pageData = await pageRes.json();
           
           if (pageData.success && pageData.data) {
@@ -63,20 +74,18 @@ export default function ServiceListingClient({ categorySlug }: Props) {
       try {
         setLoading(true);
 
-        // Fetch ALL services from all pages
         const { services: allServices, categories } = await fetchAllServices();
         
-        // Decode the URL slug (it might be ID or name)
+        setSidebarData({ categories, data: allServices });
+        
         const rawSlug = decodeURIComponent(categorySlug);
         
-        // Try to find category by ID first (if slug is a number)
         let foundCat = null;
         
         if (!isNaN(Number(rawSlug))) {
           foundCat = categories?.find((c: any) => String(c.id) === rawSlug);
         }
         
-        // If not found by ID, try by name
         if (!foundCat) {
           const cleanSlug = rawSlug.toLowerCase().replace(/[^a-z0-9]/g, '');
           
@@ -89,25 +98,15 @@ export default function ServiceListingClient({ categorySlug }: Props) {
         if (foundCat) {
           setCategoryInfo(foundCat);
 
-          // Filter ALL services that belong to this category using scategory_id
           const filtered = allServices?.filter(
             (item: any) => String(item.scategory_id) === String(foundCat.id)
           ) || [];
           
-          // Sort by serial_number if available
           const sortedServices = filtered.sort((a: any, b: any) => 
             (a.serial_number || 999) - (b.serial_number || 999)
           );
           
-          console.log(`Found ${sortedServices.length} services for category ${foundCat.name}`); // Debug log
           setSubServices(sortedServices);
-        }
-
-        // Fetch breadcrumb image from boot settings
-        const bootRes = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`);
-        const bootResult = await bootRes.json();
-        if (bootResult?.success) {
-          setBreadcrumbImage(bootResult.data.bs?.breadcrumb || undefined);
         }
 
       } catch (err) {
@@ -129,26 +128,55 @@ export default function ServiceListingClient({ categorySlug }: Props) {
     document.getElementById('services-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // --- YOUR EXACT SKELETON COMPONENT (unchanged) ---
+  const stripHtml = (html: string) => {
+    if (!html) return "";
+    return html.replace(/<[^>]*>/g, '').substring(0, 180);
+  };
+
+  const getServiceIcon = (title: string, index: number) => {
+    const icons = [
+      <FileText key="file" size={24} className="text-[#0B10A4]" />,
+      <Microscope key="microscope" size={24} className="text-[#0B10A4]" />,
+      <Shield key="shield" size={24} className="text-[#0B10A4]" />,
+      <Users key="users" size={24} className="text-[#0B10A4]" />,
+      <Award key="award" size={24} className="text-[#0B10A4]" />,
+      <Clock key="clock" size={24} className="text-[#0B10A4]" />,
+      <CheckCircle key="check" size={24} className="text-[#0B10A4]" />,
+      <Calendar key="calendar" size={24} className="text-[#0B10A4]" />
+    ];
+    return icons[index % icons.length];
+  };
+
   const ListingSkeleton = () => (
-    <div className="bg-white min-h-screen">
-      <div className="bg-gray-50 py-10 text-center border-b border-gray-100">
-        <Skeleton className="h-8 w-64 mx-auto mb-2" />
-        <Skeleton className="h-4 w-40 mx-auto" />
+    <div className="bg-[#F8F9FA] min-h-screen">
+      <div className="w-full h-[300px] bg-gray-200 animate-pulse flex flex-col items-center justify-center">
+        <Skeleton className="h-6 w-40 bg-gray-300" />
+        <Skeleton className="h-10 w-80 bg-gray-300 mt-2" />
       </div>
-      <div className="max-w-6xl mx-auto px-6 py-16 space-y-16">
-        {[1,2,3].map((i) => (
-          <div key={i} className="flex flex-col md:flex-row items-center gap-12 border-b border-gray-100 pb-16">
-            <Skeleton className="h-16 w-20 rounded-lg hidden md:block" />
-            <div className="flex-1 space-y-4 w-full">
-              <Skeleton className="h-8 w-3/4 rounded-md" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6" />
-              <Skeleton className="h-4 w-32 rounded-full" />
+      <div className="max-w-7xl mx-auto px-4 md:px-10 py-16">
+        <div className="flex flex-col lg:flex-row gap-12">
+          <aside className="lg:w-1/3 xl:w-1/4">
+            <div className="sticky top-28 space-y-8">
+              <Skeleton className="h-[400px] w-full rounded-2xl" />
+              <Skeleton className="h-[300px] w-full rounded-2xl" />
             </div>
-            <Skeleton className="w-full md:w-[400px] aspect-[16/9] rounded-3xl" />
-          </div>
-        ))}
+          </aside>
+          <main className="lg:w-2/3 xl:w-3/4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                  <Skeleton className="h-48 w-full" />
+                  <div className="p-5 space-y-3">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-5/6" />
+                    <Skeleton className="h-10 w-32 rounded-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );
@@ -165,108 +193,116 @@ export default function ServiceListingClient({ categorySlug }: Props) {
   const hasMoreServices = subServices.length > INITIAL_VISIBLE_COUNT;
   const showingAll = visibleCount === subServices.length;
 
-  // Debug: Log the count
-  console.log(`Rendering ${subServices.length} services for ${categoryInfo.name}`);
-
   return (
-    <div className="bg-white min-h-screen">
-      {/* Dynamic Page Banner */}
+    <div className="bg-[#F8F9FA] min-h-screen">
       <PageBanner
         title={categoryInfo.name}
-        subtitle={`SIFS India Services`}
+        subtitle="Forensic Investigation Services"
         breadcrumbImage={breadcrumbImage || "/about/about-banner.png"}
       />
 
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="mb-16">
-          <p className="text-2xl font-bold text-gray-600 leading-tight border-l-4 border-[#0a11a1] pl-6 py-2">
-            {categoryInfo.short_text || 
-              "Specialized forensic investigation services tailored to legal and corporate requirements."
-            }
-          </p>
+      <div className="max-w-7xl mx-auto px-4 md:px-10 py-16">
+        <div className="flex flex-col lg:flex-row gap-12">
           
-          {/* Service count badge - Now shows correct count from ALL pages */}
-          <div className="mt-4 inline-flex items-center px-4 py-2 bg-blue-50 text-[#0a11a1] rounded-full text-sm font-semibold">
-            <span>{subServices.length} Services Available</span>
-          </div>
-        </div>
-
-        {/* Services List Rendering */}
-        <div id="services-list" className="space-y-16">
-          {visibleServices.length > 0 ? visibleServices.map((item, index) => (
-            <div key={item.id} className="group border-b border-gray-100 pb-16 last:border-0 flex flex-col md:flex-row items-center gap-12">
+          {/* LEFT SIDEBAR */}
+          <aside className="lg:w-1/3 xl:w-1/4">
+            <div className="sticky top-28 space-y-8">
+              {/* Service Categories Sidebar */}
+              <ServiceSidebar apiData={sidebarData} />
               
-              {/* Numbering */}
-              <div className="text-6xl font-black text-gray-50 md:w-20 select-none">
-                {(index + 1).toString().padStart(2, '0')}
-              </div>
-
-              {/* Text Content */}
-              <div className="flex-1 space-y-4">
-                <Link href={`/services/${categorySlug}/${item.slug}`}>
-                  <h3 className="text-2xl font-bold text-[#04063E] group-hover:text-[#0B10A4] transition-colors cursor-pointer">
-                    {item.title}
-                  </h3>
-                </Link>
-                <p className="text-gray-500 text-sm line-clamp-3 leading-6">
-                  {item.meta_description || item.content?.replace(/<[^>]*>/g, '').substring(0, 200)}
-                </p>
-                <Link 
-                  href={`/services/${categorySlug}/${item.slug}`} 
-                  className="inline-flex items-center text-xs font-black text-[#0B10A4] uppercase tracking-widest group-hover:gap-3 transition-all"
-                >
-                  Explore Service <ArrowRight size={14} className="ml-1" />
-                </Link>
-              </div>
-
-              {/* Image Preview */}
-              <Link 
-                href={`/services/${categorySlug}/${item.slug}`} 
-                className="w-full md:w-[400px] aspect-[16/9] rounded-3xl overflow-hidden shadow-xl ring-1 ring-gray-100"
-              >
-                <img 
-                  src={item.featured_image || item.main_image} 
-                  alt={item.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                />
-              </Link>
+              {/* Query Form - Using correct prop name 'serviceTitle' */}
+              <QueryForm serviceTitle={categoryInfo.name} />
             </div>
-          )) : (
-            <div className="text-center py-20 bg-gray-50 rounded-[40px] border-2 border-dashed border-gray-200">
-              <p className="text-gray-400 font-medium">No specialized services currently listed in this category.</p>
-            </div>
-          )}
-        </div>
+          </aside>
 
-        {/* Show More / Show Less Button */}
-        {hasMoreServices && (
-          <div className="mt-12 text-center">
-            {!showingAll ? (
-              <button
-                onClick={handleShowMore}
-                className="inline-flex items-center gap-2 bg-[#0a11a1] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#04063E] transition-all transform hover:-translate-y-1 shadow-lg group"
-              >
-                Show All {subServices.length} Services
-                <ChevronDown size={18} className="group-hover:translate-y-1 transition-transform" />
-              </button>
-            ) : (
-              <button
-                onClick={handleShowLess}
-                className="inline-flex items-center gap-2 bg-gray-100 text-[#0a11a1] px-8 py-4 rounded-full font-semibold hover:bg-gray-200 transition-all transform hover:-translate-y-1 shadow-lg group"
-              >
-                Show Less
-                <ChevronUp size={18} className="group-hover:-translate-y-1 transition-transform" />
-              </button>
+          {/* RIGHT MAIN CONTENT */}
+          <main className="lg:w-2/3 xl:w-3/4">
+            <div className="mb-8">
+              <p className="text-gray-600 leading-relaxed border-l-4 border-[#0B10A4] pl-4">
+                {categoryInfo.short_text || 
+                  "Specialized forensic investigation services tailored to legal and corporate requirements."
+                }
+              </p>
+              <div className="mt-4 inline-flex items-center px-3 py-1 bg-blue-50 text-[#0B10A4] rounded-full text-sm font-semibold">
+                <span>{subServices.length} Services Available</span>
+              </div>
+            </div>
+
+            <div id="services-list" className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {visibleServices.length > 0 ? (
+                visibleServices.map((item, index) => (
+                  <Link 
+                    key={item.id} 
+                    href={`/services/${categorySlug}/${item.slug}`}
+                    className="group block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#0B10A4]/20 hover:-translate-y-1"
+                  >
+                    <div className="relative h-48 overflow-hidden bg-gray-100">
+                      <img 
+                        src={item.featured_image || item.main_image || "/images/service-placeholder.jpg"} 
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute top-3 left-3 bg-[#0B10A4]/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
+                        {categoryInfo.name}
+                      </div>
+                      <div className="absolute bottom-3 right-3 bg-white rounded-full p-2 shadow-md">
+                        {getServiceIcon(item.title, index)}
+                      </div>
+                    </div>
+
+                    <div className="p-5">
+                      <h3 className="text-xl font-bold text-[#04063E] group-hover:text-[#0B10A4] transition-colors line-clamp-2 mb-2">
+                        {item.title}
+                      </h3>
+                      
+                      <p className="text-gray-500 text-sm line-clamp-3 leading-relaxed mb-4">
+                        {item.meta_description || stripHtml(item.content)}
+                      </p>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                        <div className="flex items-center gap-1 text-[#0B10A4] font-semibold text-sm group-hover:gap-2 transition-all">
+                          Learn More <ArrowRight size={14} />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="col-span-2 text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                  <p className="text-gray-400 font-medium">No specialized services currently listed in this category.</p>
+                </div>
+              )}
+            </div>
+
+            {hasMoreServices && (
+              <div className="mt-12 text-center">
+                {!showingAll ? (
+                  <button
+                    onClick={handleShowMore}
+                    className="inline-flex items-center gap-2 bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all transform hover:-translate-y-1 group"
+                  >
+                    Show All {subServices.length} Services
+                    <ChevronDown size={18} className="group-hover:translate-y-1 transition-transform" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleShowLess}
+                    className="inline-flex items-center gap-2 bg-gray-100 text-[#0B10A4] px-8 py-3 rounded-full font-semibold hover:bg-gray-200 transition-all transform hover:-translate-y-1 group"
+                  >
+                    Show Less
+                    <ChevronUp size={18} className="group-hover:-translate-y-1 transition-transform" />
+                  </button>
+                )}
+              </div>
             )}
-          </div>
-        )}
 
-        {/* Show count of hidden services */}
-        {!showingAll && subServices.length > INITIAL_VISIBLE_COUNT && (
-          <p className="text-center text-gray-400 text-sm mt-4">
-            Showing {INITIAL_VISIBLE_COUNT} of {subServices.length} services
-          </p>
-        )}
+            {!showingAll && subServices.length > INITIAL_VISIBLE_COUNT && (
+              <p className="text-center text-gray-400 text-sm mt-4">
+                Showing {visibleServices.length} of {subServices.length} services
+              </p>
+            )}
+          </main>
+        </div>
       </div>
     </div>
   );

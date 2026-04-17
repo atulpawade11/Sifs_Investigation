@@ -14,7 +14,7 @@ import DownloadsSlider from "../components/common/DownloadsSlider";
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const response = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`, {
-      next: { revalidate: 3600 } // Cache for 1 hour
+      next: { revalidate: 3600 }
     });
     const result = await response.json();
 
