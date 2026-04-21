@@ -31,7 +31,7 @@ const AboutIntroSection = () => {
   const parsed = parseAboutContent(data?.about_us);
 
   return (
-    <section className="bg-white py-16 md:py-20">
+    <section className="bg-white py-16 md:py-12">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid items-center gap-12 md:grid-cols-2">
           <div>
@@ -47,7 +47,7 @@ const AboutIntroSection = () => {
             </h2>
 
             <div
-              className="text-[16px] leading-relaxed text-[#777777] 
+              className="text-md leading-relaxed text-[#777777] 
                          [&_p]:mb-4 
                          [&_ul]:grid [&_ul]:grid-cols-1 md:[&_ul]:grid-cols-2 [&_ul]:gap-2 [&_ul]:mt-6
                          [&_li]:flex [&_li]:items-center [&_li]:before:content-['›'] [&_li]:before:mr-2 [&_li]:before:text-[#0B10A4] [&_li]:before:font-bold"

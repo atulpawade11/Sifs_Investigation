@@ -7,7 +7,7 @@ import { MessageSquare, FileText, ChevronRight, ShieldCheck } from 'lucide-react
 
 export default function ExpertSupport() {
     return (
-        <section className="py-24 bg-white overflow-hidden">
+        <section className="py-16 bg-white overflow-hidden">
             <div className="container mx-auto px-4 md:px-10">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -34,7 +34,7 @@ export default function ExpertSupport() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: 0.3, duration: 0.5 }}
-                                className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#04063E] leading-[1.1] mb-8"
+                                className="text-4xl md:text-5xl font-bold text-black leading-[1.1] mb-8"
                             >
                                 Expert Support <br className="hidden md:block" />
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#04063E] to-blue-600">
@@ -53,7 +53,7 @@ export default function ExpertSupport() {
                         >
                             <Link
                                 href="/submit-case"
-                                className="group relative w-full sm:w-auto px-12 py-5 bg-[#FFB800] text-gray-900 font-bold text-lg rounded-2xl shadow-[0_12px_24px_-8px_rgba(255,184,0,0.4)] hover:shadow-[0_20px_32px_-12px_rgba(255,184,0,0.5)] hover:-translate-y-1 self-stretch flex items-center justify-center gap-3 transition-all duration-300"
+                                className="text-grsy-900 px-10 py-4 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90 bg-[#FFB800]"
                             >
                                 <MessageSquare className="w-5 h-5 transition-transform group-hover:scale-110" />
                                 <span>Submit Case</span>
@@ -62,7 +62,7 @@ export default function ExpertSupport() {
 
                             <Link
                                 href="/sample-report"
-                                className="group relative w-full sm:w-auto px-12 py-5 bg-[#041E32] text-white font-bold text-lg rounded-2xl shadow-[0_12px_24px_-8px_rgba(4,30,50,0.4)] hover:shadow-[0_20px_32px_-12px_rgba(4,30,50,0.5)] hover:-translate-y-1 self-stretch flex items-center justify-center gap-3 transition-all duration-300"
+                                className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-4 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
                             >
                                 <FileText className="w-5 h-5 transition-transform group-hover:scale-110" />
                                 <span>Sample Report</span>

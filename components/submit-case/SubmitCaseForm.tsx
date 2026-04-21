@@ -89,7 +89,7 @@ export default function SubmitCaseForm() {
     };
 
     // UI Helpers based on screenshot 2
-    const labelStyle = "text-sm font-bold text-[#04063E] ml-1 mb-2 block";
+    const labelStyle = "text-sm font-bold text-gray-700 ml-1 mb-2 block";
     const inputContainer = "relative flex items-center";
     const iconStyle = "absolute left-4 text-gray-400 w-5 h-5";
     const fieldStyle = "w-full pl-12 pr-4 py-4 bg-[#F8FAFC] border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400 text-gray-700";

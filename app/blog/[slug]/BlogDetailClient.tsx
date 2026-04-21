@@ -2,8 +2,23 @@
 
 import React, { useState } from 'react';
 import { Facebook, Twitter, Linkedin, Link2, Check } from "lucide-react";
+import PageBanner from "@/components/common/PageBanner";
+import { useBoot } from "@/context/BootContext";
 
-export default function BlogDetailClient({ children, title }: { children: React.ReactNode, title: string }) {
+export default function BlogDetailClient({ 
+  children, 
+  title, 
+  slug,
+  metaTitle,
+  metaDescription
+}: { 
+  children: React.ReactNode, 
+  title: string, 
+  slug?: string,
+  metaTitle?: string,
+  metaDescription?: string
+}) {
+  const { breadcrumbImage } = useBoot();
   const [copied, setCopied] = useState(false);
 
   const share = (platform: string) => {
@@ -23,22 +38,45 @@ export default function BlogDetailClient({ children, title }: { children: React.
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-4">
-      <div className="hidden lg:flex flex-col gap-4 sticky top-24 h-fit pr-4 border-r border-gray-100">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Share</p>
-        <button onClick={() => share('fb')} className="p-3 rounded-full bg-gray-50 text-gray-500 hover:bg-[#1877F2] hover:text-white transition-all"><Facebook size={18}/></button>
-        <button onClick={() => share('tw')} className="p-3 rounded-full bg-gray-50 text-gray-500 hover:bg-black hover:text-white transition-all"><Twitter size={18}/></button>
-        <button onClick={() => share('li')} className="p-3 rounded-full bg-gray-50 text-gray-500 hover:bg-[#0A66C2] hover:text-white transition-all"><Linkedin size={18}/></button>
-        <button onClick={copyToClipboard} className={`p-3 rounded-full transition-all ${copied ? 'bg-green-500 text-white' : 'bg-gray-50 text-gray-500 hover:bg-gray-800 hover:text-white'}`}>
-          {copied ? <Check size={18}/> : <Link2 size={18}/>}
-        </button>
+    <>
+      {/* Page Banner - Full Width */}
+      <PageBanner
+        title={metaTitle || title || "Blog Details"}
+        subtitle={metaDescription || "Explore our latest forensic insights and discoveries"}
+        breadcrumbImage={breadcrumbImage}
+      />
+
+      {/* Content Container */}
+      <div className="mx-auto max-w-7xl px-4 md:px-10 py-12 relative">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Left Sidebar - Share Buttons */}
+          <div className="hidden lg:flex flex-col gap-4 sticky top-24 h-fit pr-4 border-r border-gray-100">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Share</p>
+            <button onClick={() => share('fb')} className="p-3 rounded-full bg-gray-50 text-gray-500 hover:bg-[#1877F2] hover:text-white transition-all">
+              <Facebook size={18}/>
+            </button>
+            <button onClick={() => share('tw')} className="p-3 rounded-full bg-gray-50 text-gray-500 hover:bg-black hover:text-white transition-all">
+              <Twitter size={18}/>
+            </button>
+            <button onClick={() => share('li')} className="p-3 rounded-full bg-gray-50 text-gray-500 hover:bg-[#0A66C2] hover:text-white transition-all">
+              <Linkedin size={18}/>
+            </button>
+            <button 
+              onClick={copyToClipboard} 
+              className={`p-3 rounded-full transition-all ${copied ? 'bg-green-500 text-white' : 'bg-gray-50 text-gray-500 hover:bg-gray-800 hover:text-white'}`}
+            >
+              {copied ? <Check size={18}/> : <Link2 size={18}/>}
+            </button>
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 min-w-0">
+            {children}
+          </div>
+        </div>
       </div>
 
-      <div className="flex-1 min-w-0">
-        {children}
-      </div>
-
-      {/* Moved Style block here - This is now safe! */}
+      {/* Global Styles */}
       <style jsx global>{`
         .blog-content-area img {
           border-radius: 12px;
@@ -56,6 +94,6 @@ export default function BlogDetailClient({ children, title }: { children: React.
           color: #1a202c;
         }
       `}</style>
-    </div>
+    </>
   );
 }

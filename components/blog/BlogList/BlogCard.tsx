@@ -39,7 +39,7 @@ export default function BlogCard({ blog }: Props) {
       {/* Content */}
       <div className="p-4 flex flex-col justify-center flex-1">
         <Link href={`/blog/${blog.slug}`}>
-          <h3 className="cursor-pointer text-[18px] md:text-[20px] font-semibold text-[#04063E] hover:text-[#0B4F8A] transition leading-tight">
+          <h3 className="cursor-pointer text-[18px] md:text-[22px] font-bold text-black hover:text-[#0B4F8A] transition leading-tight">
             {blog.title}
           </h3>
         </Link>

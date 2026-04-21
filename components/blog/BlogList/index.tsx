@@ -26,8 +26,8 @@ export default function BlogList({
   
   return (
     <div>
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h2 className="text-[30px] font-semibold text-[#04063E]">All News</h2>
+      <div className="flex flex-col md:flex-row md:items-center justify-end gap-4">
+        {/*<h2 className="text-[30px] font-semibold text-[#04063E]">All News</h2>*/}
         <BlogSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </div>
 

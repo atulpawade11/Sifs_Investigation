@@ -5,7 +5,7 @@ import CareerClient from "./CareerClient";
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const response = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/career/`, {
-      cache: 'no-store' // Changed from next.revalidate to no-store
+      cache: 'no-store'
     });
     const result = await response.json();
 
@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 async function getCareerData() {
   try {
     const response = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/career/`, {
-      cache: 'no-store' // Disable caching for large response
+      cache: 'no-store'
     });
     
     if (!response.ok) {
@@ -44,14 +44,27 @@ async function getCareerData() {
     
     const result = await response.json();
     
-    // Log data size for debugging
-    console.log('Career API response size:', JSON.stringify(result).length, 'bytes');
+    console.log('Career API response structure:', {
+      hasData: !!result.data,
+      hasCareers: !!result.data?.careers,
+      dataKeys: result.data ? Object.keys(result.data) : []
+    });
     
-    return {
-      success: result.success || false,
-      data: result.data?.careers || result.data || [],
-      be: result.data?.be || {},
-      jcats: result.data?.jcats || []
+    // Return the data in the exact structure expected by the client
+    if (result.success && result.data) {
+      return {
+        success: result.success,
+        data: result.data.careers || result.data.data || [],
+        be: result.data.be || {},
+        jcats: result.data.jcats || []
+      };
+    }
+    
+    return { 
+      success: false, 
+      data: [], 
+      be: {}, 
+      jcats: [] 
     };
     
   } catch (error) {
@@ -67,6 +80,12 @@ async function getCareerData() {
 
 export default async function CareerPage() {
   const initialData = await getCareerData();
+  
+  console.log('Initial data loaded:', {
+    hasData: initialData.data?.length > 0,
+    dataLength: initialData.data?.length,
+    categoriesCount: initialData.jcats?.length
+  });
   
   return <CareerClient initialData={initialData} />;
 }

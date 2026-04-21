@@ -138,7 +138,7 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
       <div className="max-w-7xl mx-auto px-4 md:px-10 py-16 relative">
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Sidebar */}
-          <aside className="lg:w-1/3 xl:w-1/4 space-y-8">
+          <aside className="lg:w-1/3 xl:w-1/3 space-y-8">
             <div className="sticky top-28">
               {/* Updated this to use sidebarData instead of undefined data */}
               <ServiceSidebar apiData={sidebarData} />
@@ -150,7 +150,7 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
 
           {/* Main Content */}
           <main className="lg:w-2/3 xl:w-3/4">
-            <div className="bg-white p-6 md:p-12 rounded-[2rem] shadow-xl shadow-blue-900/5 border border-gray-100">
+            <div className="bg-white p-6 md:p-6 rounded-[2rem] shadow-xl shadow-blue-900/5 border border-gray-100">
 
 
               <ServiceDetailContent apiData={detailData} />
