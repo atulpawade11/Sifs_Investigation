@@ -81,7 +81,7 @@ export default function QueryForm({ serviceTitle }: QueryFormProps) {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-[10px] font-bold text-gray-400 block mb-1 uppercase">Name</label>
+          <label className="text-sm font-bold text-gray-700 ml-1 block mb-1 uppercase">Name</label>
           <input
             type="text"
             name="name"
@@ -94,7 +94,7 @@ export default function QueryForm({ serviceTitle }: QueryFormProps) {
         </div>
 
         <div>
-          <label className="text-[10px] font-bold text-gray-400 block mb-1 uppercase">Mobile</label>
+          <label className="text-sm font-bold text-gray-700 ml-1 block mb-1 uppercase">Mobile</label>
           <input
             type="tel"
             name="phone"
@@ -107,7 +107,7 @@ export default function QueryForm({ serviceTitle }: QueryFormProps) {
         </div>
 
         <div>
-          <label className="text-[10px] font-bold text-gray-400 block mb-1 uppercase">E-mail</label>
+          <label className="text-sm font-bold text-gray-700 ml-1 block mb-1 uppercase">E-mail</label>
           <input
             type="email"
             name="email"
@@ -120,7 +120,7 @@ export default function QueryForm({ serviceTitle }: QueryFormProps) {
         </div>
 
         <div>
-          <label className="text-[10px] font-bold text-gray-400 block mb-1 uppercase">Query</label>
+          <label className="text-sm font-bold text-gray-700 ml-1 block mb-1 uppercase">Query</label>
           <textarea
             name="message"
             required
@@ -144,7 +144,7 @@ export default function QueryForm({ serviceTitle }: QueryFormProps) {
         <button
           type="submit"
           disabled={loading || (mounted && !captchaToken)}
-          className="w-full bg-[#044782] text-white py-3 rounded-lg text-sm font-bold flex justify-center items-center gap-2 hover:bg-[#F68A07] transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-3 rounded-full font-bold flex items-center justify-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? <Loader2 size={16} className="animate-spin" /> : "Submit Query"} <ChevronRight size={16} />
         </button>

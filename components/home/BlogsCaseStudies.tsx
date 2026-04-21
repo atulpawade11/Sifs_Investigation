@@ -129,10 +129,10 @@ const BlogsCaseStudies = () => {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-4">
           <div>
-            <p className="text-[#04063E] text-sm font-medium italic mb-2 tracking-widest">
+            <p className="text-[#04063E] font-medium mb-2">
               {content.title}
             </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-[#04063E]">
+            <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
               {content.subtitle}
             </h2>
           </div>

@@ -12,7 +12,6 @@ import { Loader2 } from "lucide-react";
 import { useBoot } from "@/context/BootContext";
 
 export default function CareerClient({ initialData }: { initialData: any }) {
-  // Use initialData if available, otherwise start with null
   const [careerData, setCareerData] = useState<any>(initialData);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -21,6 +20,13 @@ export default function CareerClient({ initialData }: { initialData: any }) {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const { breadcrumbImage } = useBoot();
   const isFirstRender = useRef(true);
+  // Add ref to track categories to avoid dependency issues
+  const categoriesRef = useRef(careerData?.jcats);
+
+  // Update ref when careerData changes
+  useEffect(() => {
+    categoriesRef.current = careerData?.jcats;
+  }, [careerData?.jcats]);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search), 500);
@@ -33,8 +39,9 @@ export default function CareerClient({ initialData }: { initialData: any }) {
       const params = new URLSearchParams();
       if (debouncedSearch) params.append('search', debouncedSearch);
       
-      if (category !== "All" && careerData?.jcats) {
-        const selectedCat = careerData.jcats.find((c: any) => c.name === category);
+      // Use ref instead of careerData to avoid dependency
+      if (category !== "All" && categoriesRef.current) {
+        const selectedCat = categoriesRef.current.find((c: any) => c.name === category);
         if (selectedCat) params.append('category', selectedCat.id.toString());
       }
 
@@ -52,7 +59,7 @@ export default function CareerClient({ initialData }: { initialData: any }) {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, category, careerData?.jcats]);
+  }, [debouncedSearch, category]); // Remove careerData dependency
 
   useEffect(() => {
     // Skip fetching on mount because we have initialData from the server
@@ -69,6 +76,13 @@ export default function CareerClient({ initialData }: { initialData: any }) {
                Array.isArray(careerData) ? careerData : [];
   
   const totalFound = jobs.length;
+
+  // Add debug logging
+  console.log('CareerClient render:', { 
+    hasData: !!careerData, 
+    jobsLength: jobs.length,
+    loading 
+  });
 
   return (
     <>
@@ -96,7 +110,6 @@ export default function CareerClient({ initialData }: { initialData: any }) {
           </div>
 
           <div className={`transition-opacity duration-300 ${loading ? "opacity-40" : "opacity-100"}`}>
-            {/* ✅ jobs is now guaranteed to be an array */}
             <JobList jobs={jobs.slice(0, visible)} />
             
             {!loading && totalFound === 0 && (
@@ -115,7 +128,7 @@ export default function CareerClient({ initialData }: { initialData: any }) {
         </div>
       </section>
       
-      <CareerFAQSection />
+      {/*<CareerFAQSection />*/}
       <DownloadsSlider />
     </>
   );

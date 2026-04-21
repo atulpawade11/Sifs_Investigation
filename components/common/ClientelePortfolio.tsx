@@ -104,21 +104,23 @@ export default function ClientelePortfolio() {
   if (loading) return <PortfolioSkeleton />;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 lg:py-20 bg-white min-h-screen">
-      {/* Using a Grid with defined columns for Sidebar and Content. 
-          This prevents the "Sidebar Overlapping" seen in the screenshot.
-      */}
+    <section className="mx-auto max-w-7xl px-4 py-12 lg:py-12 bg-white min-h-screen">
+      <div className="text-center mb-6">
+        <p className="text-[#04063E] font-medium mb-2">{header.title}</p>
+        {/* <p className="mb-4 inline-flex rounded-full border px-4 py-1 text-xs font-medium text-gray-600">{header.title}</p> */}
+        <h4 className="mb-12 text-2xl font-semibold text-black">{header.subtitle}</h4>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-10 items-start">
         
         {/* SIDEBAR - Filter Navigation */}
         <aside className="lg:sticky lg:top-24 z-30">
           <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
-            <h5 className="px-4 mb-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Filters</h5>
+            <h5 className="px-4 mb-4 font-bold uppercase tracking-widest text-sm text-black">Filters</h5>
             <ul className="space-y-1 text-sm">
               <li>
                 <button 
                   onClick={() => setActiveTab("All")} 
-                  className={`relative flex w-full items-center rounded-lg px-4 py-3 transition ${activeTab === "All" ? "bg-gray-100 font-bold text-[#04063E]" : "text-gray-500 hover:bg-gray-50"}`}
+                  className={`relative flex w-full items-center rounded-lg px-4 py-3 transition text-[15px] ${activeTab === "All" ? "bg-gray-100 font-bold text-[#04063E]" : "text-gray-500 hover:bg-gray-50"}`}
                 >
                   {activeTab === "All" && <span className="absolute left-0 top-2 h-8 w-[4px] rounded-r bg-[#1C274C]" />}
                   All Portfolios
@@ -128,7 +130,7 @@ export default function ClientelePortfolio() {
                 <li key={cat.id}>
                   <button 
                     onClick={() => setActiveTab(cat.name)} 
-                    className={`relative flex w-full items-center rounded-lg px-4 py-3 transition ${activeTab === cat.name ? "bg-gray-100 font-bold text-[#04063E]" : "text-gray-500 hover:bg-gray-50"}`}
+                    className={`relative flex w-full items-center rounded-lg text-[15px] px-4 py-3 transition ${activeTab === cat.name ? "bg-gray-100 font-bold text-[#04063E]" : "text-gray-500 hover:bg-gray-50"}`}
                   >
                     {activeTab === cat.name && <span className="absolute left-0 top-2 h-8 w-[4px] rounded-r bg-[#1C274C]" />}
                     {cat.name}
@@ -142,13 +144,14 @@ export default function ClientelePortfolio() {
         {/* LOGO GRID AREA */}
         <div className="relative min-h-[400px]">
           
-          {/* BACKGROUND DECORATIVE BADGE - Sent to back */}
+          
+          {/* BACKGROUND DECORATIVE BADGE - Sent to back 
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 lg:opacity-0">
              <div className="h-[280px] w-[280px] md:h-[350px] md:w-[350px] rounded-full border border-dashed border-gray-200 flex flex-col items-center justify-center text-center p-8 bg-white/10 backdrop-blur-[2px]">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-800 mb-2">{header.title}</p>
                 <h4 className="text-xl md:text-2xl font-black text-black leading-tight">{header.subtitle}</h4>
               </div>
-          </div>
+          </div>*/}
 
           {/* GRID OF LOGOS - Foreground */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4 w-full relative z-10">

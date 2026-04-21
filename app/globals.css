@@ -273,7 +273,7 @@ button{cursor:pointer;}
   color: #04063E;
 }
 
-/* Fix for the sample images in the API */
+
 .html-content img {
   display: inline-block;
   margin: 10px;
@@ -303,7 +303,7 @@ button{cursor:pointer;}
   color: #0B10A4;
   text-decoration: underline;
 }
-/* Sample Images Grid Fix */
+
 .html-render-zone img {
   border-radius: 0.5rem;
   margin: 10px auto;
@@ -361,12 +361,15 @@ button{cursor:pointer;}
   margin-right:5px!important;
 }*/}
 
-/* Fix Quill Alignment */
 .api-content .ql-align-justify {
   text-align: justify;
+  font-size: 16px;
 }
 
-/* Upgrade h4 to look like section headers */
+.ql-align-justify br {
+  display:none;
+}
+
 .api-content h4 {
   font-size: 1.75rem;
   font-weight: 700;
@@ -379,8 +382,6 @@ button{cursor:pointer;}
   margin-bottom:20px;
 }
 
-
-/* globals.css or tailwind.config.js */
 @keyframes fadeIn {
   from {
     opacity: 0;

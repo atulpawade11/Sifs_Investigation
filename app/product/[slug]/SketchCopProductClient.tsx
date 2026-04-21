@@ -104,9 +104,9 @@ export default function SketchCopProductClient({ slug }: { slug: string }) {
             <div key={section.id} className="border border-gray-200 rounded-sm overflow-hidden shadow-sm">
               <button 
                 className={`w-full flex justify-between items-center p-4 cursor-pointer font-bold transition-colors ${
-                  section.isMain 
-                    ? "bg-[#F6BA13] text-white" 
-                    : "bg-[#EEEEEE] text-gray-800 hover:bg-gray-200"
+                  isOpen 
+                    ? "bg-[#F6BA13] text-white" // Active/Open tab - Yellow
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300" // All closed tabs - Gray
                 }`}
                 onClick={() => handleToggle(section.id)}
               >

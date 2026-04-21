@@ -56,12 +56,17 @@ export default async function AboutPage() {
     <>
       <PageBanner
         title="About SIFS India"
+        
+        breadcrumbImage={breadcrumbImage}   
+      />
+      {/*<PageBanner
+        title="About SIFS India"
         subtitle={
           bs?.about_seo_title ||
           "Leading forensic science laboratory in India"
         }
         breadcrumbImage={breadcrumbImage}   
-      />
+      />*/}
 
       <AboutIntroSection />
       <AboutMissionTabs />

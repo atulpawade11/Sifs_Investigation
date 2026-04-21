@@ -179,52 +179,52 @@ const Header = () => {
 
         {/* Desktop Menu */}
         <div className="hidden lg:flex items-center gap-8 font-semibold text-gray-700">
-          <Link href="/" className="hover:text-[#F68A07]">Home</Link>
+          <Link href="/" className="hover:text-[#F68A07] text-lg">Home</Link>
 
           {/* About Dropdown */}
           <div className="group relative">
-            <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
+            <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg">
               About <ChevronDown size={16} />
             </div>
             <div className="absolute left-0 top-full w-[220px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <ul className="py-2">
                 <li>
-                  <Link href="/about" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/about" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="/team" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/team" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Experts & Associates
                   </Link>
                 </li>
                 <li>
-                  <Link href="/clientele" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/clientele" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Our Clientele
                   </Link>
                 </li>
                 <li>
-                  <Link href="/gallery/images" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/gallery/images" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Image Gallery
                   </Link>
                 </li>
                 <li>
-                  <Link href="/gallery/videos" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/gallery/videos" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Video Gallery
                   </Link>
                 </li>
                 <li>
-                  <Link href="/career" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/career" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Career
                   </Link>
                 </li>
                 <li>
-                  <Link href="/blog" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/blog" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Blog
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/faq" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     FAQ
                   </Link>
                 </li>
@@ -238,7 +238,7 @@ const Header = () => {
           {/* Department Dropdown */}
           {departments.length > 0 && (
             <div className="group relative">
-              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
+              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg">
                 Department <ChevronDown size={16} />
               </div>
               <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
@@ -247,7 +247,7 @@ const Header = () => {
                     <li key={item.id}>
                       <Link
                         href={`/department/${item.slug}`}
-                        className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition"
+                        className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition"
                       >
                         {item.name}
                       </Link>
@@ -261,7 +261,7 @@ const Header = () => {
           {/* Laboratory Dropdown */}
           {laboratories.length > 0 && (
             <div className="group relative">
-              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
+              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg">
                 Laboratory <ChevronDown size={16} />
               </div>
               <div className="absolute left-0 top-full w-[260px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
@@ -270,7 +270,7 @@ const Header = () => {
                     <li key={item.id}>
                       <Link
                         href={`/laboratory/${item.slug}`}
-                        className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition"
+                        className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition"
                       >
                         {item.name}
                       </Link>
@@ -283,7 +283,7 @@ const Header = () => {
 
           {/* Product Dropdown (Dynamic) */}
           <div className="group relative">
-            <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2">
+            <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg">
               <Link href="/product">{data?.bs?.parent_product_name || 'Product'}</Link> <ChevronDown size={16} />
             </div>
             <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
@@ -291,7 +291,7 @@ const Header = () => {
                 {products.length > 0 ? (
                   products.map((item) => (
                     <li key={item.id}>
-                      <Link href={`/product/${item.slug}`} className="block px-5 py-3 text-sm text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                      <Link href={`/product/${item.slug}`} className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                         {item.name || item.title}
                       </Link>
                     </li>

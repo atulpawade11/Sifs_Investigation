@@ -55,8 +55,8 @@ export default function AboutMissionTabs() {
   `;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-20">
-      <div className="grid gap-12 lg:grid-cols-[380px_1fr_420px]">
+    <section className="mx-auto max-w-7xl px-4 py-12">
+      <div className="grid gap-10 lg:grid-cols-[380px_1fr_420px]">
         
         {/* LEFT COLUMN */}
         <div className="space-y-4 border-r border-[#D9D9D9]">

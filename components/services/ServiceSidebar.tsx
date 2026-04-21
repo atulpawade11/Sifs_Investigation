@@ -234,7 +234,7 @@ export default function ServiceSidebar({ apiData }: SidebarProps) {
               <div key={cat.id} className="border-b last:border-0 border-gray-50">
                 <button
                   onClick={() => toggleCategory(catSlug)}
-                  className="w-full flex justify-between items-center p-4 text-xs font-bold text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                  className="w-full flex justify-between items-center p-4 text-[14px] font-bold text-gray-700 bg-white hover:bg-gray-50 transition-colors"
                 >
                   <span className={isActiveCategory ? "text-[#044782]" : ""}>
                     {cat.name} {categoryServices.length > 0 && `(${categoryServices.length})`}
@@ -295,7 +295,7 @@ export default function ServiceSidebar({ apiData }: SidebarProps) {
         <div className="flex gap-3">
           <Link
             href="/submit-case"
-            className="text-sm bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-3 py-2 rounded-md font-bold hover:from-[#1217c0] hover:to-[#0a0f6b]"
+            className="flex items-center justify-center text-sm bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-3 py-2 rounded-md font-bold hover:from-[#1217c0] hover:to-[#0a0f6b]"
           >
             Submit Case
           </Link>

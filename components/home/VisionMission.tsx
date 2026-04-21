@@ -127,10 +127,10 @@ const VisionMission = () => {
   }
 
   return (
-    <section className="py-12 bg-white overflow-hidden">
+    <section className="py-16 bg-gray-50 overflow-hidden">
       <div className="container mx-auto px-4 md:px-10 text-center">
-        <p className="text-[#04063E] font-medium italic mb-2">{content.title}</p>
-        <h2 className="text-4xl md:text-5xl font-bold text-[#04063E] mb-16 leading-tight max-w-4xl mx-auto">
+        <p className="text-[#04063E] font-medium mb-2">{content.title}</p>
+        <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight mb-5">
           {content.subtitle}
         </h2>
 
@@ -148,8 +148,8 @@ const VisionMission = () => {
                 <div className={`w-20 h-20 ${bgColor} rounded-full flex items-center justify-center mb-6 shadow-lg shadow-blue-50 relative`}>
                   {renderIcon(item.icon, bgColor, invertIcon)}
                 </div>
-                <h3 className="text-xl font-bold text-[#04063E] mb-3">{cleanTitle}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed max-w-[280px]">{cleanText}</p>
+                <h3 className="font-bold text-black text-[15px] mb-3 uppercase">{cleanTitle}</h3>
+                <p className="text-gray-500 text-md leading-relaxed max-w-[280px]">{cleanText}</p>
               </div>
             );
           })}
@@ -166,11 +166,11 @@ const VisionMission = () => {
 
         <div className="relative flex items-center justify-center mb-20">
           <div className="absolute w-full h-px bg-gray-100"></div>
-          <div className="relative z-10 bg-white px-6 flex flex-col md:flex-row items-center gap-4">
+          <div className="relative z-10 bg-gray-50 px-6 flex flex-col md:flex-row items-center gap-4">
             <span className="text-sm font-semibold text-gray-800 italic">For more information!</span>
             <Link
               href={content.btnUrl}
-              className="bg-[#04063E] text-white px-8 py-3 rounded-full text-xs font-bold hover:bg-opacity-90 transition-all flex items-center gap-2 group"
+              className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-2 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
             >
               {content.btnText}
               <span className="group-hover:translate-x-1 transition-transform">→</span>

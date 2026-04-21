@@ -24,7 +24,7 @@ export default function OurAlliance() {
   };
 
   return (
-    <section className="relative bg-gradient-to-r from-[#020433] via-[#030653] to-[#020433] py-20">
+    <section className="relative bg-gradient-to-r from-[#020433] via-[#030653] to-[#020433] py-12">
       <div className="mx-auto max-w-7xl px-4">
         {/* Main Section Header */}
         <div className="grid gap-12 lg:grid-cols-2 items-center">

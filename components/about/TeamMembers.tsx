@@ -45,10 +45,11 @@ export default function TeamMembers() {
   const visibleMembers = isExpanded ? members : members.slice(0, INITIAL_VISIBLE_COUNT);
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-20 text-center">
-      <div className="mb-4 inline-flex rounded-full border px-4 py-1 text-xs font-medium text-gray-600">
+    <section className="mx-auto max-w-7xl px-4 py-12 text-center">
+      {/*<div className="mb-4 inline-flex rounded-full border px-4 py-1 text-xs font-medium text-gray-600">
         {header.title}
-      </div>
+      </div>*/}
+      <p className="text-[#04063E] font-medium mb-2">{header.title}</p>
 
       <h2 className="mb-12 text-2xl font-semibold text-black">
         {header.subtitle}
@@ -119,7 +120,7 @@ export default function TeamMembers() {
         <div className="mt-16 flex justify-center">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 px-10 py-3 bg-[#05083D] text-white rounded-full font-bold text-sm hover:bg-[#FFD707] hover:text-[#05083D] transition-all duration-300 shadow-md"
+            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-2 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
           >
             {isExpanded ? (
               <>Show Less <ChevronUp size={18} /></>

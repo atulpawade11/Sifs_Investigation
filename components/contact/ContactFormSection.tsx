@@ -79,7 +79,7 @@ export default function ContactFormSection() {
         <form onSubmit={handleSubmit} className="grid gap-6">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Full Name *</label>
+              <label className="text-sm font-bold text-gray-700 ml-1">Full Name *</label>
               <input
                 name="name"
                 value={form.name}
@@ -90,7 +90,7 @@ export default function ContactFormSection() {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Email Address *</label>
+              <label className="text-sm font-bold text-gray-700 ml-1">Email Address *</label>
               <input
                 name="email"
                 type="email"
@@ -102,7 +102,7 @@ export default function ContactFormSection() {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Mobile Number *</label>
+              <label className="text-sm font-bold text-gray-700 ml-1">Mobile Number *</label>
               <input
                 name="mobile"
                 value={form.mobile}
@@ -113,7 +113,7 @@ export default function ContactFormSection() {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Address</label>
+              <label className="text-sm font-bold text-gray-700 ml-1">Address</label>
               <input
                 name="address"
                 value={form.address}
@@ -125,7 +125,7 @@ export default function ContactFormSection() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-gray-700 ml-1">Your Query *</label>
+            <label className="text-sm font-bold text-gray-700 ml-1">Your Query *</label>
             <textarea
               name="details"
               rows={4}
@@ -141,14 +141,14 @@ export default function ContactFormSection() {
             {mounted && (
               <ReCAPTCHA
                 ref={recaptchaRef}
-                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"} // Using testing key as fallback
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"} 
                 onChange={onCaptchaChange}
               />
             )}
 
             <button
               disabled={loading || (mounted && !captchaToken)}
-              className="flex items-center gap-2 bg-[#1C274C] text-white px-12 py-4 rounded-full font-bold hover:bg-[#0C2783] transition-all disabled:opacity-50 shadow-lg shadow-blue-900/10 active:scale-95"
+              className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-3 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : "Submit Message"}
               <ArrowRight size={18} />

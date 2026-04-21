@@ -87,7 +87,7 @@ export default function ClientelePortfolio() {
   if (loading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-blue-900" size={40} /></div>;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-20 bg-white min-h-screen">
+    <section className="mx-auto max-w-7xl px-4 py-12 bg-white min-h-screen">
       <div className="grid gap-10 lg:grid-cols-[260px_1fr]">
         
         {/* SIDEBAR */}

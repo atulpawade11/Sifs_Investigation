@@ -1,23 +1,50 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { 
+  Briefcase,
+  UserPlus,
+  Users,
+  Search,
+  Microscope,
+  LucideIcon 
+} from "lucide-react";
+
+// Map categories to icons
+const categoryIconMap: Record<string, LucideIcon> = {
+  "Junior Forensic Expert": UserPlus,
+  "Senior Forensic Expert": Users,
+  "Crime Scene Investigator": Search,
+  "Forensic Expert": Microscope,
+};
+
+// Default icon for any other category
+const DefaultIcon = Briefcase;
+
+// Optional: Different colors per category
+const categoryColorMap: Record<string, string> = {
+  "Junior Forensic Expert": "bg-blue-600",
+  "Senior Forensic Expert": "bg-purple-600",
+  "Crime Scene Investigator": "bg-green-600",
+  "Forensic Expert": "bg-indigo-600",
+};
+
+const DefaultColor = " bg-[#0B10A4]";
 
 export default function JobCard({ job }: { job: any }) {
+  // Get the icon for this job's category
+  const CategoryIcon = categoryIconMap[job.category_name] || DefaultIcon;
+  const bgColor = categoryColorMap[job.category_name] || DefaultColor;
+
   return (
     <Link href={`/career/${job.slug}`} className="block transition-all hover:translate-y-[-2px]">
-      <div className="flex items-center justify-between gap-2 rounded-xl border border-[#D9D9D9] bg-[#FAFAFA] px-5 py-4">
+      <div className="flex items-center justify-between gap-2 rounded-xl border border-[#D9D9D9] bg-[#FAFAFA] px-5 py-4 hover:shadow-md transition-shadow">
         
         {/* LEFT */}
         <div className="flex items-start gap-4">
-          <div className="flex h-13 w-13 flex-shrink-0 items-center justify-center rounded-full bg-[#0B10A4]">
-            <Image
-              src={job.image || "/hero-banner.png"}
-              alt={job.title}
-              width={26}
-              height={26}
-              className="object-contain"
-            />
+          {/* Icon Circle - Replaced Image with Icon */}
+          <div className={`flex h-13 w-13 flex-shrink-0 items-center justify-center rounded-full ${bgColor}`}>
+            <CategoryIcon className="w-6 h-6 text-white" />
           </div>
 
           <div>

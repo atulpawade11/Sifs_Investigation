@@ -6,9 +6,11 @@ import PageBanner from "@/components/common/PageBanner";
 import CareerFAQSection from "@/components/career/CareerFAQSection";
 import { API_BASE_URL } from '@/lib/config';
 import { Calendar, MapPin, Briefcase, Users, Mail, GraduationCap, CheckCircle2, List, Loader2 } from 'lucide-react';
+import { useBoot } from "@/context/BootContext";
 
 export default function CareerDetailsClient({ slug }: { slug: string }) {
   const router = useRouter();
+  const { breadcrumbImage } = useBoot();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -61,7 +63,7 @@ export default function CareerDetailsClient({ slug }: { slug: string }) {
     <div className="h-screen flex items-center justify-center bg-white">
       <div className="flex flex-col items-center gap-4">
         <Loader2 className="animate-spin text-[#1B2A7A]" size={48} />
-        <p className="uppercase tracking-widest text-xs font-bold text-[#1B2A7A]">Updating Content...</p>
+        <p className="uppercase tracking-widest text-xs font-bold text-[#1B2A7A]">Loading Job Details...</p>
       </div>
     </div>
   );
@@ -81,8 +83,8 @@ export default function CareerDetailsClient({ slug }: { slug: string }) {
     <main className="bg-white">
       <PageBanner 
         title={job.title} 
-        subtitle={`Career Opportunity in ${job.job_location}`} 
-        bgImage="/about/about-banner.png" 
+        subtitle={`Career Opportunity in ${job.job_location}`}
+        breadcrumbImage={breadcrumbImage}
       />
 
       <section className="py-20">
@@ -103,7 +105,6 @@ export default function CareerDetailsClient({ slug }: { slug: string }) {
                   Application Notice
                 </h4>
                 
-                {/* Rendering the HTML string safely */}
                 <div 
                   className="text-gray-600 leading-relaxed text-sm italic mb-4 prose-p:m-0"
                   dangerouslySetInnerHTML={{ __html: job.read_before_apply }} 
@@ -166,7 +167,7 @@ export default function CareerDetailsClient({ slug }: { slug: string }) {
   );
 }
 
-// Helper components remain the same as your provided code
+// Helper components
 function DetailSection({ title, icon, html }: { title: string; icon: React.ReactNode; html: string }) {
   if (!html || html === "null" || html === "undefined") return null;
   return (
@@ -190,7 +191,7 @@ function SidebarItem({ label, value, icon, isHtml, html }: any) {
       </div>
       <div>
         <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 leading-tight mb-1">{label}</p>
-        {isHtml ? <div className="text-sm font-bold text-white" dangerouslySetInnerHTML={{ __html: html }} /> : <p className="text-sm font-bold text-white">{value}</p>}
+        {isHtml ? <div className="text-sm font-bold text-white" dangerouslySetInnerHTML={{ __html: html }} /> : <p className="text-md font-bold text-white">{value}</p>}
       </div>
     </div>
   );

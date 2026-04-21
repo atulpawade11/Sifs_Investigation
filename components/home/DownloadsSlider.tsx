@@ -21,11 +21,11 @@ const row2 = [
 
 const DownloadsSlider = () => {
   return (
-    <section className="py-20 bg-white overflow-hidden">
+    <section className="py-16 bg-white overflow-hidden">
       {/* Title Section */}
       <div className="container mx-auto px-4 text-center mb-12">
-        <p className="text-[#04063E] font-bold italic text-sm mb-2">Access Forensic Resources</p>
-        <h2 className="text-4xl md:text-5xl font-bold text-slate-900">Downloads</h2>
+        <p className="text-[#04063E] font-medium mb-2">Access Forensic Resources</p>
+        <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight ">Downloads</h2>
       </div>
 
       {/* Main Slider Container with Fading Mask */}

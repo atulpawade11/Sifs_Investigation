@@ -19,10 +19,8 @@ async function getBlogData(slug: string) {
     const result = await res.json();
     if (!result.success || !result.data) return null;
 
-    // DECODE THE SLUG HERE
     const decodedSlug = decodeURIComponent(slug);
 
-    // Use the decoded slug to find the match
     const blog = result.data.blogs.data.find((b: any) => 
       b.slug === decodedSlug || b.slug === slug
     );
@@ -35,7 +33,8 @@ async function getBlogData(slug: string) {
     return {
       blog: blog,
       bcats: result.data.bcats,
-      recent_blogs: result.data.blogs.data.slice(0, 5)
+      recent_blogs: result.data.blogs.data.slice(0, 5),
+      be: result.data.be
     };
   } catch (error) {
     console.error("Fetch failed:", error);
@@ -56,22 +55,23 @@ export default async function BlogDetailsPage({ params }: PageProps) {
 
   if (!data || !data.blog) notFound();
 
-  const { blog, bcats, recent_blogs } = data;
+  const { blog, bcats, recent_blogs, be } = data;
 
   return (
     <div className="min-h-screen bg-white">
-      <section className="bg-gray-50 py-12 text-center">
-        <p className="text-sm uppercase tracking-wide text-gray-500">News & Blog</p>
-        <h1 className="mt-2 text-2xl font-semibold text-gray-800">{blog.title}</h1>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-16 relative">
-        <div className="absolute right-6 top-0">
-          <BackButton />
-        </div>
-
-        <BlogDetailClient title={blog.title}>
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
+      <BlogDetailClient 
+        title={blog.title} 
+        slug={slug}
+        metaTitle={be?.blogs_meta_title}
+        metaDescription={be?.blogs_meta_description}
+      >
+        <div className="relative">
+          {/* Back Button - Positioned after banner, before content */}
+          <div className="absolute -top-12 right-0 z-10">
+            <BackButton />
+          </div>
+          
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 mt-12">
             <article className="lg:col-span-2">
               <div className="relative mb-8 h-[450px] overflow-hidden rounded-xl">
                 <img
@@ -81,14 +81,13 @@ export default async function BlogDetailsPage({ params }: PageProps) {
                 />
               </div>
 
-              {/* Added the class 'blog-content-area' here */}
               <div 
                 className="prose prose-lg max-w-none text-gray-700 leading-relaxed blog-content-area"
                 dangerouslySetInnerHTML={{ __html: blog.content }} 
               />
             </article>
 
-            <aside className="lg:col-span-1">
+            <aside className="lg:col-span-1 ">
               <BlogSidebar 
                 categories={bcats || []} 
                 recentPosts={recent_blogs || []}
@@ -96,8 +95,8 @@ export default async function BlogDetailsPage({ params }: PageProps) {
               />
             </aside>
           </div>
-        </BlogDetailClient>
-      </section>
+        </div>
+      </BlogDetailClient>
     </div>
   );
 }
