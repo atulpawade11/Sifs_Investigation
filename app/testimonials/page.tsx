@@ -2,6 +2,9 @@ import PageBanner from "@/components/common/PageBanner";
 import AllTestimonials from "@/components/testimonial/AllTestimonials";
 import { API_BASE_URL } from '@/lib/config';
 
+// ✅ FIX: force dynamic rendering
+export const dynamic = "force-dynamic";
+
 export default async function TestimonialsPage() {
 
   let homeBs = null;
@@ -29,14 +32,14 @@ export default async function TestimonialsPage() {
     homeBs?.testimonial_subtitle || "Hear What Our Clients Say";
 
   const breadcrumbImage =
-    homeBs?.breadcrumb || null;   // ✅ ADD THIS
+    homeBs?.breadcrumb || null;
 
   return (
     <main className="bg-[#F3F1F2] min-h-screen">
       <PageBanner
         title={testimonialTitle}
         subtitle={testimonialSubtitle}
-        breadcrumbImage={breadcrumbImage}   // ✅ PASS HERE
+        breadcrumbImage={breadcrumbImage}
       />
 
       <section className="py-20 max-w-7xl mx-auto px-4">
