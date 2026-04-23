@@ -61,7 +61,7 @@ const VisionMission = () => {
     title: "Forensic Services",
     subtitle: "Scientifically Revealing the Truth with Utmost Precision",
     btnText: "Our Services",
-    btnUrl: "/about",
+    btnUrl: "/services",
     image: "/visionmission.png" 
   });
   const [loading, setLoading] = useState(true);

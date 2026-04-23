@@ -94,6 +94,9 @@ const Header = () => {
     };
   }, [isOpen]);
 
+  // Get logo URL from API or fallback to hardcoded path
+  const logoUrl = data?.bs?.logo || '/logo/logo.png';
+
   return (
     <>
       {/* Top Bar */}
@@ -165,11 +168,11 @@ const Header = () => {
 
       {/* MAIN Header - Fixed on scroll */}
       <div className="bg-white sticky top-0 z-50 px-4 md:px-10 py-3 flex justify-between items-center shadow-sm">
-        {/* LOGO */}
+        {/* LOGO - Dynamic from admin panel */}
         <Link href="/" className="flex items-center">
           <Image
-            src="/logo/logo.png"
-            alt="SIFS India Logo"
+            src={logoUrl}
+            alt={data?.bs?.website_title || "SIFS India Logo"}
             width={180}
             height={50}
             priority
