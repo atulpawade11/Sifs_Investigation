@@ -46,7 +46,7 @@ const Header = () => {
       try {
         const res = await getProducts();
         if (res && res.success) {
-          setProducts(res.data.data);
+          setProducts(res?.data?.data || []); 
         }
       } catch (err) {
         console.error("Failed to load products:", err);
@@ -56,21 +56,25 @@ const Header = () => {
 
     async function loadDepartmentsData() {
       try {
-        // Fetch departments separately
         const deptRes = await getDepartments();
         if (deptRes && deptRes.success) {
-          setDepartments(deptRes.data.data);
+          setDepartments(deptRes?.data?.data || []); // ✅ FIX
+        } else {
+          setDepartments([]); // ✅ SAFETY
         }
         
-        // Fetch laboratories separately using getLaboratories
         const labRes = await getLaboratories();
         console.log("Laboratories API response:", labRes);
+    
         if (labRes && labRes.success) {
-          setLaboratories(labRes.data.data);
-          console.log("Laboratories set:", labRes.data.data);
+          setLaboratories(labRes?.data?.data || []); // ✅ FIX
+        } else {
+          setLaboratories([]); // ✅ SAFETY
         }
       } catch (err) {
         console.error("Failed to load departments/laboratories:", err);
+        setDepartments([]); // ✅ SAFETY
+        setLaboratories([]); // ✅ SAFETY
       }
     }
     loadDepartmentsData();
@@ -117,7 +121,7 @@ const Header = () => {
         </div>
         <div className="flex items-center gap-6">
           {/* Language Selector */}
-          {data?.langs && data.langs.length > 0 && (
+          {Array.isArray(data?.langs) && data.langs.length > 0 && (
             <div className="relative border-r border-white/20 pr-6">
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
@@ -239,7 +243,7 @@ const Header = () => {
           <MegaMenu trigger={<span>Services</span>} />
 
           {/* Department Dropdown */}
-          {departments.length > 0 && (
+          {Array.isArray(departments) && departments.length > 0 && (
             <div className="group relative">
               <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg">
                 Department <ChevronDown size={16} />
@@ -262,7 +266,7 @@ const Header = () => {
           )}
 
           {/* Laboratory Dropdown */}
-          {laboratories.length > 0 && (
+          {Array.isArray(laboratories) && laboratories.length > 0 && (
             <div className="group relative">
               <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg">
                 Laboratory <ChevronDown size={16} />
@@ -291,7 +295,7 @@ const Header = () => {
             </div>
             <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
               <ul className="py-2">
-                {products.length > 0 ? (
+              {Array.isArray(products) && products.length > 0 ? (
                   products.map((item) => (
                     <li key={item.id}>
                       <Link href={`/product/${item.slug}`} className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
@@ -367,7 +371,7 @@ const Header = () => {
             </div>
 
             {/* Department Mobile */}
-            {departments.length > 0 && (
+            {Array.isArray(departments) && departments.length > 0 && (
               <div className="border-b border-gray-50 pb-2">
                 <button
                   onClick={() => toggleMenu("departments")}
@@ -390,7 +394,7 @@ const Header = () => {
             )}
 
             {/* Laboratory Mobile */}
-            {laboratories.length > 0 && (
+            {Array.isArray(laboratories) && laboratories.length > 0 && (
               <div className="border-b border-gray-50 pb-2">
                 <button
                   onClick={() => toggleMenu("laboratories")}
