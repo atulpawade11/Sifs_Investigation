@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link'; 
+import { ArrowRight } from 'lucide-react';
 import { getTestimonials } from '@/services/testimonialService';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { API_BASE_URL } from '@/lib/config';
@@ -70,8 +71,8 @@ export default function Testimonials() {
       <div className="container mx-auto px-4 md:px-10">
 
         {/* ---------- TITLE (Centered) ---------- */}
-        <div className="relative z-0 text-center mb-6">
-          <p className="mb-2 font-medium text-[#04063E]">
+        <div className="relative z-0 max-w-xl">
+          <p className="text-[#04063E] font-semibold text-[18px] mb-2 tracking-wide">
             {testimonialTitle}
           </p>
           <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
@@ -79,20 +80,33 @@ export default function Testimonials() {
           </h2>
         </div>
 
+        {/* ---------- VIEW ALL BUTTON ---------- */}
+        <div className="absolute right-60 top-24 hidden md:block">
+          <Link
+            href="/testimonials"
+            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E]
+            text-white px-8 py-3 rounded-full font-bold
+            flex items-center gap-4 hover:shadow-xl transition-all group"
+          >
+            View All 
+            <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+
         {/* ---------- CARDS ---------- */}
-        <div className="relative z-10 mt-0 ml-auto w-[135%]">
-          <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4">
+        <div className="relative z-10 mt-8 md:mt-[-60px] ml-0 md:ml-auto w-full md:w-[115%] lg:w-[125%] xl:w-[135%]">
+          <div className="flex gap-6">
             {visibleItems.map((item: any, index: number) => (
               <div
                 key={item?.id || index}
-                className="min-w-[360px] max-w-[360px] rounded-2xl border border-[#D8D8D8] bg-[#F3F1F2]/30 p-8 backdrop-blur-sm mt-8 flex flex-col justify-between"
+                className="min-w-[400px] max-w-[450px] rounded-2xl border border-[#D8D8D8] bg-[#F3F1F2]/30 p-8 backdrop-blur-sm mt-8 flex flex-col justify-between"
               >
                 <div>
                   <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#1C274C] text-xl text-white relative">
                     <span style={{ fontFamily: 'serif', fontSize: '50px', position: 'absolute', top: '-3px'}}>“</span>
                   </div>
                   {/* Reduced margin-bottom here (mb-4 instead of mb-8) and added line-clamp */}
-                  <p className="mb-4 text-md leading-relaxed text-black line-clamp-3 overflow-hidden text-ellipsis">
+                  <p className="mb-4 text-[18px] font-medium leading-relaxed text-black line-clamp-3 overflow-hidden text-ellipsis">
                     {item?.comment}
                   </p>
                 </div>
@@ -111,7 +125,7 @@ export default function Testimonials() {
                     <p className="text-[18px] font-bold text-black leading-tight">
                       {item?.name}
                     </p>
-                    <p className="text-[14px] text-black">
+                    <p className="text-[14px] font-regular text-black">
                       {item?.rank}
                     </p>
                   </div>
@@ -121,11 +135,16 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* ---------- CENTERED BUTTON AT BOTTOM ---------- */}
-        <div className="mt-12 flex justify-center">
+        {/* Mobile View All */}
+
+        <div className="mt-10 md:hidden mx-auto">
           <Link
-            href="/testimonials"
-            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-3 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
+            href="#"
+            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E]
+                        text-white px-8 py-3 rounded-full font-bold
+                        flex items-center gap-4
+                        hover:from-[#1217c0] hover:to-[#0a0f6b]
+                        transition-all group text-center w-auto justify-center"
           >
             View All →
           </Link>

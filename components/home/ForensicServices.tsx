@@ -123,8 +123,8 @@ const ForensicServices = () => {
       }}
     >
       <div className="container mx-auto px-4 md:px-10 relative z-10">
-        <div className="mb-12 text-center">
-          <p className="text-[#04063E] font-medium mb-2 uppercase tracking-wide">
+        <div className="mb-12">
+          <p className="text-[#04063E] font-semibold text-[18px] mb-2 tracking-wide">
             {sectionTitles.title}
           </p>
           <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
@@ -147,10 +147,10 @@ const ForensicServices = () => {
                 </div>
 
                 <div className="flex-grow">
-                  <h3 className="font-bold text-black text-[16px] tracking-wide mb-3 uppercase line-clamp-2">
+                  <h3 className="font-bold text-black text-[18px] tracking-wide mb-3 uppercase line-clamp-2">
                     {service.name}
                   </h3>
-                  <p className="text-gray-500 text-md leading-relaxed mb-3 line-clamp-3">
+                  <p className="text-[#868686] text-[14px] font-regular leading-relaxed mb-3 line-clamp-3">
                     {service.short_text}
                   </p>
                 </div>

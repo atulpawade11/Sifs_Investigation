@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import Image from "next/image";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -123,9 +124,19 @@ const ShowcaseStats = () => {
 
         <div className="relative z-10 text-center px-4">
           <div className="mt-12 md:mt-16 mb-20 md:mb-24">
-            <p className="text-white md:text-[#04063E] font-medium mb-2">
-              {content.title}
-            </p>
+            <div className="flex items-center justify-center gap-6">
+              <div className="relative w-14 h-14 flex-shrink-0">
+                <Image
+                  src="/cap.png"
+                  alt="icon"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <p className="text-white md:text-[#04063E] font-semibold text-[18px]">
+                {content.title}
+              </p>
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
               {content.subtitle}
             </h2>
@@ -162,12 +173,19 @@ const ShowcaseStats = () => {
             </div>
           )}
 
-          <div className="max-w-7xl mx-auto px-6 mb-12 opacity-20">
-            <div className="w-full border-b-[1px] md:border-b-[2px] border-dashed border-white" />
+          <div className="px-6 mb-12">
+            <Image
+              src="/border-line-3.png"
+              alt="icon"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="w-full h-auto object-contain"
+            />
           </div>
 
           {/* DYNAMIC STATS GRID */}
-          <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-y-10 md:gap-y-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-10 md:gap-y-12">
             {stats.slice(0, 4).map((stat, i) => {
               const { val, suffix } = formatStatValue(stat.quantity);
               return (
@@ -179,14 +197,19 @@ const ShowcaseStats = () => {
                     ${i === 3 ? 'border-none' : ''}`}
                 >
                   <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 mb-2 md:mb-3">
-                    {iconMap[i] || iconMap[0]}
-                    <span className="text-2xl md:text-5xl font-bold tracking-tighter">
-                      <Counter end={val} duration={2000} />{suffix}
-                    </span>
+                    <div>
+                      {iconMap[i] || iconMap[0]}
+                    </div>
+                    <div className="text-left">
+                      <span className="text-2xl md:text-6xl font-bold tracking-tighter">
+                        <Counter end={val} duration={2000} />{suffix}
+                      </span>
+                      <p className="text-white text-[9px] md:text-[18px] font-regular tracking-widest text-center lg:text-left">
+                        {stat.title}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-gray-400 text-[9px] md:text-xs font-bold uppercase tracking-widest text-center lg:text-left">
-                    {stat.title}
-                  </p>
+                  
                 </div>
               );
             })}

@@ -32,22 +32,22 @@ const AboutIntroSection = () => {
 
   return (
     <section className="bg-white py-16 md:py-12">
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto container px-4">
         <div className="grid items-center gap-12 md:grid-cols-2">
           <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#04063E] ps-1 pe-3 py-1 text-[18px] font-bold text-black">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0B10A4]">
-                    <Image src="/about/zap.png" alt="Icon" width={20} height={20} />
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#04063E] ps-1 pe-3 py-1">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full">
+                    <Image src="/about/zap.png" alt="Icon" width={50} height={50} />
                 </span>
-                {data?.about_seo_keyword || "About Us"}
+                <span className="text-[18px] font-bold text-black">{data?.about_seo_keyword || "About Us"}</span>
             </div>
 
-            <h2 className="text-[32px] font-bold leading-tight text-black md:text-4xl mb-6">
+            <h2 className="text-[35px] font-semibold leading-tight text-black md:text-4xl mb-6">
               {data?.intro_section_text || "Leading Forensic Excellence Since 2006"}
             </h2>
 
             <div
-              className="text-md leading-relaxed text-[#777777] 
+              className="text-[14px] font-regular leading-relaxed text-[#777777] 
                          [&_p]:mb-4 
                          [&_ul]:grid [&_ul]:grid-cols-1 md:[&_ul]:grid-cols-2 [&_ul]:gap-2 [&_ul]:mt-6
                          [&_li]:flex [&_li]:items-center [&_li]:before:content-['›'] [&_li]:before:mr-2 [&_li]:before:text-[#0B10A4] [&_li]:before:font-bold"

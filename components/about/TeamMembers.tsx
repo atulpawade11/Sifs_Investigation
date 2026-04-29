@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Linkedin, Facebook, Twitter, Instagram, Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { Linkedin, Facebook, Twitter, Instagram, Loader2, ChevronDown, ChevronUp, MoveRight } from "lucide-react";
 import { API_BASE_URL } from "@/lib/config";
 
 const IMAGE_BASE_URL = "http://forensicinstitute.in/uploads/Investigation-Services-Admin-Member/";
@@ -49,9 +49,12 @@ export default function TeamMembers() {
       {/*<div className="mb-4 inline-flex rounded-full border px-4 py-1 text-xs font-medium text-gray-600">
         {header.title}
       </div>*/}
-      <p className="text-[#04063E] font-medium mb-2">{header.title}</p>
+      <div className="mb-4 relative">
+        <div className="absolute w-full h-px bg-[#8c8c8c] opacity-60 z-0 top-3 border border-[#D9D9D9]"></div>
+        <span className="text-black text-[14px] font-regular mb-2 border border-[#D9D9D9] rounded-full px-5 py-2 z-1 relative bg-white">{header.title}</span>
+      </div>
 
-      <h2 className="mb-12 text-2xl font-semibold text-black">
+      <h2 className="mb-12 text-[30px] font-semibold text-black">
         {header.subtitle}
       </h2>
 
@@ -104,13 +107,13 @@ export default function TeamMembers() {
             </Link>
 
             {/* VIEW DETAILS TEXT LINK */}
-            <Link 
+            {/*<Link 
               href={`/team/${member.slug}`}
               className="mt-3 text-left text-[13px] font-bold text-[#05083D] hover:text-blue-600 transition-colors inline-flex items-center gap-1 group/link"
             >
               View Details 
               <span className="transition-transform group-hover/link:translate-x-1">→</span>
-            </Link>
+            </Link> */}
           </div>
         ))}
       </div>
@@ -123,9 +126,9 @@ export default function TeamMembers() {
             className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-2 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
           >
             {isExpanded ? (
-              <>Show Less <ChevronUp size={18} /></>
+              <>Show Less <MoveRight size={18} /></>
             ) : (
-              <>Show More <ChevronDown size={18} /></>
+              <>View all Teams <MoveRight size={18} /></>
             )}
           </button>
         </div>

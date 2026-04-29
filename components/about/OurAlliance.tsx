@@ -29,8 +29,8 @@ export default function OurAlliance() {
         {/* Main Section Header */}
         <div className="grid gap-12 lg:grid-cols-2 items-center">
           <div className="text-white">
-            <h2 className="mb-4 text-2xl font-semibold">Our Alliance</h2>
-            <p className="mb-6 text-sm leading-relaxed text-white/80">
+            <h2 className="mb-4 text-[28px] font-bold">Our Alliance</h2>
+            <p className="mb-6 text-[14px] font-regular leading-relaxed">
             Forensic science is a multidisciplinary field, and hence meaningful
               collaborations are a must to achieve the common goal of solving
               complex cases. SIFS India’s collaborative approach to doing

@@ -74,7 +74,7 @@ export default function VideoGalleryClient() {
       />
 
       <div className="relative bg-[#FFFFFF] py-16">
-        <section className="mx-auto max-w-7xl px-4">
+        <section className="mx-auto container px-4">
           
           {loading ? (
             <VideoSkeleton />

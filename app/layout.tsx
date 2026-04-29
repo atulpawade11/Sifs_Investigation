@@ -43,9 +43,11 @@ export async function generateMetadata() {
 
 // Configure Lato
 const lato = Lato({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   weight: ["100", "300", "400", "700", "900"],
   variable: "--font-lato",
+  display: "swap", // ✅ ensures text shows immediately
+  preload: true,   // ✅ preloads the font
 });
 
 export default async function RootLayout({

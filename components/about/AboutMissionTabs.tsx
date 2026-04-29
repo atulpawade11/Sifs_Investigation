@@ -55,7 +55,7 @@ export default function AboutMissionTabs() {
   `;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12">
+    <section className="mx-auto container px-4 py-12">
       <div className="grid gap-10 lg:grid-cols-[380px_1fr_420px]">
         
         {/* LEFT COLUMN */}
@@ -84,8 +84,8 @@ export default function AboutMissionTabs() {
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
-                className={`relative pb-3 font-bold uppercase tracking-widest transition-all ${
-                  activeTab === id ? "text-black" : "text-gray-400"
+                className={`relative pb-3 font-semibold uppercase tracking-widest transition-all text-[20px] ${
+                  activeTab === id ? "text-black," : "text-[#777777]"
                 }`}
               >
                 {idx + 1}. {id === "mission" ? "Mission & Vision" : "Purpose"}
@@ -149,13 +149,13 @@ export default function AboutMissionTabs() {
             />
           </div>
           <div className="absolute -left-10 top-80 max-w-[300px] rounded-2xl bg-gradient-to-br from-[#0B10A4] to-[#04063E] p-8 text-white shadow-2xl">
-            <p className="mb-2 text-[10px] font-bold uppercase opacity-70">Expertise</p>
-            <h4 className="mb-6 text-lg font-bold leading-snug">
+            <p className="mb-2 text-[12px] font-semibold opacity-70">Expertise</p>
+            <h4 className="mb-6 text-[23px] font-semibold leading-snug">
               {data?.newsletter_text || "Scientifically Revealing the Truth"}
             </h4>
             <Link
               href="/services"
-              className="inline-flex items-center rounded-full border border-white/40 px-6 py-2 text-[10px] font-bold uppercase hover:bg-white hover:text-[#04063E] transition-all"
+              className="inline-flex items-center rounded-full border border-white/40 px-6 py-2 text-[12px] font-regular uppercase hover:bg-white hover:text-[#04063E] transition-all"
             >
               Explore Services
             </Link>

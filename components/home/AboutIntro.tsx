@@ -34,7 +34,7 @@ const AboutIntro = () => {
   // ✅ NEW: Video modal state
   const [showVideo, setShowVideo] = useState(false);
 
-  /*
+  
   // Static fallback highlights (Not provided in JSON, keeping as per original design)
   const staticHighlights = [
     "Forged Document Examination",
@@ -42,7 +42,7 @@ const AboutIntro = () => {
     "Signature Verification",
     "Fingerprint Comparison"
   ];
-  */
+  
 
   // Fetch data from API on mount
   useEffect(() => {
@@ -152,12 +152,35 @@ const AboutIntro = () => {
           {/* LEFT CONTENT */}
           <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-700">
             <div className="space-y-4">
-              <p className="text-[#04063E] font-medium mb-2">
+              <p className="text-[#04063E] font-semibold text-[18px] mb-2">
                 {content?.intro_section_title || "Forensic laboratory where"}
               </p>
               <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
                 {content?.intro_section_text || "Efficiency Meets the Finest Forensic Expertise"}
               </h2>
+            </div>
+
+            <p className="text-[#868686] leading-relaxed text-[16px]">
+            Despite the initial hurdles, SIFS India, guided by a positive and dedicated approach to clients and adherence to Indian law and order, successfully carved a niche in the field of forensics. The company achieved acknowledgement not only from onshore but also from offshore clients. The journey reflects the continuous efforts of Dr. Ranjeet Singh (CEO and founder), showcasing the company's commitment to delivering qualitative forensic services across several domains.
+            </p>
+
+            {/* Feature List */}
+            <div className="grid grid-cols-1 gap-4">
+                {staticHighlights.map((item, index) => (
+                    <div key={index} className="flex items-center gap-3 group mb-3">
+                        <div className="relative w-6 h-6">
+                            <Image 
+                                src="/orange-check.png" 
+                                alt="check"
+                                fill
+                                className="object-contain"
+                            />
+                        </div>
+                        <span className="font-regular text-[16px] text-black group-hover:text-sifs-orange transition-colors">
+                            {item}
+                        </span>
+                    </div>
+                ))}
             </div>
 
             <div className="flex items-center gap-6 pt-4">
@@ -188,7 +211,12 @@ const AboutIntro = () => {
 
           {/* RIGHT IMAGE */}
           <div className="relative group animate-in fade-in slide-in-from-right-4 duration-700">
-            <div className="relative rounded-[32px] overflow-hidden shadow-2xl aspect-[4/3]">
+          <p className="text-[#868686] leading-relaxed mb-6 mt-6 text-[16px]">
+                            Established in 2006, SIFS India emerged as a pioneer in the field of forensics. 
+                            It is a leading forensic science laboratory in India that is registered with the 
+                            Government of India and certified with ISO 9001:2015 and 10002:2014.
+                        </p>
+            <div className="relative rounded-[32px] overflow-hidden shadow-xs aspect-[4/3]">
               <Image
                 src={introBg}
                 alt="Forensic Science Intro"
@@ -208,11 +236,7 @@ const AboutIntro = () => {
               </div>
             </div>
 
-            <div className="absolute -bottom-6 -right-6 opacity-10 -z-10">
-              <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor" className="text-gray-900">
-                <path d="M12 .5l2.5 7.5H22l-6 4.5 2.5 7.5-6.5-5-6.5 5 2.5-7.5-6-4.5h7.5L12 .5z" />
-              </svg>
-            </div>
+            
           </div>
 
         </div>

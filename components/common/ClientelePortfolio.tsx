@@ -105,11 +105,18 @@ export default function ClientelePortfolio() {
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 lg:py-12 bg-white min-h-screen">
-      <div className="text-center mb-6">
+      {/*<div className="mb-4 relative text-center">
+        <div className="absolute w-full h-px bg-[#8c8c8c] opacity-60 z-0 top-3 border border-[#D9D9D9]"></div>
+        <span className="text-black text-[14px] font-regular mb-2 border border-[#D9D9D9] rounded-full px-5 py-2 z-1 relative bg-white">{header.title}</span>
+      </div>
+      <h2 className="mb-12 text-[30px] font-semibold text-black text-center">
+        {header.subtitle}
+      </h2>*/}
+      {/*<div className="text-center mb-6">
         <p className="text-[#04063E] font-medium mb-2">{header.title}</p>
         {/* <p className="mb-4 inline-flex rounded-full border px-4 py-1 text-xs font-medium text-gray-600">{header.title}</p> */}
-        <h4 className="mb-12 text-2xl font-semibold text-black">{header.subtitle}</h4>
-      </div>
+        {/*<h4 className="mb-12 text-2xl font-semibold text-black">{header.subtitle}</h4>
+      </div>*/}
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-10 items-start">
         
         {/* SIDEBAR - Filter Navigation */}
@@ -145,13 +152,13 @@ export default function ClientelePortfolio() {
         <div className="relative min-h-[400px]">
           
           
-          {/* BACKGROUND DECORATIVE BADGE - Sent to back 
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 lg:opacity-0">
-             <div className="h-[280px] w-[280px] md:h-[350px] md:w-[350px] rounded-full border border-dashed border-gray-200 flex flex-col items-center justify-center text-center p-8 bg-white/10 backdrop-blur-[2px]">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-800 mb-2">{header.title}</p>
-                <h4 className="text-xl md:text-2xl font-black text-black leading-tight">{header.subtitle}</h4>
+          {/* BACKGROUND DECORATIVE BADGE - Sent to back */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+             <div className="h-[280px] w-[280px] md:h-[300px] md:w-[300px] rounded-full border border-dashed border-[#c7c7c7] flex flex-col items-center justify-center text-center p-8 bg-white/10 backdrop-blur-[2px]">
+                <p className="text-[14px] font-semibold text-black mb-2">{header.title}</p>
+                <h4 className="text-[24px] font-[900] text-black leading-tight">{header.subtitle}</h4>
               </div>
-          </div>*/}
+          </div>
 
           {/* GRID OF LOGOS - Foreground */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4 w-full relative z-10">
