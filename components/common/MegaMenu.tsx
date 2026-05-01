@@ -69,7 +69,7 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
   if (loading) {
     return (
       <div className="relative">
-        <div className="flex items-center gap-1 cursor-pointer py-2">
+        <div className="flex items-center gap-1 cursor-pointer py-2 ">
           {trigger}
           <ChevronDown size={16} className="text-gray-400" />
         </div>
@@ -129,7 +129,7 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
       onMouseLeave={handleMouseLeave}
     >
       {/* Trigger Button */}
-      <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 transition-colors text-lg">
+      <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 transition-colors text-lg  md:text-[16px] font-regular text-black">
         {trigger}
         <ChevronDown 
           size={16} 
@@ -150,8 +150,8 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
                   onMouseEnter={() => setActiveCategory(category.id)}
                   className={`w-full text-left px-5 py-3 transition-all group ${
                     activeCategory === category.id
-                      ? 'bg-white text-[#0B10A4] border-l-4 border-[#0B10A4] shadow-sm'
-                      : 'text-gray-700 hover:bg-gray-100 hover:border-l-4 hover:border-gray-300'
+                      ? 'bg-white text-[#0B10A4] md:text-[14px] font-regular border-l-4 border-[#0B10A4] shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-100 md:text-[14px] font-regular hover:border-l-4 hover:border-gray-300'
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -183,7 +183,7 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
                 return (
                   <>
                     <div className="mb-4 pb-3 border-b border-gray-100">
-                      <h3 className="text-lg font-bold text-[#04063E]">
+                      <h3 className="text-lg md:text-[14px] font-bold text-[#04063E]">
                         {currentCategory.name}
                       </h3>
                       {currentCategory.short_text && (
@@ -201,7 +201,7 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
                           onClick={() => setIsOpen(false)}
                           className="group block p-3 rounded-lg hover:bg-[#F5F7FF] transition-all duration-200 hover:shadow-sm"
                         >
-                          <div className="text-lg font-medium text-gray-700 group-hover:text-[#0B10A4] transition-colors line-clamp-1">
+                          <div className="text-lg md:text-[14px] font-medium text-gray-700 group-hover:text-[#0B10A4] transition-colors line-clamp-1">
                             {service.title}
                           </div>
                           <div className="text-[12px] text-gray-400 mt-0.5 group-hover:text-[#F68A07] transition-colors">

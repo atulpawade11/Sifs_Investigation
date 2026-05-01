@@ -127,7 +127,7 @@ const VisionMission = () => {
   }
 
   return (
-    <section className="py-16 bg-gray-50 overflow-hidden">
+    <section className="py-16 overflow-hidden">
       <div className="container mx-auto px-4 md:px-10 text-center">
         <p className="text-[#04063E] font-semibold text-[18px] mb-2">{content.title}</p>
         <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight mb-5">

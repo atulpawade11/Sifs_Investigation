@@ -39,12 +39,12 @@ export default function BlogCard({ blog }: Props) {
       {/* Content */}
       <div className="p-4 flex flex-col justify-center flex-1">
         <Link href={`/blog/${blog.slug}`}>
-          <h3 className="cursor-pointer text-[18px] md:text-[22px] font-bold text-black hover:text-[#0B4F8A] transition leading-tight">
+          <h3 className="cursor-pointer text-[14px] md:text-[16.66px] font-semibold text-black hover:text-[#0B4F8A] transition leading-tight">
             {blog.title}
           </h3>
         </Link>
 
-        <div className="mt-2 flex items-center gap-2 text-[13.33px] text-[#555555]">
+        <div className="mt-2 flex items-center gap-2 font-regular text-[13.33px] text-[#555555]">
           <img
             src="/blog/date.png"
             alt="date"
@@ -55,16 +55,16 @@ export default function BlogCard({ blog }: Props) {
           {formattedDate}
         </div>
 
-        <p className="mt-3 text-[15px] text-[#666666] font-normal line-clamp-3 leading-relaxed">
+        <p className="mt-2 text-[15px] text-[#777777] font-regular line-clamp-3 leading-relaxed">
           {blog.meta_description}
         </p>
         
-        <Link 
+        {/*<Link 
           href={`/blog/${blog.slug}`}
           className="mt-3 text-[14px] font-bold text-[#F68A07] hover:underline flex items-center gap-1"
         >
           READ MORE →
-        </Link>
+  </Link>*/}
       </div>
     </div>
   );

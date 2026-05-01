@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Mail, Phone, MapPin, Loader2, CheckCircle2, MoveRight } from "lucide-react";
+import { MoveRight, Mail, Phone, MapPin, Loader2, CheckCircle2 } from "lucide-react";
 import { API_BASE_URL } from '@/lib/config';
 
 export default function Footer() {
@@ -63,8 +63,8 @@ export default function Footer() {
   return (
     <footer className="bg-[#232827] text-white">
       {/* TOP CTA / NEWSLETTER */}
-      <div className="mx-auto max-w-7xl px-4 pt-12">
-        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+      <div className="mx-auto container px-4 pt-12">
+        <div className="flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
         <h2 className="text-[40px] font-bold text-white flex items-center w-auto md:w-1/2">
           {footerData?.newsletter_text || "Let’s contact"}
 
@@ -77,27 +77,30 @@ export default function Footer() {
           />
         </h2>
 
-          <form onSubmit={handleSubscribe} className="relative flex w-full md:w-1/2 max-w-md items-center rounded-full bg-[#fff] px-4 py-2 border border-transparent focus-within:border-blue-500 transition-all">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-              className="flex-1 bg-transparent text-sm text-black bg-white placeholder:text-gray-400 focus:outline-none"
-            />
-            <button 
-              disabled={status === 'loading' || status === 'success'}
-              className="ml-3 flex h-9 w-9 items-center justify-center rounded-full bg-[#0B10A4] hover:bg-[#04063E] transition disabled:bg-gray-600"
-            >
-              {status === 'loading' ? (
-                <Loader2 size={16} className="text-white animate-spin" />
-              ) : status === 'success' ? (
-                <CheckCircle2 size={16} className="text-white" />
-              ) : (
-                <ArrowRight size={16} className="text-white" />
-              )}
-            </button>
+          <form onSubmit={handleSubscribe} className="relative  transition-all w-auto md:w-1/3">
+            <h4 className="text-white font-bold text-[24px] mb-3">Subscribe to our newletter</h4>
+            <div className="flex w-full items-center">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+                className="flex-1 bg-transparent text-sm text-white placeholder:text-gray-400 rounded-full px-4 py-4 border border-[#343D3B] focus-within:border-[blue-500]"
+              />
+              <button 
+                disabled={status === 'loading' || status === 'success'}
+                className="ml-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#04063E] hover:bg-[#04063E] transition disabled:bg-gray-600"
+              >
+                {status === 'loading' ? (
+                  <Loader2 size={16} className="text-white animate-spin" />
+                ) : status === 'success' ? (
+                  <CheckCircle2 size={16} className="text-white" />
+                ) : (
+                  <MoveRight size={16} className="text-white" />
+                )}
+              </button>
+            </div>
             
             {status !== 'idle' && (
               <span className={`absolute -bottom-7 left-4 text-[11px] font-medium tracking-wide ${status === 'success' ? 'text-green-400' : 'text-red-400'}`}>
@@ -110,7 +113,7 @@ export default function Footer() {
       </div>
 
       {/* MAIN FOOTER */}
-      <div className="mx-auto max-w-7xl px-4 pb-10">
+      <div className="mx-auto container px-4 pb-10">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           
           {/* ABOUT - 3 cols */}
@@ -146,7 +149,7 @@ export default function Footer() {
           {/* SERVICES - 2 cols */}
           <div className="lg:px-6 lg:border-r lg:border-[#343D3B]">
             <h4 className="mb-4 text-[18px] font-semibold text-white pt-10">Services</h4>
-            <ul className="space-y-3 text-sm text-gray-400">
+            <ul className="space-y-3 text-white text-[14px] font-light">
               {services.length > 0 ? (
                 services.map((service) => {
                   const serviceSlug = service.slug || service.name.toLowerCase().replace(/\s+/g, '-');

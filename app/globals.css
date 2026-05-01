@@ -1,10 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  /* This maps the Next.js font variable to Tailwind's 'font-sans' */
   --font-sans: var(--font-lato), ui-sans-serif, system-ui, sans-serif;
+  --font-exo: var(--font-exo), ui-sans-serif, system-ui, sans-serif;
   
-  /* While we are here, let's add your brand colors to the theme too */
   --color-sifs-orange: #F68A07;
   --color-sifs-blue: #1A365D;
 

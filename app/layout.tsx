@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Lato } from "next/font/google";
+import { Lato, Exo } from "next/font/google";
 import './globals.css';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
@@ -46,8 +46,17 @@ const lato = Lato({
   subsets: ["latin", "latin-ext"],
   weight: ["100", "300", "400", "700", "900"],
   variable: "--font-lato",
-  display: "swap", // ✅ ensures text shows immediately
-  preload: true,   // ✅ preloads the font
+  display: "swap", 
+  preload: true, 
+});
+
+// Configure Exo
+const exo = Exo({
+  subsets: ["latin", "latin-ext"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-exo",
+  display: "swap",
+  preload: true,
 });
 
 export default async function RootLayout({
@@ -83,7 +92,7 @@ export default async function RootLayout({
         />
       </head>
 
-      <body className={`${lato.variable} font-sans antialiased`}>
+      <body className={`${lato.variable} ${exo.variable} font-sans antialiased`}>
         <Toaster position="top-right" richColors />
         <Header />
 

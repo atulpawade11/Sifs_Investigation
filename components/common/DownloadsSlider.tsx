@@ -103,8 +103,8 @@ const DownloadsSlider = () => {
 
       <div className="relative w-full max-w-[1600px] mx-auto space-y-6 px-4"
         style={{
-          maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
+          maskImage: 'linear-gradient(to right, transparent, black 20%, black 80%, transparent)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent, black 20%, black 80%, transparent)'
         }}>
         {!isSlider ? (
           <div className="flex flex-wrap justify-center gap-4">
@@ -115,7 +115,7 @@ const DownloadsSlider = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 download
-                className="flex items-center gap-3 px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm hover:border-[#04063E] hover:shadow-md transition-all whitespace-nowrap"
+                className="flex items-center gap-3 px-8 py-4 rounded-full border border-[#D9D9D9] bg-white text-black md:text-[18px] font-semibold hover:border-[#04063E] hover:shadow-md transition-all whitespace-nowrap"
               >
                 <span className="text-xl">{getIcon(item.image)}</span>
                 {item.title}

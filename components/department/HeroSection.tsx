@@ -1,34 +1,47 @@
+// components/department/HeroSection.tsx
 "use client";
 
 import React from 'react';
 
 interface HeroProps {
-  name?: string;
-  content?: string;
+  title?: string;
+  description?: string;
+  image?: string | null;
 }
 
-export default function HeroSection({ name, content }: HeroProps) {
+export default function HeroSection({ title, description, image }: HeroProps) {
   return (
     <div className="w-full bg-white">
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        {/* Dynamic Title from API 'name' */}
-        {/* <h2 className="text-3xl md:text-4xl font-bold text-[#04063E] leading-tight mb-10 border-l-8 border-[#F68A07] pl-6">
-          {name}
-        </h2> */}
+      <div className="container mx-auto px-4 py-12 md:py-16">
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+          
+          {/* Left Side - Image */}
+          <div className="order-1">
+            <img 
+              src={"/department/department1.png"}
+              alt="Forensic Investigation"
+              className="w-full h-auto object-contain rounded-2xl"
+            />
+          </div>
 
-        {/* The 'prose' class is essential here. 
-            It automatically styles the <img>, <p>, and <strong> tags 
-            found inside your API's 'body' string.
-        */}
-        <div
-          className="prose prose-lg max-w-none text-gray-700 
-            prose-img:rounded-3xl prose-img:shadow-2xl prose-img:mb-10 
-            prose-p:leading-relaxed prose-strong:text-[#04063E] 
-            prose-p:mb-6"
-          dangerouslySetInnerHTML={{
-            __html: content || "<p>Loading department details...</p>"
-          }}
-        />
+          {/* Right Side - Text Content */}
+          <div className="order-2">
+            {/* Title with orange left border */}
+            <h1 className="text-3xl md:text-[30px] font-semibold text-black leading-tight mb-6">
+              {title || "Deciphering Truths, Unlocking Mysteries, and Securing Justice"}
+            </h1>
+            
+            {/* Description */}
+            {description && (
+              <div 
+                className="text-[#525252] leading-relaxed text-base font-medium md:text-[18px]
+                  [&>p]:mb-4 [&>p]:text-justify"
+                dangerouslySetInnerHTML={{ __html: description }}
+              />
+            )}
+          </div>
+
+        </div>
       </div>
     </div>
   );

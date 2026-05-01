@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 
 interface CategoriesListProps {
   categories: any[];
@@ -38,12 +39,15 @@ export default function CategoriesList({
           onClick={() => handleClick("All")} // 3. Use handleClick instead
           className={`flex cursor-pointer items-center justify-between py-2 px-2 rounded-md transition-all ${
             selectedCategory === "All"
-              ? "bg-[#0B4F8A] text-white"
+              ? "bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white"
               : "text-black hover:text-[#0B4F8A] hover:bg-gray-50"
           }`}
         >
           <span>All News</span>
-          <span className={selectedCategory === "All" ? "text-white" : "text-gray-400"}>›</span>
+          <ChevronRight 
+            size={16} 
+            className={selectedCategory === "All" ? "text-white" : "text-gray-400"} 
+          />
         </li>
 
         {categories.map((cat) => {
@@ -57,7 +61,7 @@ export default function CategoriesList({
               onClick={() => handleClick(catId)} // 3. Use handleClick instead
               className={`flex cursor-pointer items-center justify-between py-2 px-2 rounded-md transition-all ${
                 isActive
-                  ? "bg-[#0B4F8A] text-white font-medium"
+                  ? "bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white font-medium"
                   : "text-black hover:text-[#0B4F8A] hover:bg-gray-50"
               }`}
             >
@@ -73,7 +77,10 @@ export default function CategoriesList({
                   </span>
                 )}
               </div>
-              <span className={isActive ? "text-white" : "text-gray-400"}>›</span>
+              <ChevronRight 
+                size={16} 
+                className={isActive ? "text-white" : "text-gray-400"} 
+              />
             </li>
           );
         })}

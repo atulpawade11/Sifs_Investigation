@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { X, ChevronDown, Loader2 } from "lucide-react";
-import { API_BASE_URL } from "@/lib/config";
-import { Skeleton } from "@/components/shared/Skeleton";
+import { X } from "lucide-react";
 
-// --- PROFESSIONAL CATEGORY MAPPING ---
+// --- STATIC DATA ---
 const SECTOR_NAME_MAP: Record<string, string> = {
   "1": "Courts",
   "2": "Govt Dept",
@@ -19,127 +17,217 @@ const SECTOR_NAME_MAP: Record<string, string> = {
   "9": "Others"
 };
 
+// Static header data
+const HEADER_DATA = {
+  title: "OUR CLIENTELE",
+  subtitle: "Satisfied Clients' Portfolio"
+};
+
+// All categories (keep all for sidebar)
+const ALL_CATEGORIES = [
+  { id: "1", name: "Courts" },
+  { id: "2", name: "Govt Dept" },
+  { id: "3", name: "State Police" },
+  { id: "4", name: "Insurance Sector" },
+  { id: "5", name: "Indian Bank" },
+  { id: "6", name: "Corporates" },
+  { id: "7", name: "Law Firms" },
+  { id: "8", name: "Detectives" },
+  { id: "9", name: "Others" }
+];
+
+// EXACTLY 20 STATIC PORTFOLIO ITEMS
+const STATIC_PORTFOLIOS = [
+  {
+    id: 1,
+    client_category_id: "1",
+    title: "Cadilla",
+    featured_image: "/about/cadila.png",
+    content: `<p>Cadila Pharmaceuticals Ltd. stands as one of India's largest privately held pharmaceutical firms. For over seven decades, they have dedicated themselves to crafting affordable medications for patients globally. Their innovation-driven drug discovery methods prioritize the health and wellness of individuals worldwide. As a care-focused and research-oriented entity, they uphold the highest ethical standards in clinical research and medical practices. Their aim is not only to deliver quality pharmaceuticals but also to conduct our operations with integrity, ensuring trust and value in all their endeavors. Through investments in R&D, they have achieved medical breakthroughs that transform lives.</p>`
+  },
+  {
+    id: 2,
+    client_category_id: "1",
+    title: "Delhi University",
+    featured_image: "/about/delhi-university.png",
+    content: `<p>The University of Delhi indeed stands as a beacon of academic excellence in India, tracing its roots back to 1922, when it was established with a unitary, teaching, and residential model. Delhi University's rich legacy, diverse educational programs, eminent faculty, and notable alumni collectively contribute to its esteemed reputation both nationally and internationally. With a wide array of academic disciplines and vibrant co-curricular activities, it offers students a holistic learning experience, preparing them not only for their chosen careers but also for contributing meaningfully to society, and serves as a role model for other universities.</p>`
+  },
+  {
+    id: 3,
+    client_category_id: "2",
+    title: "Income Tax Department",
+    featured_image: "/about/lawfirm.png",
+    content: `<p>The Income Tax Department operates under the Central Board for Direct Taxes (CBDT), functioning within the Department of Revenue under the Ministry of Finance. It provides comprehensive information regarding its organizational structure, functions, tax laws, international taxation, and more. Users can find details about PAN, TAN, TDS, Form 16, the Tax Information Network, the Tax Return Prepare Scheme (TRPS), Aaykar Sampark Kendra (ASK), and taxpayer-related information. Additionally, online services like filing income tax returns, making tax payments, viewing tax credits, and checking tax return status are accessible to users, facilitating convenient tax compliance and administration.</p>`
+  },
+  {
+    id: 4,
+    client_category_id: "2",
+    title: "Veterinary Council of India",
+    featured_image: "/about/bank.png",
+    content: `<p>The Veterinary Council of India (VCI) is a statutory body formed under the Indian Veterinary Council Act 1984. It receives full financial support from the Department of Animal Husbandry and Dairying, Ministry of Fisheries, Animal Husbandry, and Dairying, Government of India, to sustain its operations. Established by the central government through a Gazette notification dated August 2, 1989, VCI's primary role is to regulate veterinary practice and uphold standards in veterinary education. It oversees the Indian Veterinary Practitioners' Register, conducts elections for council members, and handles related matters.</p>`
+  },
+  {
+    id: 5,
+    client_category_id: "3",
+    title: "Maharashtra Police",
+    featured_image: "/about/insurance.png",
+    content: `<p>The National Human Rights Commission (NHRC) of India, established on October 12, 1993, operates under the Protection of Human Rights Act (PHRA), 1993, as amended by the Protection of Human Rights (Amendment) Act, 2006. Aligned with the Paris Principles, endorsed by the UN General Assembly, it embodies India's commitment to promoting and safeguarding human rights. The NHRC's mandate, outlined in Section 2(1)(d) of the PHRA, encompasses rights to life, liberty, equality, and dignity guaranteed by the Constitution or international covenants, enforceable by Indian courts. Serving as a guardian of human rights, the NHRC plays a crucial role in upholding these fundamental values in India.</p>`
+  },
+  {
+    id: 6,
+    client_category_id: "1",
+    title: "Cadilla",
+    featured_image: "/about/cadila.png",
+    content: `<p>Cadila Pharmaceuticals Ltd. stands as one of India's largest privately held pharmaceutical firms. For over seven decades, they have dedicated themselves to crafting affordable medications for patients globally. Their innovation-driven drug discovery methods prioritize the health and wellness of individuals worldwide. As a care-focused and research-oriented entity, they uphold the highest ethical standards in clinical research and medical practices. Their aim is not only to deliver quality pharmaceuticals but also to conduct our operations with integrity, ensuring trust and value in all their endeavors. Through investments in R&D, they have achieved medical breakthroughs that transform lives.</p>`
+  },
+  {
+    id: 7,
+    client_category_id: "1",
+    title: "Delhi University",
+    featured_image: "/about/delhi-university.png",
+    content: `<p>The University of Delhi indeed stands as a beacon of academic excellence in India, tracing its roots back to 1922, when it was established with a unitary, teaching, and residential model. Delhi University's rich legacy, diverse educational programs, eminent faculty, and notable alumni collectively contribute to its esteemed reputation both nationally and internationally. With a wide array of academic disciplines and vibrant co-curricular activities, it offers students a holistic learning experience, preparing them not only for their chosen careers but also for contributing meaningfully to society, and serves as a role model for other universities.</p>`
+  },
+  {
+    id: 8,
+    client_category_id: "2",
+    title: "Income Tax Department",
+    featured_image: "/about/lawfirm.png",
+    content: `<p>The Income Tax Department operates under the Central Board for Direct Taxes (CBDT), functioning within the Department of Revenue under the Ministry of Finance. It provides comprehensive information regarding its organizational structure, functions, tax laws, international taxation, and more. Users can find details about PAN, TAN, TDS, Form 16, the Tax Information Network, the Tax Return Prepare Scheme (TRPS), Aaykar Sampark Kendra (ASK), and taxpayer-related information. Additionally, online services like filing income tax returns, making tax payments, viewing tax credits, and checking tax return status are accessible to users, facilitating convenient tax compliance and administration.</p>`
+  },
+  {
+    id: 9,
+    client_category_id: "2",
+    title: "Veterinary Council of India",
+    featured_image: "/about/bank.png",
+    content: `<p>The Veterinary Council of India (VCI) is a statutory body formed under the Indian Veterinary Council Act 1984. It receives full financial support from the Department of Animal Husbandry and Dairying, Ministry of Fisheries, Animal Husbandry, and Dairying, Government of India, to sustain its operations. Established by the central government through a Gazette notification dated August 2, 1989, VCI's primary role is to regulate veterinary practice and uphold standards in veterinary education. It oversees the Indian Veterinary Practitioners' Register, conducts elections for council members, and handles related matters.</p>`
+  },
+  {
+    id: 10,
+    client_category_id: "3",
+    title: "Maharashtra Police",
+    featured_image: "/about/insurance.png",
+    content: `<p>The National Human Rights Commission (NHRC) of India, established on October 12, 1993, operates under the Protection of Human Rights Act (PHRA), 1993, as amended by the Protection of Human Rights (Amendment) Act, 2006. Aligned with the Paris Principles, endorsed by the UN General Assembly, it embodies India's commitment to promoting and safeguarding human rights. The NHRC's mandate, outlined in Section 2(1)(d) of the PHRA, encompasses rights to life, liberty, equality, and dignity guaranteed by the Constitution or international covenants, enforceable by Indian courts. Serving as a guardian of human rights, the NHRC plays a crucial role in upholding these fundamental values in India.</p>`
+  },
+  {
+    id: 11,
+    client_category_id: "1",
+    title: "Cadilla",
+    featured_image: "/about/cadila.png",
+    content: `<p>Cadila Pharmaceuticals Ltd. stands as one of India's largest privately held pharmaceutical firms. For over seven decades, they have dedicated themselves to crafting affordable medications for patients globally. Their innovation-driven drug discovery methods prioritize the health and wellness of individuals worldwide. As a care-focused and research-oriented entity, they uphold the highest ethical standards in clinical research and medical practices. Their aim is not only to deliver quality pharmaceuticals but also to conduct our operations with integrity, ensuring trust and value in all their endeavors. Through investments in R&D, they have achieved medical breakthroughs that transform lives.</p>`
+  },
+  {
+    id: 12,
+    client_category_id: "1",
+    title: "Delhi University",
+    featured_image: "/about/delhi-university.png",
+    content: `<p>The University of Delhi indeed stands as a beacon of academic excellence in India, tracing its roots back to 1922, when it was established with a unitary, teaching, and residential model. Delhi University's rich legacy, diverse educational programs, eminent faculty, and notable alumni collectively contribute to its esteemed reputation both nationally and internationally. With a wide array of academic disciplines and vibrant co-curricular activities, it offers students a holistic learning experience, preparing them not only for their chosen careers but also for contributing meaningfully to society, and serves as a role model for other universities.</p>`
+  },
+  {
+    id: 13,
+    client_category_id: "2",
+    title: "Income Tax Department",
+    featured_image: "/about/lawfirm.png",
+    content: `<p>The Income Tax Department operates under the Central Board for Direct Taxes (CBDT), functioning within the Department of Revenue under the Ministry of Finance. It provides comprehensive information regarding its organizational structure, functions, tax laws, international taxation, and more. Users can find details about PAN, TAN, TDS, Form 16, the Tax Information Network, the Tax Return Prepare Scheme (TRPS), Aaykar Sampark Kendra (ASK), and taxpayer-related information. Additionally, online services like filing income tax returns, making tax payments, viewing tax credits, and checking tax return status are accessible to users, facilitating convenient tax compliance and administration.</p>`
+  },
+  {
+    id: 14,
+    client_category_id: "2",
+    title: "Veterinary Council of India",
+    featured_image: "/about/bank.png",
+    content: `<p>The Veterinary Council of India (VCI) is a statutory body formed under the Indian Veterinary Council Act 1984. It receives full financial support from the Department of Animal Husbandry and Dairying, Ministry of Fisheries, Animal Husbandry, and Dairying, Government of India, to sustain its operations. Established by the central government through a Gazette notification dated August 2, 1989, VCI's primary role is to regulate veterinary practice and uphold standards in veterinary education. It oversees the Indian Veterinary Practitioners' Register, conducts elections for council members, and handles related matters.</p>`
+  },
+  {
+    id: 15,
+    client_category_id: "3",
+    title: "Maharashtra Police",
+    featured_image: "/about/insurance.png",
+    content: `<p>The National Human Rights Commission (NHRC) of India, established on October 12, 1993, operates under the Protection of Human Rights Act (PHRA), 1993, as amended by the Protection of Human Rights (Amendment) Act, 2006. Aligned with the Paris Principles, endorsed by the UN General Assembly, it embodies India's commitment to promoting and safeguarding human rights. The NHRC's mandate, outlined in Section 2(1)(d) of the PHRA, encompasses rights to life, liberty, equality, and dignity guaranteed by the Constitution or international covenants, enforceable by Indian courts. Serving as a guardian of human rights, the NHRC plays a crucial role in upholding these fundamental values in India.</p>`
+  },
+  {
+    id: 16,
+    client_category_id: "1",
+    title: "Cadilla",
+    featured_image: "/about/cadila.png",
+    content: `<p>Cadila Pharmaceuticals Ltd. stands as one of India's largest privately held pharmaceutical firms. For over seven decades, they have dedicated themselves to crafting affordable medications for patients globally. Their innovation-driven drug discovery methods prioritize the health and wellness of individuals worldwide. As a care-focused and research-oriented entity, they uphold the highest ethical standards in clinical research and medical practices. Their aim is not only to deliver quality pharmaceuticals but also to conduct our operations with integrity, ensuring trust and value in all their endeavors. Through investments in R&D, they have achieved medical breakthroughs that transform lives.</p>`
+  },
+  {
+    id: 17,
+    client_category_id: "1",
+    title: "Delhi University",
+    featured_image: "/about/delhi-university.png",
+    content: `<p>The University of Delhi indeed stands as a beacon of academic excellence in India, tracing its roots back to 1922, when it was established with a unitary, teaching, and residential model. Delhi University's rich legacy, diverse educational programs, eminent faculty, and notable alumni collectively contribute to its esteemed reputation both nationally and internationally. With a wide array of academic disciplines and vibrant co-curricular activities, it offers students a holistic learning experience, preparing them not only for their chosen careers but also for contributing meaningfully to society, and serves as a role model for other universities.</p>`
+  },
+  {
+    id: 18,
+    client_category_id: "2",
+    title: "Income Tax Department",
+    featured_image: "/about/lawfirm.png",
+    content: `<p>The Income Tax Department operates under the Central Board for Direct Taxes (CBDT), functioning within the Department of Revenue under the Ministry of Finance. It provides comprehensive information regarding its organizational structure, functions, tax laws, international taxation, and more. Users can find details about PAN, TAN, TDS, Form 16, the Tax Information Network, the Tax Return Prepare Scheme (TRPS), Aaykar Sampark Kendra (ASK), and taxpayer-related information. Additionally, online services like filing income tax returns, making tax payments, viewing tax credits, and checking tax return status are accessible to users, facilitating convenient tax compliance and administration.</p>`
+  },
+  {
+    id: 19,
+    client_category_id: "2",
+    title: "Veterinary Council of India",
+    featured_image: "/about/bank.png",
+    content: `<p>The Veterinary Council of India (VCI) is a statutory body formed under the Indian Veterinary Council Act 1984. It receives full financial support from the Department of Animal Husbandry and Dairying, Ministry of Fisheries, Animal Husbandry, and Dairying, Government of India, to sustain its operations. Established by the central government through a Gazette notification dated August 2, 1989, VCI's primary role is to regulate veterinary practice and uphold standards in veterinary education. It oversees the Indian Veterinary Practitioners' Register, conducts elections for council members, and handles related matters.</p>`
+  },
+  {
+    id: 20,
+    client_category_id: "3",
+    title: "Maharashtra Police",
+    featured_image: "/about/insurance.png",
+    content: `<p>The National Human Rights Commission (NHRC) of India, established on October 12, 1993, operates under the Protection of Human Rights Act (PHRA), 1993, as amended by the Protection of Human Rights (Amendment) Act, 2006. Aligned with the Paris Principles, endorsed by the UN General Assembly, it embodies India's commitment to promoting and safeguarding human rights. The NHRC's mandate, outlined in Section 2(1)(d) of the PHRA, encompasses rights to life, liberty, equality, and dignity guaranteed by the Constitution or international covenants, enforceable by Indian courts. Serving as a guardian of human rights, the NHRC plays a crucial role in upholding these fundamental values in India.</p>`
+  }
+];
+
+const DEFAULT_IMAGE = "/images/clients/placeholder.png";
+
 export default function ClientelePortfolio() {
   const [activeTab, setActiveTab] = useState("All");
-  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
-  const [portfolios, setPortfolios] = useState<any[]>([]);
-  const [nextPageUrl, setNextPageUrl] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadMoreLoading, setLoadMoreLoading] = useState(false);
-  const [header, setHeader] = useState({ title: "OUR CLIENTELE", subtitle: "Satisfied Clients’ Portfolio" });
 
-  useEffect(() => {
-    const initFetch = async () => {
-      try {
-        const [mainRes, portRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`).then(res => res.json()),
-          fetch(`${API_BASE_URL}/InvestigationServices/Website/front/portfolios`).then(res => res.json())
-        ]);
+  const portfolios = STATIC_PORTFOLIOS;
+  const categories = ALL_CATEGORIES;
+  const header = HEADER_DATA;
 
-        if (mainRes.success && mainRes.data?.bs) {
-          setHeader({
-            title: mainRes.data.bs.portfolio_title || "OUR CLIENTELE",
-            subtitle: mainRes.data.bs.portfolio_subtitle || "Satisfied Clients’ Portfolio"
-          });
-        }
-
-        if (portRes.success && portRes.data) {
-          const portData = portRes.data.data || [];
-          setPortfolios(portData);
-          setNextPageUrl(portRes.data.next_page_url || null);
-
-          const uniqueIds = Array.from(new Set(portData.map((p: any) => p.client_category_id)));
-          const mappedCats = uniqueIds.map(id => ({
-            id: String(id),
-            name: SECTOR_NAME_MAP[String(id)] || `Sector ${id}`
-          }));
-
-          const preferredOrder = ["Courts", "Govt Dept", "State Police", "Insurance Sector", "Indian Bank", "Corporates", "Law Firms", "Detectives", "Others"];
-          mappedCats.sort((a, b) => preferredOrder.indexOf(a.name) - preferredOrder.indexOf(b.name));
-          setCategories(mappedCats);
-        }
-      } catch (err) { console.error(err); } finally { setLoading(false); }
-    };
-    initFetch();
-  }, []);
-
-  const PortfolioSkeleton = () => (
-    <section className="mx-auto max-w-7xl px-4 py-20 bg-white">
-      <div className="grid gap-10 lg:grid-cols-[260px_1fr]">
-        <aside className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100 h-fit">
-          <div className="space-y-2">
-            {[...Array(8)].map((_, i) => (
-              <Skeleton key={i} className="h-10 w-full rounded-lg" />
-            ))}
-          </div>
-        </aside>
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 relative z-10">
-          {[...Array(12)].map((_, i) => (
-            <Skeleton key={i} className="h-[130px] w-full rounded-3xl" />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-
-  const handleLoadMore = async () => {
-    if (!nextPageUrl || loadMoreLoading) return;
-    setLoadMoreLoading(true);
-    try {
-      const res = await fetch(nextPageUrl).then(r => r.json());
-      if (res.success && res.data?.data) {
-        setPortfolios(prev => [...prev, ...res.data.data]);
-        setNextPageUrl(res.data.next_page_url || null);
-      }
-    } catch (err) { console.error(err); } finally { setLoadMoreLoading(false); }
-  };
-
+  // Filter portfolios based on active tab
   const filteredLogos = portfolios.filter((p) => {
     if (activeTab === "All") return true;
     const currentCat = categories.find(c => c.name === activeTab);
     return currentCat ? String(p.client_category_id) === String(currentCat.id) : false;
   });
 
-  if (loading) return <PortfolioSkeleton />;
+  const handleTabChange = (tabName: string) => {
+    setActiveTab(tabName);
+  };
+
+  // Check if current category has data
+  const hasData = filteredLogos.length > 0;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 lg:py-12 bg-white min-h-screen">
-      {/*<div className="mb-4 relative text-center">
-        <div className="absolute w-full h-px bg-[#8c8c8c] opacity-60 z-0 top-3 border border-[#D9D9D9]"></div>
-        <span className="text-black text-[14px] font-regular mb-2 border border-[#D9D9D9] rounded-full px-5 py-2 z-1 relative bg-white">{header.title}</span>
-      </div>
-      <h2 className="mb-12 text-[30px] font-semibold text-black text-center">
-        {header.subtitle}
-      </h2>*/}
-      {/*<div className="text-center mb-6">
-        <p className="text-[#04063E] font-medium mb-2">{header.title}</p>
-        {/* <p className="mb-4 inline-flex rounded-full border px-4 py-1 text-xs font-medium text-gray-600">{header.title}</p> */}
-        {/*<h4 className="mb-12 text-2xl font-semibold text-black">{header.subtitle}</h4>
-      </div>*/}
+    <section className="mx-auto container px-4 py-12 lg:py-12 bg-white">
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-10 items-start">
         
         {/* SIDEBAR - Filter Navigation */}
         <aside className="lg:sticky lg:top-24 z-30">
           <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
-            <h5 className="px-4 mb-4 font-bold uppercase tracking-widest text-sm text-black">Filters</h5>
             <ul className="space-y-1 text-sm">
               <li>
                 <button 
-                  onClick={() => setActiveTab("All")} 
-                  className={`relative flex w-full items-center rounded-lg px-4 py-3 transition text-[15px] ${activeTab === "All" ? "bg-gray-100 font-bold text-[#04063E]" : "text-gray-500 hover:bg-gray-50"}`}
+                  onClick={() => handleTabChange("All")} 
+                  className={`relative flex w-full items-center rounded-lg px-4 py-2 transition text-[14px] ${activeTab === "All" ? "text-[14px] font-semibold text-[#1C274C]" : "text-[#777777] hover:bg-gray-50"}`}
                 >
-                  {activeTab === "All" && <span className="absolute left-0 top-2 h-8 w-[4px] rounded-r bg-[#1C274C]" />}
-                  All Portfolios
+                  {activeTab === "All"}
+                  All 
                 </button>
               </li>
               {categories.map((cat) => (
                 <li key={cat.id}>
                   <button 
-                    onClick={() => setActiveTab(cat.name)} 
-                    className={`relative flex w-full items-center rounded-lg text-[15px] px-4 py-3 transition ${activeTab === cat.name ? "bg-gray-100 font-bold text-[#04063E]" : "text-gray-500 hover:bg-gray-50"}`}
+                    onClick={() => handleTabChange(cat.name)} 
+                    className={`relative flex w-full items-center rounded-lg text-[14px] px-4 py-3 transition ${activeTab === cat.name ? "text-[#1C274C] text-[14px] font-semibold " : "text-[#777777] hover:bg-gray-50 font-regular"}`}
                   >
-                    {activeTab === cat.name && <span className="absolute left-0 top-2 h-8 w-[4px] rounded-r bg-[#1C274C]" />}
+                    {activeTab === cat.name}
                     {cat.name}
                   </button>
                 </li>
@@ -151,41 +239,58 @@ export default function ClientelePortfolio() {
         {/* LOGO GRID AREA */}
         <div className="relative min-h-[400px]">
           
-          
-          {/* BACKGROUND DECORATIVE BADGE - Sent to back */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-             <div className="h-[280px] w-[280px] md:h-[300px] md:w-[300px] rounded-full border border-dashed border-[#c7c7c7] flex flex-col items-center justify-center text-center p-8 bg-white/10 backdrop-blur-[2px]">
+          {/* BACKGROUND DECORATIVE BADGE - Only show when there are items */}
+          {hasData && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+              <div className="h-[280px] w-[280px] md:h-[300px] md:w-[300px] rounded-full border border-dashed border-[#c7c7c7] flex flex-col items-center justify-center text-center p-8 bg-white/10 backdrop-blur-[2px]">
                 <p className="text-[14px] font-semibold text-black mb-2">{header.title}</p>
                 <h4 className="text-[24px] font-[900] text-black leading-tight">{header.subtitle}</h4>
               </div>
-          </div>
+            </div>
+          )}
 
-          {/* GRID OF LOGOS - Foreground */}
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4 w-full relative z-10">
+          {/* GRID OF LOGOS - Foreground - 5 columns on desktop */}
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full relative z-10">
             {filteredLogos.map((item) => (
               <div 
                 key={item.id} 
                 onClick={() => setSelectedItem(item)} 
-                className="group flex h-[140px] cursor-pointer items-center justify-center rounded-3xl bg-white/90 shadow-sm border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 backdrop-blur-md"
+                className="group flex h-[95px] cursor-pointer items-center justify-center rounded-3xl bg-[#EBEBEB] shadow-sm border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 backdrop-blur-md"
               >
-                <div className="relative h-16 w-32 grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105">
-                  <Image src={item.featured_image} alt={item.title} fill className="object-contain p-2" unoptimized />
+                <div className="relative h-16 w-full transition-all duration-500 transform">
+                  <Image 
+                    src={item.featured_image} 
+                    alt={item.title} 
+                    fill 
+                    className="object-contain p-2" 
+                    unoptimized
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = DEFAULT_IMAGE;
+                    }}
+                  />
                 </div>
               </div>
             ))}
           </div>
 
-          {/* VIEW MORE BUTTON */}
-          {nextPageUrl && (
-            <div className="mt-16 flex justify-center relative z-20">
-              <button 
-                onClick={handleLoadMore} 
-                disabled={loadMoreLoading} 
-                className="group flex items-center gap-3 px-10 py-4 bg-[#04063E] text-white rounded-full font-bold text-xs uppercase tracking-widest hover:bg-[#0B10A4] transition-all shadow-xl disabled:opacity-50"
-              >
-                {loadMoreLoading ? <Loader2 className="animate-spin" /> : <ChevronDown size={18} className="group-hover:translate-y-1 transition-transform" />}
-                {loadMoreLoading ? "Loading..." : "View More Clients"}
-              </button>
+          {/* Empty State - Shows when category has no data */}
+          {!hasData && (
+            <div className="flex flex-col items-center justify-center min-h-[500px] relative z-20">
+              <div className="text-center max-w-md mx-auto">
+                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-50 flex items-center justify-center border border-gray-200">
+                  <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">No Portfolios Yet</h3>
+                <p className="text-gray-500">
+                  We don't have any portfolios in the <span className="font-medium text-gray-700">"{activeTab}"</span> category at the moment.
+                </p>
+                <p className="text-gray-400 text-sm mt-3">
+                  Check back later or explore other categories.
+                </p>
+              </div>
             </div>
           )}
         </div>
@@ -199,7 +304,17 @@ export default function ClientelePortfolio() {
             <div className="w-full md:w-[32%] bg-gray-50 p-8 md:p-12 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-gray-100">
               <div className="w-32 h-32 md:w-48 md:h-48 bg-white rounded-3xl shadow-lg p-6 mb-6 flex items-center justify-center">
                 <div className="relative w-full h-full">
-                  <Image src={selectedItem.featured_image} alt="Client Logo" fill className="object-contain" unoptimized />
+                  <Image 
+                    src={selectedItem.featured_image} 
+                    alt="Client Logo" 
+                    fill 
+                    className="object-contain" 
+                    unoptimized
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = DEFAULT_IMAGE;
+                    }}
+                  />
                 </div>
               </div>
               <h3 className="text-lg md:text-xl font-black text-[#020433] uppercase">{selectedItem.title}</h3>
@@ -213,7 +328,10 @@ export default function ClientelePortfolio() {
                 <X size={24} className="text-gray-400" />
               </button>
               <div className="prose prose-slate max-w-none prose-img:rounded-xl">
-                <div className="text-gray-600 text-base md:text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: selectedItem.content }} />
+                <div 
+                  className="text-gray-600 text-base md:text-lg leading-relaxed" 
+                  dangerouslySetInnerHTML={{ __html: selectedItem.content }} 
+                />
               </div>
             </div>
           </div>

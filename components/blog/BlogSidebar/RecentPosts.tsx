@@ -42,11 +42,11 @@ export default function RecentPosts({ posts }: RecentPostsProps) {
                   </p>
                 </Link>
                 
-                <span className="text-[12px] flex items-center gap-2 font-regular text-[#777777]">
+                <span className="text-[12px] flex items-center gap-2 font-regular text-black">
                   <img
                     src="/blog/calander.png"
                     alt="date"
-                    className="w-3 h-3 opacity-60"
+                    className="w-3 h-3"
                   />
                   {formattedDate}
                 </span>

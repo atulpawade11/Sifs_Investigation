@@ -61,7 +61,7 @@ const AboutIntroSection = () => {
                 src={data?.about_feature_image || "/about/about-us.png"}
                 alt="SIFS India"
                 fill
-                className="object-cover"
+                className="object-scale-down"
                 unoptimized
               />
             </div>

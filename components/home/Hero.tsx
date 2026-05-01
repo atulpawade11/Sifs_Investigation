@@ -97,23 +97,23 @@ const Hero = () => {
   const heroButtonText = currentSlideData?.button_text || homeData?.data?.bs?.hero_section_button_text || "Learn More";
   const heroButtonUrl = currentSlideData?.button_url || homeData?.data?.bs?.hero_section_button_url || "/";
 
-  if (loading) return <Skeleton className="w-full h-[1000px]" />;
+  if (loading) return <Skeleton className="w-full h-auto md:h-[1000px]" />;
 
   return (
-    <section className="relative w-full h-[1000px]">
-      <div className="container mx-auto py-6 md:py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center min-h-[200px]">
+    <section className="relative w-full h-auto md:h-[1000px]">
+      <div className="container mx-auto py-6 md:py-10 px-4 md-px-0">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-12 items-center md:min-h-[200px]">
         {/* <div className="grid grid-cols-1 lg:grid-cols-1 gap-12 items-center">*/}
           {/* LEFT SIDE: Heading & Text */}
           <div className="relative z-10 transition-all duration-500 animate-in fade-in slide-in-from-left-4 lg:col-span-2" key={activeIndex}>
-            <div className="flex items-start gap-4">
+            <div className="flex items-start md:gap-4 gap-2">
               {/* Decorative Scroll Down Icon */}
               <div className="hidden md:flex flex-col items-center justify-center px-2.5 py-5 border mt-30 rounded-full text-gray-400">
                 <MoveDown size={20} />
               </div>
 
               <div className="space-y-6">
-                <h2 className="text-5xl md:text-7xl font-bold text-[#04063E] leading-tight mb-2">
+                <h2 className="text-2xl md:text-7xl font-bold text-[#04063E] leading-tight mb-2">
                   {heroTitle.includes('Nation') ? (
                     <>
                       {heroTitle.split('Nation')[0]}
@@ -132,7 +132,7 @@ const Hero = () => {
                   )}
                 </h2>
 
-                <div className="flex items-center gap-2 text-gray-500 text-lg">
+                <div className="flex items-center gap-2 text-gray-500 text-md md:text-lg">
                   <p>{heroText}</p>
                   <span className="text-2xl">🎓</span>
                 </div>
@@ -143,7 +143,7 @@ const Hero = () => {
           {/* RIGHT SIDE: Branding & Buttons */}
           <div className="flex flex-col items-start w-full relative lg:pl-10 lg:col-span-1">
             {/* Branding Block: Now Left Aligned within the column */}
-            <div className="flex items-center gap-4 mb-10">
+            <div className="flex items-center gap-4 mb-4 md:mb-10">
               <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden">
                 <Image 
                   src="/shape-hero.svg" 
@@ -158,14 +158,14 @@ const Hero = () => {
                 <p className="text-[18px] text-black font-medium border-t border-[#D4D4D4] pt-1 mt-1">Forensic Science Laboratory</p>
               </div>
             </div>
-            <div className="flex flex-col gap-4"> 
+            <div className="flex md:flex-col gap-4 flex-row"> 
               <Link
                 href={heroButtonUrl}
                 className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] 
-                          text-white px-5 py-3 rounded-full font-bold 
+                          text-white px-3 md:px-5 py-3 rounded-full font-bold 
                           flex items-center gap-4 
                           hover:from-[#1217c0] hover:to-[#0a0f6b] 
-                          transition-all group w-fit text-[18px]"
+                          transition-all group w-fit text-md md:text-[18px]"
               >
                 {heroButtonText}
                 <div className="rounded-full">
@@ -173,7 +173,7 @@ const Hero = () => {
                 </div>
               </Link>
                 
-              <button className="flex items-center gap-4 border border-[#DFDFDF] text-[#AFAFAF] pl-8 pr-6 py-3 rounded-full text-[18px] font-bold hover:bg-gray-50 transition-all group w-fit">  {/* Use 'w-fit' */}
+              <button className="flex items-center gap-4 border border-[#DFDFDF] text-[#AFAFAF] pl-3 pr-3 md:pl-8 md:pr-6 py-3 rounded-full text-md md:text-[18px] text-[18px] font-bold hover:bg-gray-50 transition-all group w-fit">  {/* Use 'w-fit' */}
                 Explore More Sifs 
                 <MoveRight size={18} className="text-[#AFAFAF] group-hover:opacity-100 transition-opacity" />
               </button>

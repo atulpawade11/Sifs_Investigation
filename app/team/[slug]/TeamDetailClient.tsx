@@ -92,7 +92,7 @@ export default function TeamDetailClient({ idFromUrl }: { idFromUrl: string }) {
     <div className="h-screen flex flex-col items-center justify-center">
       <AlertCircle className="text-red-500 mb-2" />
       <p>Expert Not Found (ID: {idFromUrl})</p>
-      <button onClick={() => router.push('/team')} className="mt-4 text-[#0B10A4] font-bold underline">Return to Team</button>
+      <button onClick={() => router.push('/team')} className="mt-4 text-[#04063e] font-bold underline">Return to Team</button>
     </div>
   );
 
@@ -103,7 +103,7 @@ export default function TeamDetailClient({ idFromUrl }: { idFromUrl: string }) {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <button 
           onClick={() => router.back()} 
-          className="flex items-center gap-2 text-gray-600 hover:text-[#0B10A4] transition-colors mb-6 group"
+          className="flex items-center gap-2 text-gray-600 hover:text-[#04063e] transition-colors mb-6 group"
         >
           <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           <span className="font-medium">Back to Team</span>
@@ -120,7 +120,7 @@ export default function TeamDetailClient({ idFromUrl }: { idFromUrl: string }) {
               />
             </div>
             <h2 className="text-2xl font-bold text-[#04063E]">{member.name}</h2>
-            <p className="text-[#0B10A4] font-bold text-xs uppercase mt-2 tracking-widest">{member.rank}</p>
+            <p className="text-[#04063e] font-bold text-xs uppercase mt-2 tracking-widest">{member.rank}</p>
             <p className="text-gray-500 text-sm mt-4 font-medium">{member.education}</p>
             
             <div className="flex justify-center gap-4 mt-8">
