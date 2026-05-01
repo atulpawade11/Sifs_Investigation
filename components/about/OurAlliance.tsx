@@ -25,12 +25,12 @@ export default function OurAlliance() {
 
   return (
     <section className="relative bg-gradient-to-r from-[#020433] via-[#030653] to-[#020433] py-12">
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto container px-4">
         {/* Main Section Header */}
         <div className="grid gap-12 lg:grid-cols-2 items-center">
           <div className="text-white">
-            <h2 className="mb-4 text-2xl font-semibold">Our Alliance</h2>
-            <p className="mb-6 text-sm leading-relaxed text-white/80">
+            <h2 className="mb-4 text-[28px] font-bold">Our Alliance</h2>
+            <p className="mb-6 text-[14px] font-regular leading-relaxed">
             Forensic science is a multidisciplinary field, and hence meaningful
               collaborations are a must to achieve the common goal of solving
               complex cases. SIFS India’s collaborative approach to doing
@@ -57,7 +57,7 @@ export default function OurAlliance() {
                 className="flex flex-col items-center text-center cursor-pointer group"
               >
                 {/* The Circle Container */}
-                <div className="flex h-28 w-28 items-center justify-center rounded-full bg-white p-4 shadow-xl transition-all group-hover:scale-105">
+                <div className="flex h-28 w-28 items-center justify-center rounded-full bg-white p-2 shadow-xl transition-all group-hover:scale-105 overflow-hidden">
                   <div className="relative h-full w-full">
                     <Image 
                       src={item.image} 
@@ -116,9 +116,6 @@ export default function OurAlliance() {
               </button>
               
               <div className="prose prose-slate max-w-none">
-                <span className="text-blue-600 text-[11px] uppercase font-black tracking-[0.2em] mb-4 block">
-                  Strategic Alliance Profile
-                </span>
                 <div 
                   className="text-gray-600 leading-[1.8] text-sm md:text-base 
                              [&_p]:mb-6 [&_b]:text-[#020433] [&_b]:font-bold 

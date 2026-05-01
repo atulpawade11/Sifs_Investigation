@@ -1,12 +1,24 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import Image from "next/image";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import { ClipboardCheck, Users, Briefcase, GraduationCap } from 'lucide-react';
 import { API_BASE_URL } from '@/lib/config';
 import { Skeleton } from '@/components/shared/Skeleton';
+
+// Static logos
+const LOGOS = [
+  "/about/cadila.png",
+  "/about/bank.png",
+  "/about/delhi-university.png",
+  "/about/detective.png",
+  "/about/insurance.png",
+  "/about/lawfirm.png",
+  "/about/police.png",
+];
 
 // Counter animation component
 const Counter = ({ end, duration }: { end: number; duration: number }) => {
@@ -26,7 +38,6 @@ const Counter = ({ end, duration }: { end: number; duration: number }) => {
 
 const ShowcaseStats = () => {
   const [stats, setStats] = useState<any[]>([]);
-  const [logoSlides, setLogoSlides] = useState<string[]>([]);
   const [content, setContent] = useState({
     title: "Forensic Solutions",
     subtitle: "Showcasing Our Best Work"
@@ -48,40 +59,29 @@ const ShowcaseStats = () => {
   };
 
   useEffect(() => {
-    const fetchAllData = async () => {
+    const fetchStats = async () => {
       try {
         setLoading(true);
-        // Following the Hero pattern, we fetch the front-end data
         const response = await fetch(`${API_BASE_URL}/InvestigationServices/Website/front/`);
         const result = await response.json();
 
         if (result.success && result.data) {
-          // 1. Map Titles
           const bs = result.data.bs;
           setContent({
             title: bs.portfolio_section_title || "Forensic Solutions",
             subtitle: bs.portfolio_section_text || "Showcasing Our Best Work"
           });
 
-          // 2. Map Stats
           setStats(result.data.statistics || []);
-
-          // 3. Map Logo Slider (Portfolios)
-          // We extract the featured_image from the portfolios array
-          const images = result.data.portfolios
-            ?.filter((p: any) => p.featured_image)
-            .map((p: any) => p.featured_image) || [];
-
-          setLogoSlides(images);
         }
       } catch (err) {
-        console.error('Error fetching ShowcaseStats data:', err);
+        console.error('Error fetching stats data:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAllData();
+    fetchStats();
   }, []);
 
   if (loading) {
@@ -123,51 +123,70 @@ const ShowcaseStats = () => {
 
         <div className="relative z-10 text-center px-4">
           <div className="mt-12 md:mt-16 mb-20 md:mb-24">
-            <p className="text-white md:text-[#04063E] font-medium mb-2">
-              {content.title}
-            </p>
+            <div className="flex items-center justify-center gap-6">
+              <div className="relative w-14 h-14 flex-shrink-0">
+                <Image
+                  src="/cap.png"
+                  alt="icon"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <p className="text-white md:text-[#04063E] font-semibold text-[18px]">
+                {content.title}
+              </p>
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
               {content.subtitle}
             </h2>
           </div>
 
-          {/* DYNAMIC LOGO SWIPER */}
-          {logoSlides.length > 0 && (
-            <div className="mb-12 md:mb-20 mt-20 md:mt-40">
-              <Swiper
-                modules={[Autoplay]}
-                spaceBetween={12}
-                slidesPerView={2.5}
-                loop={logoSlides.length > 4}
-                autoplay={{ delay: 2000, disableOnInteraction: false }}
-                breakpoints={{
-                  640: { slidesPerView: 3.5, spaceBetween: 15 },
-                  768: { slidesPerView: 4.5, spaceBetween: 20 },
-                  1024: { slidesPerView: 6.5, spaceBetween: 25 },
-                }}
-                className="w-full px-4"
-              >
-                {logoSlides.map((imgUrl, index) => (
-                  <SwiperSlide key={index}>
-                    <div className="bg-[#0A0A5A] rounded-xl md:rounded-2xl p-3 md:p-6 h-16 md:h-28 flex items-center justify-center border border-white/10 shadow-xl">
-                      <img
-                        src={imgUrl}
-                        alt="Client Logo"
-                        className="max-h-full max-w-full object-contain opacity-80"
-                      />
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
-          )}
+          {/* STATIC LOGO SWIPER */}
+          <div className="mb-12 md:mb-20 mt-20 md:mt-40">
+  <Swiper
+    modules={[Autoplay]}
+    spaceBetween={12}
+    slidesPerView={2.5}
+    loop={true}
+    autoplay={{ 
+      delay: 3000, // 3 seconds between slides (change this value)
+      disableOnInteraction: false 
+    }}
+    speed={800} // Transition speed in ms (add this for smoother transitions)
+    breakpoints={{
+      640: { slidesPerView: 3.5, spaceBetween: 15 },
+      768: { slidesPerView: 4.5, spaceBetween: 20 },
+      1024: { slidesPerView: 6.5, spaceBetween: 25 },
+    }}
+    className="w-full px-4"
+  >
+    {LOGOS.map((imgUrl, index) => (
+      <SwiperSlide key={index}>
+      <div className="bg-[#050855] rounded-xl md:rounded-2xl p-3 md:p-6 h-16 md:h-28 flex items-center justify-center border border-white/10 shadow-xl">
+        <img
+          src={imgUrl}
+          alt={`Logo ${index + 1}`}
+          className="h-[110%] w-[110%] object-scale-down"
+        />
+      </div>
+    </SwiperSlide>
+    ))}
+  </Swiper>
+</div>
 
-          <div className="max-w-7xl mx-auto px-6 mb-12 opacity-20">
-            <div className="w-full border-b-[1px] md:border-b-[2px] border-dashed border-white" />
+          <div className="px-6 mb-12">
+            <Image
+              src="/border-line-3.png"
+              alt="icon"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="w-full h-auto object-contain"
+            />
           </div>
 
           {/* DYNAMIC STATS GRID */}
-          <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-y-10 md:gap-y-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-10 md:gap-y-12">
             {stats.slice(0, 4).map((stat, i) => {
               const { val, suffix } = formatStatValue(stat.quantity);
               return (
@@ -179,14 +198,18 @@ const ShowcaseStats = () => {
                     ${i === 3 ? 'border-none' : ''}`}
                 >
                   <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 mb-2 md:mb-3">
-                    {iconMap[i] || iconMap[0]}
-                    <span className="text-2xl md:text-5xl font-bold tracking-tighter">
-                      <Counter end={val} duration={2000} />{suffix}
-                    </span>
+                    <div>
+                      {iconMap[i] || iconMap[0]}
+                    </div>
+                    <div className="text-left">
+                      <span className="text-2xl md:text-6xl font-bold">
+                        <Counter end={val} duration={2000} />{suffix}
+                      </span>
+                      <p className="text-white text-[9px] md:text-[18px] font-regular tracking-tighter text-center lg:text-left">
+                        {stat.title}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-gray-400 text-[9px] md:text-xs font-bold uppercase tracking-widest text-center lg:text-left">
-                    {stat.title}
-                  </p>
                 </div>
               );
             })}

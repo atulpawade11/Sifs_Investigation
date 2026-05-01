@@ -93,7 +93,7 @@ const DownloadsSlider = () => {
   return (
     <section className="py-12 bg-white overflow-hidden">
       <div className="container mx-auto px-4 text-center mb-12">
-        <p className="text-[#04063E] font-medium mb-2">
+        <p className="text-[#04063E] text-[18px] font-semibold mb-2">
           {data.subtitle}
         </p>
         <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
@@ -101,9 +101,13 @@ const DownloadsSlider = () => {
         </h2>
       </div>
 
-      <div className="w-full px-4">
+      <div className="relative w-full max-w-[1600px] mx-auto space-y-6 px-4"
+        style={{
+          maskImage: 'linear-gradient(to right, transparent, black 20%, black 80%, transparent)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent, black 20%, black 80%, transparent)'
+        }}>
         {!isSlider ? (
-          <div className="flex flex-wrap justify-center gap-4 max-w-6xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-4">
             {data.items.map((item) => (
               <a
                 key={item.id}
@@ -111,7 +115,7 @@ const DownloadsSlider = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 download
-                className="flex items-center gap-3 px-8 py-4 rounded-full border border-gray-100 bg-white text-[#04063E] font-medium shadow-sm hover:border-[#04063E] hover:shadow-md transition-all whitespace-nowrap"
+                className="flex items-center gap-3 px-8 py-4 rounded-full border border-[#D9D9D9] bg-white text-black md:text-[18px] font-semibold hover:border-[#04063E] hover:shadow-md transition-all whitespace-nowrap"
               >
                 <span className="text-xl">{getIcon(item.image)}</span>
                 {item.title}

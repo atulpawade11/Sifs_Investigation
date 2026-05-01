@@ -54,27 +54,34 @@ const Header = () => {
     }
     loadProducts();
 
-    async function loadDepartmentsData() {
+    const loadDepartmentsData = async () => {
       try {
         const deptRes = await getDepartments();
-        if (deptRes && deptRes.success) {
-          setDepartments(deptRes?.data?.data || []); // ✅ FIX
-        } else {
-          setDepartments([]); // ✅ SAFETY
-        }
+        console.log("Departments API response:", deptRes);
         
-        const labRes = await getLaboratories();
-        console.log("Laboratories API response:", labRes);
-    
-        if (labRes && labRes.success) {
-          setLaboratories(labRes?.data?.data || []); // ✅ FIX
+        if (deptRes && deptRes.success) {
+          // ✅ FIX: Access departments from data.departments
+          const departmentsArray = deptRes.data?.departments || [];
+          console.log("Processed departments:", departmentsArray);
+          setDepartments(departmentsArray);
+          
+          // Laboratories (your existing code is correct)
+          const labRes = await getLaboratories();
+          console.log("Laboratories API response:", labRes);
+      
+          if (labRes && labRes.success) {
+            setLaboratories(labRes?.data?.data || []);
+          } else {
+            setLaboratories([]);
+          }
         } else {
-          setLaboratories([]); // ✅ SAFETY
+          setDepartments([]);
+          setLaboratories([]);
         }
       } catch (err) {
         console.error("Failed to load departments/laboratories:", err);
-        setDepartments([]); // ✅ SAFETY
-        setLaboratories([]); // ✅ SAFETY
+        setDepartments([]);
+        setLaboratories([]);
       }
     }
     loadDepartmentsData();
@@ -185,38 +192,38 @@ const Header = () => {
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden lg:flex items-center gap-8 font-semibold text-gray-700">
-          <Link href="/" className="hover:text-[#F68A07] text-lg">Home</Link>
+        <div className="hidden lg:flex items-center gap-8 md:gap-14 font-semibold text-gray-700">
+          <Link href="/" className="hover:text-[#F68A07] text-lg md:text-[16px] font-regular text-black">Home</Link>
 
           {/* About Dropdown */}
           <div className="group relative">
-            <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg">
+            <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg md:text-[16px] font-regular text-black">
               About <ChevronDown size={16} />
             </div>
             <div className="absolute left-0 top-full w-[220px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <ul className="py-2">
                 <li>
-                  <Link href="/about" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/about" className="block px-5 py-3 text-md  md:text-[14px] font-regular text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="/team" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/team" className="block px-5 py-3 text-md md:text-[14px] font-regular text-gray-700  hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Experts & Associates
                   </Link>
                 </li>
                 <li>
-                  <Link href="/clientele" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/clientele" className="block px-5 py-3 text-md md:text-[14px] font-regular text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Our Clientele
                   </Link>
                 </li>
                 <li>
-                  <Link href="/gallery/images" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/gallery/images" className="block px-5 py-3 text-md md:text-[14px] font-regular text-gray-700  hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Image Gallery
                   </Link>
                 </li>
                 <li>
-                  <Link href="/gallery/videos" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/gallery/videos" className="block px-5 py-3 text-md md:text-[14px] font-regular text-gray-700  hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Video Gallery
                   </Link>
                 </li>
@@ -226,12 +233,12 @@ const Header = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/blog" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/blog" className="block px-5 py-3 text-md md:text-[14px] font-regular text-gray-700  hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     Blog
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                  <Link href="/faq" className="block px-5 py-3 text-md md:text-[14px] font-regular text-gray-700  hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                     FAQ
                   </Link>
                 </li>
@@ -245,7 +252,7 @@ const Header = () => {
           {/* Department Dropdown */}
           {Array.isArray(departments) && departments.length > 0 && (
             <div className="group relative">
-              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg">
+              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg md:text-[16px] font-regular text-black">
                 Department <ChevronDown size={16} />
               </div>
               <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
@@ -254,7 +261,7 @@ const Header = () => {
                     <li key={item.id}>
                       <Link
                         href={`/department/${item.slug}`}
-                        className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition"
+                        className="block px-5 py-3 text-md md:text-[14px] font-regular text-gray-700  hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition"
                       >
                         {item.name}
                       </Link>
@@ -268,7 +275,7 @@ const Header = () => {
           {/* Laboratory Dropdown */}
           {Array.isArray(laboratories) && laboratories.length > 0 && (
             <div className="group relative">
-              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg">
+              <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg md:text-[16px] font-regular text-black">
                 Laboratory <ChevronDown size={16} />
               </div>
               <div className="absolute left-0 top-full w-[260px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
@@ -277,7 +284,7 @@ const Header = () => {
                     <li key={item.id}>
                       <Link
                         href={`/laboratory/${item.slug}`}
-                        className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition"
+                        className="block px-5 py-3 text-md md:text-[14px] font-regular text-gray-700  hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition"
                       >
                         {item.name}
                       </Link>
@@ -290,15 +297,16 @@ const Header = () => {
 
           {/* Product Dropdown (Dynamic) */}
           <div className="group relative">
-            <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg">
-              <Link href="/product">{data?.bs?.parent_product_name || 'Product'}</Link> <ChevronDown size={16} />
+            <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 text-lg md:text-[16px] font-regular text-black">
+              {/*<Link href="/product">{data?.bs?.parent_product_name || 'Product'}</Link> <ChevronDown size={16} /> */}
+              Product <ChevronDown size={16} />
             </div>
             <div className="absolute left-0 top-full w-[240px] bg-white rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-[#ececec] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[400px] overflow-y-auto">
               <ul className="py-2">
               {Array.isArray(products) && products.length > 0 ? (
                   products.map((item) => (
                     <li key={item.id}>
-                      <Link href={`/product/${item.slug}`} className="block px-5 py-3 text-md text-gray-700 hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
+                      <Link href={`/product/${item.slug}`} className="block px-5 py-3 text-md md:text-[14px] font-regular text-gray-700  hover:bg-[#F5F7FF] hover:text-[#0B10A4] transition">
                         {item.name || item.title}
                       </Link>
                     </li>

@@ -129,7 +129,7 @@ const BlogsCaseStudies = () => {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-4">
           <div>
-            <p className="text-[#04063E] font-medium mb-2">
+            <p className="text-[#04063E] font-semibold text-[18px] mb-2 tracking-wide">
               {content.title}
             </p>
             <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
@@ -215,10 +215,10 @@ const BlogsCaseStudies = () => {
                 </div>
 
                 <div className="flex flex-col justify-center flex-1 pr-2">
-                  <h4 className="text-[17px] font-bold text-black mb-2 leading-tight group-hover:text-[#0B10A4] transition-colors line-clamp-2">
+                  <h4 className="text-[18px] font-bold text-black mb-2 leading-tight group-hover:text-[#0B10A4] transition-colors line-clamp-2">
                     {blog.title}
                   </h4>
-                  <p className="text-[#525252] text-xs line-clamp-2 mb-3">
+                  <p className="text-[#525252] text-[14px] line-clamp-2 mb-3">
                     {blog.meta_description}
                   </p>
 

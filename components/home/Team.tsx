@@ -93,18 +93,18 @@ const Team = () => {
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4 md:px-10">
-
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-center items-center text-center mb-12 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div>
-            <p className="text-[#04063E] font-medium mb-2">
-              {content.title}
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight ">
-              {content.subtitle}
-            </h2>
+            <p className="text-[#04063E] font-semibold text-[18px] mb-2 tracking-wide">{content.title}</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">{content.subtitle}</h2>
           </div>
-          
+          <Link
+            href="/team"
+            className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-3 text-[18px] rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
+          >
+            View All Teams
+            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
 
         {/* Team Grid adjusted for 5 items */}
@@ -156,15 +156,6 @@ const Team = () => {
             </div>
           ))}
         </div>
-        <div className="text-center gap-6 flex items-center justify-center">
-          <Link
-              href="/team"
-              className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-3 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
-            >
-              View All
-              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
       </div>
     </section>
   );

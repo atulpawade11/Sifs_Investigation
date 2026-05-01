@@ -5,29 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { API_BASE_URL } from '@/lib/config';
 import { Skeleton } from '@/components/shared/Skeleton';
-import { 
-  FileText, 
-  Fingerprint, 
-  Search, 
-  ShieldCheck, 
-  Gavel, 
-  Microscope, 
-  HardDrive, 
-  UserCheck 
-} from 'lucide-react';
 
-// Helper to pick icons based on keywords in service name
-const getServiceIcon = (name: string) => {
-  const n = name.toLowerCase();
-  if (n.includes('document') || n.includes('handwriting')) return <FileText className="w-7 h-7" />;
-  if (n.includes('fingerprint')) return <Fingerprint className="w-7 h-7" />;
-  if (n.includes('cyber') || n.includes('digital') || n.includes('computer')) return <HardDrive className="w-7 h-7" />;
-  if (n.includes('investigation')) return <Search className="w-7 h-7" />;
-  if (n.includes('legal') || n.includes('court')) return <Gavel className="w-7 h-7" />;
-  if (n.includes('dna') || n.includes('biology') || n.includes('chemical')) return <Microscope className="w-7 h-7" />;
-  if (n.includes('verification') || n.includes('background')) return <UserCheck className="w-7 h-7" />;
-  return <ShieldCheck className="w-7 h-7" />; 
-};
+// Static images for category icons - use index-based mapping since API names vary
+const CATEGORY_ICONS = [
+  "/services/icon-1.png",
+  "/services/icon-2.png",
+  "/services/icon-3.png",
+  "/services/icon-4.png",
+];
 
 const slugify = (text: string) => {
   return text
@@ -71,6 +56,9 @@ const ForensicServices = () => {
               .sort((a: any, b: any) => a.serial_number - b.serial_number)
               .slice(0, 4);
             setCategories(sorted);
+            
+            // Debug: Log category names to console
+            console.log("API Categories:", sorted.map((c: any) => c.name));
           }
         }
       } catch (err) {
@@ -88,6 +76,11 @@ const ForensicServices = () => {
     if (path.startsWith('http')) return path;
     const baseUrl = API_BASE_URL.replace(/\/api\/?$/, '').replace(/\/$/, '');
     return `${baseUrl}/uploads/Investigation-Services-Admin-ServiceCategory/${path}`;
+  };
+
+  // Get icon by index (since we show 4 categories in order)
+  const getCategoryIcon = (index: number) => {
+    return CATEGORY_ICONS[index] || CATEGORY_ICONS[0];
   };
 
   if (loading) {
@@ -119,12 +112,12 @@ const ForensicServices = () => {
     <section
       className="relative py-16 flex flex-col justify-center bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)), url('/forensic-bg.png')`
+        backgroundImage: `url('/forensic-bg1.png')`
       }}
     >
       <div className="container mx-auto px-4 md:px-10 relative z-10">
-        <div className="mb-12 text-center">
-          <p className="text-[#04063E] font-medium mb-2 uppercase tracking-wide">
+        <div className="mb-12">
+          <p className="text-[#04063E] font-semibold text-[18px] mb-2 tracking-wide">
             {sectionTitles.title}
           </p>
           <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight">
@@ -133,35 +126,41 @@ const ForensicServices = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.map((service) => (
+          {categories.map((service, index) => (
             <Link 
               key={service.id} 
               href={`/services/${slugify(service.name)}`} 
               className="group"
             >
-              <div className="bg-white rounded-[32px] p-3 shadow-xl shadow-slate-200/60 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 border border-transparent hover:border-slate-100">
+              <div className="bg-white rounded-2xl p-4 shadow-xl shadow-slate-200/60 flex flex-col h-full hover:-translate-y-2 transition-all duration-300 border border-transparent hover:border-slate-100">
                 
-                {/* ICON BOX */}
-                <div className="w-14 h-14 bg-[#04063E] text-white rounded-2xl flex items-center justify-center mb-3 shadow-lg transition-colors group-hover:bg-[#0B10A4]">
-                  {getServiceIcon(service.name)}
+                {/* ICON IMAGE - Using index-based mapping */}
+                <div className="w-14 h-14 bg-[#04063E] text-white rounded-full flex items-center justify-center mb-3 shadow-lg overflow-hidden transition-colors group-hover:bg-[#0B10A4]">
+                  <Image
+                    src={getCategoryIcon(index)}
+                    alt={service.name}
+                    width={28}
+                    height={28}
+                    className="object-contain brightness-0 invert"
+                  />
                 </div>
 
                 <div className="flex-grow">
-                  <h3 className="font-bold text-black text-[16px] tracking-wide mb-3 uppercase line-clamp-2">
+                  <h3 className="font-bold text-black text-[18px] tracking-wide mb-3 uppercase line-clamp-2">
                     {service.name}
                   </h3>
-                  <p className="text-gray-500 text-md leading-relaxed mb-3 line-clamp-3">
+                  <p className="text-[#868686] text-[14px] font-regular leading-relaxed mb-3 line-clamp-3">
                     {service.short_text}
                   </p>
                 </div>
 
-                {/* IMAGE BOX - Now using object-contain to prevent cutting */}
-                <div className="relative w-full h-44 rounded-2xl overflow-hidden mt-auto bg-[#F9F9F9] border border-slate-100 p-4">
+                {/* IMAGE BOX */}
+                <div className="relative w-full h-44 rounded-2xl overflow-hidden mt-auto">
                   <Image
                     src={getImageUrl(service.image)}
                     alt={service.name}
                     fill
-                    className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                    className="object-contain transition-transform duration-500 group-hover:scale-105"
                     unoptimized
                   />
                 </div>

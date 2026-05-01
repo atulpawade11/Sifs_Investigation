@@ -9,8 +9,13 @@ export default function CTASection({ title, description, image }: Props) {
     <div className="mt-12 bg-gradient-to-r from-[#0B4F8A] to-[#0B2C4A] rounded-lg text-white grid md:grid-cols-[3fr_7fr] overflow-hidden">
       {/* Image Section (30%) */}
       <div className="relative w-full h-full min-h-[200px]">
-        <img 
+        {/*<img 
           src={image} 
+          alt={title} 
+          className="h-full w-full object-cover" 
+        />*/}
+        <img 
+          src="/connect.png" 
           alt={title} 
           className="h-full w-full object-cover" 
         />

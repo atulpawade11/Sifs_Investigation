@@ -21,7 +21,8 @@ async function getBlogData(slug: string) {
 
     const decodedSlug = decodeURIComponent(slug);
 
-    const blog = result.data.blogs.data.find((b: any) => 
+    const blogs = result.data.blogs.data;
+    const blog = blogs.find((b: any) => 
       b.slug === decodedSlug || b.slug === slug
     );
 
@@ -30,11 +31,21 @@ async function getBlogData(slug: string) {
       return null;
     }
 
+    // Find previous and next posts
+    const currentIndex = blogs.findIndex((b: any) => 
+      b.slug === decodedSlug || b.slug === slug
+    );
+    
+    const prevBlog = currentIndex > 0 ? blogs[currentIndex - 1] : null;
+    const nextBlog = currentIndex < blogs.length - 1 ? blogs[currentIndex + 1] : null;
+
     return {
       blog: blog,
       bcats: result.data.bcats,
-      recent_blogs: result.data.blogs.data.slice(0, 5),
-      be: result.data.be
+      recent_blogs: blogs.slice(0, 5),
+      be: result.data.be,
+      prevPost: prevBlog ? { slug: prevBlog.slug, title: prevBlog.title } : null,
+      nextPost: nextBlog ? { slug: nextBlog.slug, title: nextBlog.title } : null
     };
   } catch (error) {
     console.error("Fetch failed:", error);
@@ -55,7 +66,7 @@ export default async function BlogDetailsPage({ params }: PageProps) {
 
   if (!data || !data.blog) notFound();
 
-  const { blog, bcats, recent_blogs, be } = data;
+  const { blog, bcats, recent_blogs, be, prevPost, nextPost } = data;
 
   return (
     <div className="min-h-screen bg-white">
@@ -64,6 +75,8 @@ export default async function BlogDetailsPage({ params }: PageProps) {
         slug={slug}
         metaTitle={be?.blogs_meta_title}
         metaDescription={be?.blogs_meta_description}
+        prevPost={prevPost}
+        nextPost={nextPost}
       >
         <div className="relative">
           {/* Back Button - Positioned after banner, before content */}

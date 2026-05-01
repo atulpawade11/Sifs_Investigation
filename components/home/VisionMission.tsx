@@ -127,14 +127,14 @@ const VisionMission = () => {
   }
 
   return (
-    <section className="py-16 bg-gray-50 overflow-hidden">
+    <section className="py-16 overflow-hidden">
       <div className="container mx-auto px-4 md:px-10 text-center">
-        <p className="text-[#04063E] font-medium mb-2">{content.title}</p>
+        <p className="text-[#04063E] font-semibold text-[18px] mb-2">{content.title}</p>
         <h2 className="text-4xl md:text-5xl font-bold text-black leading-tight mb-5">
           {content.subtitle}
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-10 transition-all duration-500">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-10 transition-all duration-500 px-20 mt-14">
           {displayedPoints.map((item, index) => {
             const isEven = index % 2 === 0;
             const bgColor = isEven ? "bg-[#04063E]" : "bg-white border-2 border-[#04063E]";
@@ -144,12 +144,14 @@ const VisionMission = () => {
             const cleanText = item.short_text.replace(/[,.]+$/, "");
 
             return (
-              <div key={item.id} className="flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className={`w-20 h-20 ${bgColor} rounded-full flex items-center justify-center mb-6 shadow-lg shadow-blue-50 relative`}>
+              <div key={item.id} className="flex items-start gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className={`w-20 h-20 ${bgColor} rounded-full flex items-center justify-center shadow-lg shadow-blue-50 relative flex-shrink-0`}>
                   {renderIcon(item.icon, bgColor, invertIcon)}
                 </div>
-                <h3 className="font-bold text-black text-[15px] mb-3 uppercase">{cleanTitle}</h3>
-                <p className="text-gray-500 text-md leading-relaxed max-w-[280px]">{cleanText}</p>
+                <div className="flex-1 text-left">
+                  <h3 className="font-bold text-black text-[24px] mb-3 uppercase">{cleanTitle}</h3>
+                  <p className="text-[#868686] text-[15px] font-regular leading-relaxed">{cleanText}</p>
+                </div>
               </div>
             );
           })}
@@ -165,15 +167,15 @@ const VisionMission = () => {
         )}
 
         <div className="relative flex items-center justify-center mb-20">
-          <div className="absolute w-full h-px bg-gray-100"></div>
+          <div className="absolute w-full h-px bg-[#8c8c8c] opacity-60"></div>
           <div className="relative z-10 bg-gray-50 px-6 flex flex-col md:flex-row items-center gap-4">
-            <span className="text-sm font-semibold text-gray-800 italic">For more information!</span>
+            <span className="text-[15px] font-regular text-black">For more information!</span>
             <Link
               href={content.btnUrl}
-              className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-2 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
+              className="bg-[#04063E] text-white px-10 py-2 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
             >
               {content.btnText}
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
+              {/*<span className="group-hover:translate-x-1 transition-transform">→</span>*/}
             </Link>
           </div>
         </div>

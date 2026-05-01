@@ -3,95 +3,100 @@
 import PageBanner from "../common/PageBanner";
 import PageHeaderDropdown from "./PageHeaderDropdown";
 import OverviewSection from "./OverviewSection";
-import PillDivider from "./PillDivider";
-import TabbedContentSection from "./TabbedContentSection";
-import AccordionSection from "./AccordionSection";
 import CTASection from "./CTASection";
+import MainAccordionSection from "./MainAccordionSection";
 import { useBoot } from "@/context/BootContext";
 
-
-// This interface matches the "mappedData" we created in your Laboratory page
-interface DynamicPageProps {
-  data: {
-    title: string;
-    banner: {
-      title: string;
-      subtitle: string;
-      bgImage?: string;
-    };
-    overview: {
-      heading: string;
-      description: string; // HTML string from body_1
-      image: string;
-    };
-    pillLabel: string;
-    tabs: Array<{
-      title: string;
-      description: string;
-      image: string;
-    }>;
-    accordions: Array<{
-      title: string;
-      content: string;
-    }>;
-    cta: {
-      title: string;
-      description: string;
-      image: string;
-    };
-    videoId?: string; // Captured from video_id in your JSON
+// Define the type
+interface DynamicPageData {
+  title?: string;
+  banner?: {
+    title?: string;
+    subtitle?: string;
   };
+  overview?: {
+    heading?: string;
+    description?: string;
+    image?: string;
+  };
+  accordions?: {
+    id: string;
+    title: string;
+    content: string;
+  }[];
+  cta?: {
+    title?: string;
+    description?: string;
+    image?: string;
+  };
+  videoId?: string | null;
 }
 
-export default function DynamicDetailPage({ data }: DynamicPageProps) {
+export default function DynamicDetailPage({ data }: { data: DynamicPageData }) {
   const { breadcrumbImage } = useBoot();
+
+  if (!data) return null;
+
+  // Build accordion items correctly
+  const mainAccordionItems = [
+    {
+      id: "overview",
+      title: data.overview?.heading || "Overview",
+      content: (
+        <OverviewSection
+          heading={data.overview?.heading || "Overview of Laboratory"}
+          description={data.overview?.description || ""}
+          image={data.overview?.image || ""}
+        />
+      )
+    },
+
+    // Dynamic sections
+    ...(data.accordions || []).map((item) => ({
+      id: item.id,
+      title: item.title,
+      content: (
+        <div
+          className="prose max-w-none text-gray-600
+          [&>p]:mb-4 [&>p]:text-justify
+          [&>b]:font-semibold"
+          dangerouslySetInnerHTML={{ __html: item.content }}
+        />
+      )
+    }))
+  ];
+
   return (
     <div className="bg-white">
-      {/* 1. Page Banner */}
       <PageBanner
-        title={data.banner?.title ?? "Laboratory"}
-        subtitle={data.banner?.subtitle ?? "SIFS India"}
+        title={data.banner?.title || "Laboratory"}
+        subtitle={data.banner?.subtitle || "SIFS India"}
         breadcrumbImage={breadcrumbImage}
       />
 
       <section className="max-w-7xl mx-auto px-4 py-10">
-        {/* 2. Top Navigation Dropdown */}
-        <PageHeaderDropdown title={data.title} />
+        <MainAccordionSection items={mainAccordionItems} />
 
-        {/* 3. Overview Section (Handles the main text) */}
-        <OverviewSection {...data.overview} />
-
-        {/* 4. Visual Label Divider */}
-        <PillDivider label={data.pillLabel} />
-
-        {/* 5. Methodology, Services, and Equipment Tabs */}
-        <TabbedContentSection tabs={data.tabs} />
-
-        {/* 6. Video Showcase Section (Renders only if video_id exists) */}
+        {/* Video */}
         {data.videoId && (
-          <div className="mt-20 mb-10">
-            <h3 className="text-2xl font-bold text-[#0B4F8A] mb-8 border-l-4 border-[#F68A07] pl-4">
-              Laboratory Video Showcase
-            </h3>
-            <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-2xl border border-gray-100 bg-black">
+          <div className="mt-16">
+            <div className="aspect-video w-full rounded-xl overflow-hidden">
               <iframe
                 className="w-full h-full"
                 src={`https://www.youtube.com/embed/${data.videoId}`}
-                title="Lab Procedure Video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-              ></iframe>
+              />
             </div>
           </div>
         )}
 
-        {/* 7. Additional Info / Metadata Accordions */}
-        <div className="mt-16">
-          <AccordionSection items={data.accordions} />
-        </div>
-
-        {/* 8. Call to Action Banner */}
-        {/*<CTASection {...data.cta} /> */}
+        {data.cta && (
+          <CTASection
+            title={data.cta.title || "Connect with Our Experts"}
+            description={data.cta.description || "No matter where you are located, we're here to help."}
+            image={data.cta.image || "/images/cta-lab.jpg"}
+          />
+        )}
       </section>
     </div>
   );

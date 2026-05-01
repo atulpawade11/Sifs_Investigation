@@ -69,75 +69,70 @@ export default function ContactFormSection() {
   };
 
   return (
-    <section className="bg-white py-20 border-t border-gray-50">
+    <section className="bg-white pb-20 border-t border-gray-50">
       <div className="mx-auto max-w-3xl px-4">
         <div className="mb-10 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-[#1C274C]">Drop Us a Line</h2>
-          <p className="text-gray-500">Have a question or comment? Use the form below to send us a message.</p>
+          <h2 className="mb-4 text-3xl md:text-[30px] font-bold text-black">Drop Us a Line</h2>
+          <p className="text-[#777777] text-[14px] font-regular">Have a question or comment? Use the form below to send us a message.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="grid gap-6">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-1">
-              <label className="text-sm font-bold text-gray-700 ml-1">Full Name *</label>
               <input
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                placeholder="Enter your full name"
+                placeholder="Full name"
                 required
-                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#F6BA13] transition-colors"
+                className="w-full p-4 bg-white border border-[#D9D9D9] font-regular text-[14px] rounded-lg outline-none focus:border-[#F6BA13] transition-colors"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-bold text-gray-700 ml-1">Email Address *</label>
               <input
                 name="email"
                 type="email"
                 value={form.email}
                 onChange={handleChange}
-                placeholder="Enter your email address"
+                placeholder="Email"
                 required
-                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#F6BA13] transition-colors"
+                className="w-full p-4 bg-white border-[#D9D9D9] font-regular text-[14px] border rounded-lg outline-none focus:border-[#F6BA13] transition-colors"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-bold text-gray-700 ml-1">Mobile Number *</label>
               <input
                 name="mobile"
                 value={form.mobile}
                 onChange={handleChange}
-                placeholder="Enter your mobile number"
+                placeholder="Mobile"
                 required
-                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#F6BA13] transition-colors"
+                className="w-full p-4 bg-white border-[#D9D9D9] font-regular text-[14px] border rounded-lg outline-none focus:border-[#F6BA13] transition-colors"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-bold text-gray-700 ml-1">Address</label>
               <input
                 name="address"
                 value={form.address}
                 onChange={handleChange}
-                placeholder="Enter your city/address"
-                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#F6BA13] transition-colors"
+                placeholder="Address"
+                className="w-full p-4 bg-white border-[#D9D9D9] font-regular text-[14px] border rounded-lg outline-none focus:border-[#F6BA13] transition-colors"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-sm font-bold text-gray-700 ml-1">Your Query *</label>
             <textarea
               name="details"
               rows={4}
               value={form.details}
               onChange={handleChange}
-              placeholder="How can we help you? Describe your query in detail..."
+              placeholder="Query"
               required
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#F6BA13] transition-colors"
+              className="w-full p-4 bg-white border-[#D9D9D9] font-regular text-[14px] border rounded-lg outline-none focus:border-[#F6BA13] transition-colors"
             />
           </div>
 
-          <div className="flex flex-col items-center gap-6 mt-2">
+          <div className="flex flex-col items-center justify-start gap-6 mt-2">
             {mounted && (
               <ReCAPTCHA
                 ref={recaptchaRef}
@@ -148,9 +143,9 @@ export default function ContactFormSection() {
 
             <button
               disabled={loading || (mounted && !captchaToken)}
-              className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-3 rounded-full font-bold flex items-center gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
+              className="bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white px-10 py-3 rounded-full font-bold flex items-center justify-start gap-4 cursor-pointer border-none no-underline transition-all hover:opacity-90"
             >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : "Submit Message"}
+              {loading ? <Loader2 className="animate-spin" size={20} /> : "Submit"}
               <ArrowRight size={18} />
             </button>
           </div>

@@ -93,7 +93,7 @@ export default function CareerClient({ initialData }: { initialData: any }) {
       />
       
       <section className="bg-white py-12">
-        <div className="mx-auto max-w-7xl px-4 md:px-10">
+        <div className="mx-auto container px-4 md:px-10">
           <CareerFilters 
             search={search} 
             setSearch={setSearch} 
@@ -128,7 +128,7 @@ export default function CareerClient({ initialData }: { initialData: any }) {
         </div>
       </section>
       
-      {/*<CareerFAQSection />*/}
+      <CareerFAQSection />
       <DownloadsSlider />
     </>
   );

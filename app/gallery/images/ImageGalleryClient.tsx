@@ -76,7 +76,7 @@ export default function ImageGalleryClient() {
       />
 
       <div className="relative bg-[#FFFFFF] py-12">
-        <section className="mx-auto max-w-7xl px-4">
+        <section className="mx-auto container px-4">
           
           {loading ? (
             <GallerySkeleton />
@@ -96,12 +96,12 @@ export default function ImageGalleryClient() {
                     />
                   </div>
                   
-                  <div className="absolute bottom-4 left-4 right-12 md:right-24 bg-white p-1 rounded-lg shadow-xl z-20">
+                  <div className="absolute bottom-4 left-4 right-12 md:right-24 bg-white p-1 rounded-lg shadow-xl z-20 w-1/2">
                     <div className="border border-[#a9a9a9] p-2 rounded-lg">
-                      <h3 className="font-bold text-gray-900 text-sm md:text-base mb-1 truncate">
+                      <h3 className="font-bold text-black text-[18px] mb-1 truncate">
                         {item.title}
                       </h3>
-                      <p className="text-xs text-gray-500 line-clamp-1">{item.detail}</p>
+                      <p className="text-[14px] font-regular text-[#777777] line-clamp-2 pr-4">{item.detail}</p>
                       
                       <div className="absolute -right-4 bottom-0 w-10 h-10 bg-[#0B4F8A] text-white rounded-full flex items-center justify-center shadow-lg group-hover:bg-[#F68A07] transition-colors">
                         <ArrowRight size={18} />

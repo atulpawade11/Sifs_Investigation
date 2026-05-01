@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import PageBanner from "@/components/common/PageBanner";
 import CareerFAQSection from "@/components/career/CareerFAQSection";
+import DownloadsSlider from "@/components/common/DownloadsSlider";
 import { API_BASE_URL } from '@/lib/config';
 import { Calendar, MapPin, Briefcase, Users, Mail, GraduationCap, CheckCircle2, List, Loader2 } from 'lucide-react';
 import { useBoot } from "@/context/BootContext";
@@ -88,7 +89,7 @@ export default function CareerDetailsClient({ slug }: { slug: string }) {
       />
 
       <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4 md:px-10">
+        <div className="mx-auto container px-4 md:px-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
             <div className="lg:col-span-8 space-y-12">
@@ -163,6 +164,7 @@ export default function CareerDetailsClient({ slug }: { slug: string }) {
         </div>
       </section>
       <CareerFAQSection />
+      <DownloadsSlider />
     </main>
   );
 }
