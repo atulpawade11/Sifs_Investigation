@@ -119,59 +119,64 @@ export default function ServicesPage() {
         breadcrumbImage={breadcrumbImage || "/about/about-banner.png"}
       />
 
-      <div className="max-w-7xl mx-auto px-4 md:px-10 py-16">
-        {/* Title + Subtitle INLINE */}
-        <div className="mb-12">
-          <div className="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-36">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#04063E] whitespace-nowrap">
-              We Provide Smart <br /> Solutions.
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-8 sm:py-12 md:py-16">
+        {/* Title + Subtitle - Fully Responsive */}
+        <div className="mb-8 sm:mb-10 md:mb-12">
+          <div className="flex flex-col lg:flex-row lg:items-baseline gap-4 md:gap-6 lg:gap-8 xl:gap-36">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#04063E] lg:whitespace-nowrap">
+              We Provide Smart <br className="hidden sm:block" /> Solutions.
             </h2>
-            <p className="text-gray-500 text-base text-right leading-relaxed">
+            <p className="text-gray-500 text-sm sm:text-base leading-relaxed lg:text-right">
               We have experts in countless forensic services such as Document Examination, Fingerprint Development, 
               Cyber Forensic, Speaker Identification, Mobile Forensics, Fire Forensic etc.
             </p>
           </div>
         </div>
 
-        {/* Full Width Featured Image */}
-        <div className="mb-16 rounded-2xl overflow-hidden">
+        {/* Full Width Featured Image - Responsive */}
+        <div className="mb-12 sm:mb-14 md:mb-16 rounded-2xl overflow-hidden">
           <img
             src="/services/service-list1.png"
             alt="Forensic Services"
-            className="w-full h-64 md:h-96 object-cover rounded-2xl"
+            className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover rounded-2xl"
           />
         </div>
 
         {/* Services List */}
         <div className="relative">
-          <div className="space-y-0">
+          <div className="space-y-0 divide-y divide-gray-200">
             {visibleServices.map((service, index) => (
               <div 
                 key={service.id} 
-                className="py-8 border-b border-gray-200"
+                className="py-6 sm:py-8"
               >
-                {/* Number + Title + Image INLINE */}
-                <div className="flex gap-8 items-start">
+                {/* Responsive Layout - Stack on mobile, row on tablet/desktop */}
+                <div className="flex flex-col sm:flex-row sm:gap-6 md:gap-8 items-start">
+                  
+                  {/* Number with Link */}
                   <Link
                     href={`/services/${service.categorySlug}/${service.slug}`}
-                    className="flex-shrink-0 w-12 h-12 flex items-center justify-center transition-colors duration-300 group/num"
+                    className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center transition-colors duration-300 group/num mb-3 sm:mb-0"
                   >
-                    <span className="text-lg md:text-[36px] font-bold text-[#000000] group-hover/num:text-white transition-colors duration-300">
+                    <span className="text-2xl sm:text-3xl md:text-[36px] font-bold text-[#000000] group-hover/num:text-[#0B10A4] transition-colors duration-300">
                       {(index + 1).toString().padStart(2, '0')}
                     </span>
                   </Link>
 
-                  <div className="flex-1">
+                  {/* Content - Takes remaining space */}
+                  <div className="flex-1 w-full">
                     <Link href={`/services/${service.categorySlug}/${service.slug}`}>
-                      <h3 className="text-xl md:text-[24px] font-regular text-[#000000] hover:text-[#0B10A4] transition-colors mb-1">
+                      <h3 className="text-lg sm:text-xl md:text-[24px] font-medium text-[#000000] hover:text-[#0B10A4] transition-colors mb-2">
                         {service.title}
                       </h3>
                     </Link>
+                    
                     {service.shortText && (
-                      <p className="text-black font-regular text-base md:text-[14px] leading-relaxed mb-2">
+                      <p className="text-gray-600 text-sm sm:text-base md:text-[14px] leading-relaxed mb-3">
                         {service.shortText}
                       </p>
                     )}
+                    
                     <Link
                       href={`/services/${service.categorySlug}/${service.slug}`}
                       className="inline-flex items-center gap-1 text-sm font-semibold text-[#0B10A4] hover:text-[#F68A07] transition-colors group/link"
@@ -181,49 +186,70 @@ export default function ServicesPage() {
                     </Link>
                   </div>
 
+                  {/* Image - Hidden on mobile, visible on tablet/desktop */}
                   {service.main_image && (
-                    <div className="flex-shrink-0 w-56 h-32 rounded-lg overflow-hidden bg-gray-100 ml-4">
+                    <div className="hidden md:block flex-shrink-0 w-40 sm:w-48 md:w-52 lg:w-56 h-24 sm:h-28 md:h-32 rounded-lg overflow-hidden bg-gray-100 ml-0 md:ml-4 lg:ml-6 mt-4 sm:mt-0">
                       <img
                         src={service.main_image}
                         alt={service.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
                     </div>
                   )}
                 </div>
+
+                {/* Mobile Image - Visible only on mobile */}
+                {service.main_image && (
+                  <div className="md:hidden mt-4 w-full rounded-lg overflow-hidden bg-gray-100">
+                    <img
+                      src={service.main_image}
+                      alt={service.title}
+                      className="w-full h-48 object-cover"
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
 
+          {/* Gradient overlay for "Show More" - Responsive */}
           {hasMore && !isShowingAll && (
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
+            <div className="absolute bottom-0 left-0 right-0 h-24 sm:h-28 md:h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
           )}
         </div>
 
+        {/* Show More/Less Button - Responsive */}
         {hasMore && (
-          <div className="mt-12 text-center relative z-10">
+          <div className="mt-10 sm:mt-12 text-center relative z-10">
             <button
               onClick={handleToggle}
               disabled={loadingMore}
-              className="inline-flex items-center gap-2 border-2 border-[#0B10A4] text-[#0B10A4] px-8 py-2 rounded-full font-semibold text-lg  transition-all duration-300 disabled:opacity-50b bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white"
+              className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 disabled:opacity-50 bg-gradient-to-r from-[#0B10A4] to-[#04063E] text-white hover:shadow-lg transform hover:-translate-y-0.5"
             >
               {loadingMore ? (
                 <>
-                  <Loader2 size={20} className="animate-spin" />
-                  Loading...
+                  <Loader2 size={18} className="animate-spin" />
+                  <span className="text-sm sm:text-base">Loading...</span>
                 </>
               ) : isShowingAll ? (
                 <>
-                  Show Less
-                  <ChevronUp size={20} />
+                  <span className="text-sm sm:text-base">Show Less</span>
+                  <ChevronUp size={18} className="sm:w-5 sm:h-5" />
                 </>
               ) : (
                 <>
-                  Show More
-                  <ChevronDown size={20} />
+                  <span className="text-sm sm:text-base">Show More</span>
+                  <ChevronDown size={18} className="sm:w-5 sm:h-5" />
                 </>
               )}
             </button>
+            
+            {/* Counter - Show when not showing all */}
+            {!isShowingAll && visibleServices.length < services.length && (
+              <p className="text-xs sm:text-sm text-gray-400 mt-3">
+                Showing {visibleServices.length} of {services.length} services
+              </p>
+            )}
           </div>
         )}
       </div>
