@@ -201,11 +201,11 @@ export default function ServiceListingClient({ categorySlug }: Props) {
         breadcrumbImage={breadcrumbImage || "/about/about-banner.png"}
       />
 
-      <div className="max-w-7xl mx-auto px-4 md:px-10 py-16">
+      <div className="container mx-auto px-4 md:px-10 py-16">
         <div className="flex flex-col lg:flex-row gap-12">
           
           {/* LEFT SIDEBAR */}
-          <aside className="lg:w-1/3 xl:w-1/4">
+          <aside className="lg:w-1/4">
             <div className="sticky top-28 space-y-8">
               {/* Service Categories Sidebar */}
               <ServiceSidebar apiData={sidebarData} />
@@ -216,7 +216,7 @@ export default function ServiceListingClient({ categorySlug }: Props) {
           </aside>
 
           {/* RIGHT MAIN CONTENT */}
-          <main className="lg:w-2/3 xl:w-3/4">
+          <main className="lg:w-3/4">
             <div className="mb-8">
               <p className="text-gray-600 leading-relaxed border-l-4 border-[#0B10A4] pl-4">
                 {categoryInfo.short_text || 

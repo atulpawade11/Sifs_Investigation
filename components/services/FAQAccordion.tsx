@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { ChevronRight, } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 // Static fallbacks for when API data is missing
 const defaultFaqs = [
@@ -16,70 +16,76 @@ const defaultFaqs = [
 ];
 
 interface FAQAccordionProps {
-  apiFaqs?: any[]; // This will receive data from the API if available
+  apiFaqs?: any[];
 }
 
 export default function FAQAccordion({ apiFaqs }: FAQAccordionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [itemsToShow, setItemsToShow] = useState(6);
 
-  // Logic: Use API data if it exists and has length, otherwise use static defaults
   const dataToRender = (apiFaqs && apiFaqs.length > 0) ? apiFaqs : defaultFaqs;
   const paginatedData = dataToRender.slice(0, itemsToShow);
 
   return (
-    <div className="">
-      <div className="flex items-center gap-3 mb-8 border-l-4 border-[#F68A07] pl-4">
-        {/* <HelpCircle size={24} className="text-[#101880]" /> */}
-        <div>
-          <h3 className="text-xl font-bold text-[#04063E]">Forensic Examination Enquiries</h3>
+    <div className="max-w-6xl mx-auto">
+      <div className="flex items-center justify-center gap-3 mb-8">
+        <div className="text-center">
+          <h3 className="text-xl md:text-[30px] font-bold text-[#000000]">Forensic Examination Enquiries</h3>
+          <h4 className="text-sm md:text-[16px] font-regular text-[#6B7385]">Frequently Asked Questions</h4>
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {paginatedData.map((faq, i) => {
           const isOpen = openIndex === i;
 
           return (
             <div
               key={i}
-              className={`group rounded-2xl border transition-all duration-500 ${isOpen
-                ? "border-[#101880] shadow-xl shadow-blue-900/5 bg-white"
-                : "border-gray-100 bg-gray-50/50 hover:bg-white hover:border-gray-200"
-                }`}
+              className="rounded-xl overflow-hidden transition-all duration-300"
             >
               {/* Question Trigger */}
               <button
                 onClick={() => setOpenIndex(isOpen ? null : i)}
-                className="w-full p-5 flex justify-between items-center text-left"
+                className={`w-full p-5 flex justify-between items-center text-left transition-all duration-300 ${
+                  isOpen
+                    ? "bg-gradient-to-r from-[#1C274C] to-[#0D1189] text-white"
+                    : "bg-[#ACACAC] text-black"
+                }`}
               >
-                <div className="flex flex-col gap-2">
-                  {faq.name && (
-                    <span className="text-[10px] text-[#F68A07] font-extrabold uppercase tracking-widest">
-                      {faq.name}
-                    </span>
-                  )}
-                  <span className={`text-[13px] font-bold transition-colors duration-300 ${isOpen ? "text-[#101880]" : "text-gray-700"
-                    }`}>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className={`text-[16px] font-bold ${isOpen ? "text-white" : "text-[#585858] font-regular text-[16px]"}`}>
                     {faq.question || faq.title || faq.query}
                   </span>
+                  {faq.name && (
+                    <span className={`py-1 rounded-full ${
+                      isOpen 
+                        ? "text-white" 
+                        : "text-black font-bold text-[16px]"
+                    }`}>
+                      - {faq.name}
+                    </span>
+                  )}
                 </div>
-                <div className={`p-1.5 rounded-lg transition-all duration-500 ${isOpen ? "bg-[#101880] text-white rotate-90" : "bg-white text-gray-300 shadow-sm"
-                  }`}>
+                <div className={`p-1.5 rounded-lg transition-all duration-500 ${
+                  isOpen 
+                    ? "text-white rotate-90" 
+                    : "text-black"
+                }`}>
                   <ChevronRight size={16} />
                 </div>
               </button>
 
-              {/* Collapsible Answer */}
+              {/* Collapsible Answer - White background, no border */}
               <div
-                className={`grid transition-all duration-500 ease-in-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                  }`}
+                className={`grid transition-all duration-500 ease-in-out ${
+                  isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                }`}
               >
                 <div className="overflow-hidden">
-                  <div className="px-6 pb-6 pt-2">
-                    <div className="h-[1px] w-full bg-gradient-to-r from-gray-100 to-transparent mb-4" />
+                  <div className="px-6 pb-6 pt-4 bg-[#f8f9fa]">
                     <div
-                      className="text-[13px] text-gray-500 leading-relaxed font-medium api-content"
+                      className="text-[14px] text-black leading-relaxed font-regular api-content"
                       dangerouslySetInnerHTML={{ __html: faq.answer || faq.content || faq.reply }}
                     />
                   </div>
@@ -94,7 +100,7 @@ export default function FAQAccordion({ apiFaqs }: FAQAccordionProps) {
         <div className="mt-8 flex justify-center">
           <button
             onClick={() => setItemsToShow(prev => prev + 6)}
-            className="px-8 py-3 bg-white border border-gray-200 text-[#04063E] font-bold rounded-full hover:bg-[#101880] hover:text-white hover:border-[#101880] transition-all duration-300 shadow-sm"
+            className="px-8 py-3 bg-white border border-gray-200 text-[#04063E] font-bold rounded-full hover:bg-gradient-to-r hover:from-[#1C274C] hover:to-[#0D1189] hover:text-white hover:border-transparent transition-all duration-300 shadow-sm"
           >
             Load More Enquiries
           </button>
