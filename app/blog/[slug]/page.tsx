@@ -86,7 +86,7 @@ export default async function BlogDetailsPage({ params }: PageProps) {
           
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 mt-12">
             <article className="lg:col-span-2">
-              <div className="relative mb-8 h-[450px] overflow-hidden rounded-xl">
+              <div className="relative mb-8 h-auto max-h-[450px] overflow-hidden rounded-xl">
                 <img
                   src={blog.main_image?.replace("http://", "https://")}
                   alt={blog.title}
