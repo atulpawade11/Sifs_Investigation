@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { MenuCategory, getMenuData } from '@/services/menuService';
 
@@ -18,6 +19,7 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
   const [error, setError] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const router = useRouter();
 
   useEffect(() => {
     async function loadMenuData() {
@@ -56,6 +58,17 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
     }, 200);
   };
 
+  // Handle click - navigate to /services
+  const handleClick = (e: React.MouseEvent) => {
+    // Only navigate if clicking the trigger text/chevron area
+    const target = e.target as HTMLElement;
+    if (target.closest('a') || target.closest('button')) {
+      // Don't navigate if clicking inside dropdown
+      return;
+    }
+    router.push('/services');
+  };
+
   // Close on escape key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -69,14 +82,13 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
   if (loading) {
     return (
       <div className="relative">
-        <div className="flex items-center gap-1 cursor-pointer py-2 ">
+        <Link href="/services" className="flex items-center gap-1 cursor-pointer py-2 text-lg md:text-[16px] font-regular text-black hover:text-[#F68A07] transition-colors">
           {trigger}
           <ChevronDown size={16} className="text-gray-400" />
-        </div>
+        </Link>
         {isOpen && (
           <div className="absolute left-0 top-full mt-2 w-[800px] bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50">
             <div className="flex h-[460px]">
-              {/* Left side skeleton */}
               <div className="w-1/3 bg-gray-50 border-r border-gray-100 p-4 space-y-2">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div key={i} className="animate-pulse">
@@ -84,7 +96,6 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
                   </div>
                 ))}
               </div>
-              {/* Right side skeleton */}
               <div className="flex-1 p-5 space-y-4">
                 <div className="animate-pulse">
                   <div className="h-6 bg-gray-200 rounded w-1/2 mb-2"></div>
@@ -108,16 +119,12 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
   // Error State
   if (error) {
     return (
-      <div className="relative group">
-        <div className="flex items-center gap-1 cursor-pointer py-2 hover:text-[#F68A07]">
+      <Link href="/services" className="relative group">
+        <div className="flex items-center gap-1 cursor-pointer py-2 text-lg md:text-[16px] font-regular text-black hover:text-[#F68A07] transition-colors">
           {trigger}
           <ChevronDown size={16} />
         </div>
-        {/* Optional: Show error tooltip on hover */}
-        <div className="absolute left-0 top-full mt-2 w-64 bg-red-50 text-red-600 text-xs p-2 rounded-lg shadow-lg border border-red-200 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-          ⚠️ {error}. Please refresh the page.
-        </div>
-      </div>
+      </Link>
     );
   }
 
@@ -128,14 +135,17 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Trigger Button */}
-      <div className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 transition-colors text-lg  md:text-[16px] font-regular text-black">
+      {/* Trigger Button - Clickable to /services, hover opens mega menu */}
+      <Link 
+        href="/services"
+        className="flex items-center gap-1 cursor-pointer hover:text-[#F68A07] py-2 transition-colors text-lg md:text-[16px] font-regular text-black"
+      >
         {trigger}
         <ChevronDown 
           size={16} 
           className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
         />
-      </div>
+      </Link>
 
       {/* Mega Menu Dropdown */}
       {isOpen && categories.length > 0 && (
@@ -157,9 +167,6 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="font-semibold text-md">{category.name}</div>
-                      {/*<div className="text-xs text-gray-400 mt-0.5">
-                        {category.services.length} {category.services.length === 1 ? 'Service' : 'Services'}
-                      </div>*/}
                     </div>
                     <ChevronRight 
                       size={16} 
@@ -211,7 +218,6 @@ export default function MegaMenu({ trigger }: MegaMenuProps) {
                       ))}
                     </div>
                     
-                    {/* View All Link - Only show if there are services */}
                     {currentCategory.services.length > 0 && (
                       <div className="mt-4 pt-3 border-t border-gray-100">
                         <Link
