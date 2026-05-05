@@ -231,37 +231,45 @@ export default function ServiceSidebar({ apiData }: SidebarProps) {
             );
 
             return (
-              <div key={cat.id} className="border-b last:border-0 border-gray-50">
+              <div key={cat.id} className="border-b last:border-0 border-black">
                 <button
                   onClick={() => toggleCategory(catSlug)}
-                  className="w-full flex justify-between items-center p-4 text-[14px] font-bold text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                  className="w-full flex justify-between items-center p-4 text-[18px] font-medium text-[#000000] bg-white hover:bg-gray-50 transition-colors"
                 >
-                  <span className={isActiveCategory ? "text-[#044782]" : ""}>
+                  <span className={isActiveCategory ? "text-[#000000]" : ""}>
                     {cat.name} {categoryServices.length > 0 && `(${categoryServices.length})`}
                   </span>     
                   {categoryServices.length > 0 && (
                     isExpanded
-                      ? <Minus size={14} className="text-[#F68A07]" />
-                      : <Plus size={14} className="text-gray-400" />
+                      ? (
+                        <span className="w-5 h-5 border border-[#DADADA] rounded-md flex items-center justify-center">
+                          <Minus size={12} className="text-[#F68A07]" />
+                        </span>
+                      )
+                      : (
+                        <span className="w-5 h-5 border border-[#DADADA] rounded-md flex items-center justify-center">
+                          <Plus size={12} className="text-gray-400" />
+                        </span>
+                      )
                   )}
                 </button>
 
                 {isExpanded && categoryServices.length > 0 && (
-                  <div className="px-3 pb-4 space-y-1 bg-gray-50/30">
+                  <div className="px-3 pb-4 space-y-2 bg-gray-50/30">
                     {categoryServices.map((service: any) => {
                       const isActive = currentServiceSlug === service.slug && currentCategorySlug === catSlug;
                       return (
                         <Link
                           key={service.id}
                           href={`/services/${catSlug}/${service.slug}`}
-                          className={`flex justify-between items-center px-4 py-2.5 rounded-lg text-[13px] font-medium transition-all
+                          className={`flex justify-between items-center px-4 py-2.5 rounded-lg text-[16px] font-medium transition-all
                             ${isActive
-                              ? "bg-[#044782] text-white shadow-md"
-                              : "text-gray-500 hover:bg-white hover:text-[#044782] border border-transparent hover:border-gray-100"
+                              ? "bg-[#00467A] text-white shadow-md"
+                              : "text-[#ACACAC] bg-[#ACACAC]/10 hover:bg-white hover:text-[#044782] border border-transparent hover:border-gray-100"
                             }`}
                         >
                           {service.title}
-                          <ChevronRight size={14} className={isActive ? "text-white" : "text-gray-300"} />
+                          <ChevronRight size={14} className={isActive ? "text-white" : "text-[#ACACAC]"} />
                         </Link>
                       );
                     })}

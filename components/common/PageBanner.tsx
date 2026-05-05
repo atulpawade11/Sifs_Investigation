@@ -9,7 +9,7 @@ interface PageBannerProps {
   description?: string;
   bgImage?: string;
   breadcrumbImage?: string;
-  isGallery?: boolean; // 👈 Add this prop
+  isGallery?: boolean; 
 }
 
 export default function PageBanner({
@@ -18,13 +18,13 @@ export default function PageBanner({
   description,
   bgImage,
   breadcrumbImage,
-  isGallery = false, // 👈 Default to false
+  isGallery = false, 
 }: PageBannerProps) {
 
   const bannerImage = bgImage || breadcrumbImage;
 
   return (
-    <section className="relative overflow-hidden min-h-[250px] flex items-center justify-center">
+    <section className="relative overflow-hidden min-h-[185px] flex items-center justify-center">
 
       {bannerImage ? (
         <div className="absolute inset-0">
@@ -33,20 +33,28 @@ export default function PageBanner({
             alt="Page Banner"
             fill
             priority
-            className="object-cover"
+            className="object-contain"
           />
-          <div className="absolute inset-0 bg-black/40" />
+          {/*<div className="absolute inset-0 bg-black/10" />*/}
         </div>
       ) : (
         <div className="absolute inset-0 bg-[#F5F6F8]" />
       )}
 
       <div className="relative z-10 text-center text-white px-4">
+        <h1 className="text-3xl md:text-[24px] font-medium text-black">
+          {title}
+        </h1>
+        {subtitle && (
+          <p className="mt-2 text-sm md:text-[14px] font-regular text-black">
+            {subtitle}
+          </p>
+        )}
         {/* FLIP LOGIC: 
             If isGallery is true, show Subtitle THEN Title. 
             Otherwise, show Title THEN Subtitle.
         */}
-        {isGallery ? (
+        {/*{isGallery ? (
           <>
             {subtitle && (
               <p className="mb-2 text-sm md:text-base font-medium uppercase tracking-wider">
@@ -68,7 +76,7 @@ export default function PageBanner({
               </p>
             )}
           </>
-        )}
+        )}*/}
 
         {description && (
           <p className="mt-3 text-sm text-gray-200">
