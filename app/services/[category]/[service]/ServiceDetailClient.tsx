@@ -87,7 +87,7 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
         <Skeleton className="h-10 w-80 bg-gray-300" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-10 py-16 relative">
+      <div className="container mx-auto px-4 md:px-10 py-16 relative">
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Sidebar Skeleton */}
           <aside className="lg:w-1/3 xl:w-1/4 space-y-8">
@@ -135,10 +135,11 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
         subtitle={detailData.title}
         breadcrumbImage={breadcrumbImage}
       />
-      <div className="max-w-7xl mx-auto px-4 md:px-10 py-16 relative">
+      <div className="container
+       mx-auto px-4 md:px-10 py-16 relative">
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Sidebar */}
-          <aside className="lg:w-1/3 xl:w-1/3 space-y-8">
+          <aside className="lg:w-1/4 space-y-8">
             <div className="sticky top-28">
               {/* Updated this to use sidebarData instead of undefined data */}
               <ServiceSidebar apiData={sidebarData} />
@@ -149,18 +150,15 @@ export default function ServiceDetailClient({ categorySlug, serviceSlug }: Props
           </aside>
 
           {/* Main Content */}
-          <main className="lg:w-2/3 xl:w-3/4">
+          <main className="lg:w-3/4">
             <div className="bg-white p-6 md:p-6 rounded-[2rem] shadow-xl shadow-blue-900/5 border border-gray-100">
-
-
               <ServiceDetailContent apiData={detailData} />
-
-              <div className="mt-12 pt-4 border-t border-gray-100">
-                {/* <h4 className="text-xl font-bold text-[#04063E] mb-6">Forensic Examination Enquiries</h4> */}
-                <FAQAccordion apiFaqs={detailData.pccqueries} />
-              </div>
             </div>
           </main>
+        </div>
+        <div className="mt-12 pt-4 border-t border-gray-100">
+          {/* <h4 className="text-xl font-bold text-[#04063E] mb-6">Forensic Examination Enquiries</h4> */}
+          <FAQAccordion apiFaqs={detailData.pccqueries} />
         </div>
       </div>
     </div>
